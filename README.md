@@ -25,7 +25,9 @@ This README would normally document whatever steps are necessary to get your app
 
 **Example 2 (Calculate feature contributions for feature selection):**
 
-This work was published on "Yi Mei, Mengjie Zhang, Su Nguyen, "Feature Selection in Evolving Job Shop Dispatching Rules with Genetic Programming," *Genetic and Evolutionary Computation Conference (GECCO)*, Denver, USA, 2016."
+This work was published on 
+
+Yi Mei, Mengjie Zhang, Su Nguyen, "<a href="http://homepages.ecs.vuw.ac.nz/~yimei/papers/GECCO16-MeiSuZhang.pdf">Feature Selection in Evolving Job Shop Dispatching Rules with Genetic Programming</a>," *Genetic and Evolutionary Computation Conference (GECCO)*, Denver, USA, 2016.
 
 1. Suppose you already obtained a number of result files (e.g. by running simple GP with different random seeds). These files are named job.x.out.stat, where x is the run id. Suppose you have 30 runs, and thus x = 0, ..., 29. All the 30 result files are stored in some directory "dir/".
 2. Run src/yimei/ruletest/RuleTestFeatureContribution using the argument "dir/ simple-rule 30 dynamic-job-shop missing-0.85-4 1 max-tardiness relative-terminals".
@@ -35,7 +37,7 @@ This work was published on "Yi Mei, Mengjie Zhang, Su Nguyen, "Feature Selection
 
 The surrogate model is the HalfShop model proposed by Su Nguyen:
 
-Nguyen, S., Zhang, M., Tan, K.C., 2016. Surrogate-Assisted Genetic Programming With Simplified Models for Automated Design of Dispatching Rules. IEEE Transactions on Cybernetics 1–15. doi:10.1109/TCYB.2016.2562674
+Nguyen, S., Zhang, M., Tan, K.C., 2016. <a href="http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=7473913">Surrogate-Assisted Genetic Programming With Simplified Models for Automated Design of Dispatching Rules</a>. IEEE Transactions on Cybernetics 1–15. doi:10.1109/TCYB.2016.2562674
 
 1. Run the params file src/yimei/algorithms/surrogategp/surrogategp.params
 2. The result file is the same as that obtained by simple GP.
