@@ -27,8 +27,8 @@ This README would normally document whatever steps are necessary to get your app
 
 This work was published on "Yi Mei, Mengjie Zhang, Su Nguyen, "Feature Selection in Evolving Job Shop Dispatching Rules with Genetic Programming," *Genetic and Evolutionary Computation Conference (GECCO)*, Denver, USA, 2016."
 
-1. Suppose you already obtained a number of results, named job.x.out.stat, where x is the run id. Suppose you have 30 runs, and thus x = 0, ..., 29. All the 30 result files are stored in "dir/".
-2. Run src/yimei/ruletest/RuleTestFeatureContribution using the argument "dir/ simple-rule 30 dynamic-job-shop missing-0.85-4 1 max-tardiness basic-terminals".
+1. Suppose you already obtained a number of result files (e.g. by running simple GP with different random seeds). These files are named job.x.out.stat, where x is the run id. Suppose you have 30 runs, and thus x = 0, ..., 29. All the 30 result files are stored in some directory "dir/".
+2. Run src/yimei/ruletest/RuleTestFeatureContribution using the argument "dir/ simple-rule 30 dynamic-job-shop missing-0.85-4 1 max-tardiness relative-terminals".
 3. Finally you will get a csv file in the project home directory, listing the contribution of each feature for the best rule of each run.
 
 ### Who do I talk to? ###
