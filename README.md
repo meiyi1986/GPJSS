@@ -31,6 +31,16 @@ This work was published on "Yi Mei, Mengjie Zhang, Su Nguyen, "Feature Selection
 2. Run src/yimei/ruletest/RuleTestFeatureContribution using the argument "dir/ simple-rule 30 dynamic-job-shop missing-0.85-4 1 max-tardiness relative-terminals".
 3. Finally you will get a csv file in the project home directory, listing the contribution of each feature for the best rule of each run.
 
+**Example 3 (GP using Surrogate model):**
+
+The surrogate model is the HalfShop model proposed by Su Nguyen:
+
+Nguyen, S., Zhang, M., Tan, K.C., 2016. Surrogate-Assisted Genetic Programming With Simplified Models for Automated Design of Dispatching Rules. IEEE Transactions on Cybernetics 1–15. doi:10.1109/TCYB.2016.2562674
+
+1. Run the params file src/yimei/algorithms/surrogategp/surrogategp.params
+2. The result file is the same as that obtained by simple GP.
+
+
 ### Who do I talk to? ###
 
 * Email: yi.mei@ecs.vuw.ac.nz
