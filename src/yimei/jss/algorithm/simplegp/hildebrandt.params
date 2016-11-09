@@ -1,0 +1,36 @@
+parent.0 = simplegp.params
+
+eval.problem.scenario = dynamic-job-shop
+
+eval.problem.sim-models = 4
+eval.problem.sim-models.0.num-machines = 10
+eval.problem.sim-models.0.min-num-ops = 2
+eval.problem.sim-models.0.util-level = 0.95
+eval.problem.sim-models.0.due-date-factor = 4.0
+eval.problem.sim-models.0.num-jobs = 2000
+eval.problem.sim-models.0.warmup-jobs = 500
+eval.problem.sim-models.0.num-replications = 1
+
+eval.problem.sim-models.1.num-machines = 10
+eval.problem.sim-models.1.min-num-ops = 2
+eval.problem.sim-models.1.util-level = 0.8
+eval.problem.sim-models.1.due-date-factor = 4.0
+eval.problem.sim-models.1.num-jobs = 2000
+eval.problem.sim-models.1.warmup-jobs = 500
+eval.problem.sim-models.1.num-replications = 1
+
+eval.problem.sim-models.2.num-machines = 10
+eval.problem.sim-models.2.util-level = 0.95
+eval.problem.sim-models.2.due-date-factor = 4.0
+eval.problem.sim-models.2.num-jobs = 2000
+eval.problem.sim-models.2.warmup-jobs = 500
+eval.problem.sim-models.2.num-replications = 1
+
+eval.problem.sim-models.3.num-machines = 10
+eval.problem.sim-models.3.util-level = 0.8
+eval.problem.sim-models.3.due-date-factor = 4.0
+eval.problem.sim-models.3.num-jobs = 2000
+eval.problem.sim-models.3.warmup-jobs = 500
+eval.problem.sim-models.3.num-replications = 1
+
+eval.problem.rotate-sim-seed = true
