@@ -2,18 +2,13 @@ package yimei.util.lisp;
 
 import ec.gp.GPNode;
 import ec.gp.GPTree;
-import ec.gp.koza.KozaFitness;
-import ec.multiobjective.MultiObjectiveFitness;
 import org.apache.commons.lang3.math.NumberUtils;
 import yimei.jss.gp.function.*;
 import yimei.jss.gp.terminal.AttributeGPNode;
 import yimei.jss.gp.terminal.ConstantTerminal;
 import yimei.jss.gp.terminal.JobShopAttribute;
-import yimei.jss.rule.evolved.GPRule;
-import yimei.jss.ruletest.ResultFileReader;
-import yimei.jss.ruletest.RuleType;
-import yimei.jss.ruletest.TestResult;
-import yimei.jss.ruletest.UniqueTerminalsGatherer;
+import yimei.jss.ruleanalysis.ResultFileReader;
+import yimei.jss.ruleanalysis.RuleType;
 
 import java.io.BufferedWriter;
 import java.io.File;

@@ -10,8 +10,8 @@
 //import yimei.jss.gp.GPRuleEvolutionState;
 //import yimei.jss.gp.TerminalsChangable;
 //import yimei.jss.niching.ClearingEvaluator;
-//import yimei.jss.ruleopt.RuleOptimizationProblem;
-//import yimei.jss.ruleopt.SurrogateRuleOptimizationProblem;
+//import yimei.jss.ruleoptimisation.RuleOptimizationProblem;
+//import yimei.jss.ruleoptimisation.SurrogateRuleOptimizationProblem;
 //
 //import java.util.ArrayList;
 //import java.util.List;

@@ -211,7 +211,7 @@ gp.fs.0.func.6.nc = nc2
 # The problem
 # ==============================
 
-eval.problem = yimei.jss.ruleopt.SurrogateRuleOptimizationProblem
+eval.problem = yimei.jss.ruleoptimisation.SurrogateRuleOptimizationProblem
 eval.problem.data = yimei.jss.gp.data.DoubleData
 eval.problem.objectives = 1
 eval.problem.objectives.0 = mean-weighted-tardiness

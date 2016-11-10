@@ -211,9 +211,9 @@ gp.fs.0.func.6.nc = nc2
 # ==============================
 
 eval = yimei.jss.niching.ClearingEvaluator
-eval.problem = yimei.jss.ruleopt.RuleOptimizationProblem
+eval.problem = yimei.jss.ruleoptimisation.RuleOptimizationProblem
 eval.problem.data = yimei.jss.gp.data.DoubleData
-eval.problem.eval-model = yimei.jss.evaluationmodel.HalfShopEvaluationModel
+eval.problem.eval-model = yimei.jss.ruleevaluation.HalfShopEvaluationModel
 eval.problem.eval-model.objectives = 1
 eval.problem.eval-model.objectives.0 = mean-weighted-tardiness
 eval.problem.eval-model.sim-models = 1

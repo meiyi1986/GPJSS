@@ -12,7 +12,7 @@ import ec.gp.GPNode;
 import ec.simple.SimpleEvolutionState;
 import ec.util.Checkpoint;
 import ec.util.Parameter;
-import yimei.jss.ruleopt.RuleOptimizationProblem;
+import yimei.jss.ruleoptimisation.RuleOptimizationProblem;
 
 /**
  * The evolution state of evolving dispatching rules with GP.

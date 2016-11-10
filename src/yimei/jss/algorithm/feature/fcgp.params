@@ -213,7 +213,7 @@ gp.fs.0.func.6.nc = nc2
 fc-generations = 50
 
 eval = yimei.jss.niching.ClearingEvaluator
-eval.problem = yimei.jss.ruleopt.SurrogateRuleOptimizationProblem
+eval.problem = yimei.jss.ruleoptimisation.SurrogateRuleOptimizationProblem
 eval.problem.data = yimei.jss.gp.data.DoubleData
 eval.problem.objectives = 1
 eval.problem.scenario = dynamic-job-shop

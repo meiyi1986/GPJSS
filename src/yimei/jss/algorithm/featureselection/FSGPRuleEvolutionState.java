@@ -1,22 +1,19 @@
 package yimei.jss.algorithm.featureselection;
 
 import ec.EvolutionState;
-import ec.Individual;
 import ec.gp.GPIndividual;
 import ec.gp.GPNode;
 import ec.util.Checkpoint;
 import ec.util.Parameter;
-import yimei.jss.evaluationmodel.Surrogate;
+import yimei.jss.ruleevaluation.Surrogate;
 import yimei.jss.feature.FeatureIgnorable;
 import yimei.jss.feature.FeatureUtil;
 import yimei.jss.feature.ignore.Ignorer;
-import yimei.jss.feature.ignore.SimpleIgnorer;
 import yimei.jss.gp.GPRuleEvolutionState;
 import yimei.jss.gp.TerminalsChangable;
 import yimei.jss.niching.ClearingEvaluator;
-import yimei.jss.ruleopt.RuleOptimizationProblem;
+import yimei.jss.ruleoptimisation.RuleOptimizationProblem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
