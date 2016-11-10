@@ -15,6 +15,20 @@ This README would normally document whatever steps are necessary to get your app
 3. The ECJ functions are located at src/ec/, and the functions for JSS and GP are in src/yimei/jss/. Now you are ready to run a number of different algorithms.
 4. Before starting, it is highly recommended to get yourself familiar with the ECJ package, especially the GP part. You can start from the four tutorials located at src/ec/app/tutorialx (x = 1, ..., 4). Turorial 4 is about GP for symbolic regression, which is very useful for understanding this project. A more thorough manual can be found in https://cs.gmu.edu/~eclab/projects/ecj/docs/manual/manual.pdf.
 
+### Project structure ###
+
+The main project is located in /src/yimei/jss/. It contains the following packages:
+
+* <i>algorithm/</i> contains a number of algorithms to run. They are good entry points to start with.
+* <i>gp/</i> contains the core classes for GP for evolving dispatching rules.
+* <i>jobshop/</i> contains the core classes for representing a job shop.
+* <i>niching/</i> contains classes for niching-based GP, i.e. using the Clearing method.
+* <i>rule/</i> contains the core classes for representing dispatching rules.
+* <i>ruleanalysis/</i> contains the classes for rule analysis, e.g. reading rules from the ECJ result file, testing rules, calculating the program length, depth, number of unique terminals, etc.
+* <i>ruleevalulation/</i> contains the evaluation models for dispatching rules, such as discrete event simulation, static job shop instances, etc.
+* <i>ruleoptimisation/</i> contains the classes for optimisation dispatching rules, e.g. RuleOptimisationProblem.
+* <i>simulation/</i> contains the classes for discrete event simulation for dynamic job shop scheduling.
+
 ### Running experiments ###
 
 **Example 1 (Simple GP):**
