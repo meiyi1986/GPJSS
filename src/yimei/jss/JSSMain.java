@@ -8,6 +8,7 @@ import yimei.jss.jobshop.Schedule;
 import yimei.jss.jobshop.SchedulingSet;
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.rule.basic.EDD;
+import yimei.jss.rule.basic.FCFS;
 import yimei.jss.rule.basic.SPT;
 import yimei.jss.rule.evolved.GPRule;
 import yimei.jss.rule.weighted.WATC;
@@ -36,9 +37,9 @@ public class JSSMain {
 //        objectives.add(Objective.MEAN_FLOWTIME);
         objectives.add(Objective.MEAN_WEIGHTED_TARDINESS);
 
-        GPRule rule1 = GPRule.readFromLispExpression(" (* (+ (* (+ (/ (max (max NINQ SL) SL) (/ (- WKR NIQ) W)) (+ (max NINQ SL) (/ NRT PT))) (/ (* (/ t AT) WINQ) (/ NRT PT))) WIQ) (* (max (/ (- WKR NIQ) W) SL) (/ (min PT MRT) (- WKR (/ (- WKR NIQ) (/ NRT PT))))))");
+        GPRule rule1 = GPRule.readFromLispExpression("(* (max (- (* (* (/ SL WKR) (+ W WIQ)) NIQ) (+ TIS (- PT W))) (+ (- WKR NPT) PT)) (* PT (+ (+ (/ (min (+ OWT WINQ) (+ W WIQ)) W) (- PT W)) (- PT W))))");
         AbstractRule rule2 = new WATC();
-        AbstractRule rule3 = new SPT();
+        AbstractRule rule3 = new WSPT();
 
         Simulation simulation =
                 Simulation.standardMissing(seed,

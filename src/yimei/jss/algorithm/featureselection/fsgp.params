@@ -6,7 +6,7 @@
 # ==============================
 evalthreads = 1
 breedthreads = 1
-seed.0 = 4
+seed.0 = 3
 checkpoint = false
 checkpoint-modulo = 1
 checkpoint-prefix = ec
@@ -14,23 +14,24 @@ checkpoint-prefix = ec
 # ==============================
 # Basic evolution parameters
 # ==============================
-state = yimei.jss.gp.GPRuleEvolutionState
+state = yimei.jss.algorithm.featureselection.FSGPRuleEvolutionState
 finish = ec.simple.SimpleFinisher
 exch = ec.simple.SimpleExchanger
 breed =	ec.simple.SimpleBreeder
+eval = ec.simple.SimpleEvaluator
 stat = ec.simple.SimpleStatistics
 stat.file = $out.stat
 stat.num-children = 1
 stat.child.0 = ec.gp.koza.KozaShortStatistics
 stat.child.0.file = $outtabular.stat
 
-generations = 51
-quit-on-run-complete = true
+generations = 90
+quit-on-run-complete = false
 
 pop = ec.Population
 pop.subpops = 1
 pop.subpop.0 = ec.Subpopulation
-pop.subpop.0.size =	1024
+pop.subpop.0.size = 1024
 
 breed.elite.0 = 10
 
@@ -215,9 +216,14 @@ eval.problem = yimei.jss.ruleopt.RuleOptimizationProblem
 eval.problem.data = yimei.jss.gp.data.DoubleData
 eval.problem.eval-model = yimei.jss.evaluationmodel.HalfShopEvaluationModel
 eval.problem.eval-model.objectives = 1
-eval.problem.eval-model.objectives.0 = mean-weighted-tardiness
+eval.problem.eval-model.objectives.0 = max-tardiness
 eval.problem.eval-model.sim-models = 1
 eval.problem.eval-model.sim-models.0.util-level = 0.85
 eval.problem.eval-model.rotate-sim-seed = true
 
+pre-generations = 50
+pop-adapt-frac-elites = 0
+pop-adapt-frac-adapted = 0.1
+
 terminals-from = relative
+ignorer = yimei.jss.feature.ignore.SimpleIgnorer

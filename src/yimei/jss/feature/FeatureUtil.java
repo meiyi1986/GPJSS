@@ -122,10 +122,10 @@ public class FeatureUtil {
 
         KozaFitness fit1 = (KozaFitness)indi.fitness;
         KozaFitness fit2 = (KozaFitness)fit1.clone();
-        GPRule rule = new GPRule(indi.trees[0]);
+        GPRule rule = new GPRule((GPTree)indi.trees[0].clone());
         rule.ignore(feature, ignorer);
-        rule.calcFitness(fit2, state,
-                problem.getTrainSet(), problem.getObjectives());
+
+        problem.getEvaluationModel().evaluate(fit2, rule, state);
 
         return fit2.standardizedFitness() - fit1.standardizedFitness();
     }

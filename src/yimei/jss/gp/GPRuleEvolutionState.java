@@ -159,7 +159,7 @@ public class GPRuleEvolutionState extends SimpleEvolutionState {
 
 		initTerminalSet();
 
-		super.setup(state, base);
+		super.setup(this, base);
 	}
 
 	@Override
@@ -270,8 +270,8 @@ public class GPRuleEvolutionState extends SimpleEvolutionState {
 
 	    // Generate new instances if needed
 		RuleOptimizationProblem problem = (RuleOptimizationProblem)evaluator.p_problem;
-	    if (problem.rotateSimSeed()) {
-			problem.rotateSeed();
+	    if (problem.getEvaluationModel().isRotatable()) {
+			problem.rotateEvaluationModel();
 		}
 
 	    // INCREMENT GENERATION AND CHECKPOINT
