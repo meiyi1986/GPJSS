@@ -35,7 +35,7 @@ The main project is located in `/src/yimei/jss/`. It contains the following pack
 
 1. Locate the param file `src/yimei/jss/algorithm/simplegp/simplegp.params`
 2. Run `src/yimei/jss/gp/GPRun` with argument "*-file [pathofparamsfile]/simplegp.params*". You can also set other parameters using "*-p xxx*", in the same way as any ECJ applications.
-3. Finally you will get a result file `job.x.out.stat` in the project home directory, where x is the job id.
+3. Finally you will get a result file `job.[x].out.stat` in the project home directory, where [x] is the job id.
 
 **Example 2 (Calculate feature contributions for feature selection):**
 
@@ -43,7 +43,7 @@ This work was published on
 
 Yi Mei, Mengjie Zhang, Su Nguyen, "<a href="http://homepages.ecs.vuw.ac.nz/~yimei/papers/GECCO16-MeiSuZhang.pdf">Feature Selection in Evolving Job Shop Dispatching Rules with Genetic Programming</a>," *Genetic and Evolutionary Computation Conference (GECCO)*, Denver, USA, 2016.
 
-1. Suppose you already obtained a number of result files (e.g. by running simple GP with different random seeds). These files are named `job.x.out.stat`, where x is the run id. Suppose you have 30 runs, and thus x = 0, ..., 29. All the 30 result files are stored in some directory `dir/`.
+1. Suppose you already obtained a number of result files (e.g. by running simple GP with different random seeds). These files are named `job.[x].out.stat`, where [x] is the run id. Suppose you have 30 runs, and thus x = 0, ..., 29. All the 30 result files are stored in some directory `dir/`.
 2. Run `src/yimei/ruletest/RuleTestFeatureContribution` using the argument "*dir/ simple-rule 30 dynamic-job-shop missing-0.85-4 1 max-tardiness relative-terminals*".
 3. Finally you will get a csv file in the project home directory, listing the contribution of each feature for the best rule of each run.
 
