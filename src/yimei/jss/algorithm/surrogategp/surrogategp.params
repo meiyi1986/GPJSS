@@ -18,7 +18,8 @@ state = yimei.jss.gp.GPRuleEvolutionState
 finish = ec.simple.SimpleFinisher
 exch = ec.simple.SimpleExchanger
 breed =	ec.simple.SimpleBreeder
-eval = ec.simple.SimpleEvaluator
+eval = yimei.jss.surrogate.SurrogateEvaluator
+eval.archive-size.0 = 200
 stat = ec.simple.SimpleStatistics
 stat.file = $out.stat
 stat.num-children = 1
@@ -31,7 +32,7 @@ quit-on-run-complete = true
 pop = ec.Population
 pop.subpops = 1
 pop.subpop.0 = ec.Subpopulation
-pop.subpop.0.size =	1024
+pop.subpop.0.size =	1000
 
 breed.elite.0 = 10
 
@@ -211,12 +212,13 @@ gp.fs.0.func.6.nc = nc2
 # The problem
 # ==============================
 
-eval.problem = yimei.jss.ruleoptimisation.SurrogateRuleOptimizationProblem
+eval.problem = yimei.jss.ruleoptimisation.RuleOptimizationProblem
 eval.problem.data = yimei.jss.gp.data.DoubleData
-eval.problem.objectives = 1
-eval.problem.objectives.0 = mean-weighted-tardiness
-eval.problem.scenario = dynamic-job-shop
-eval.problem.sim-models = 2
-eval.problem.sim-models.0.util-level = 0.95
-eval.problem.sim-models.1.util-level = 0.85
-eval.problem.rotate-sim-seed = true
+eval.problem.eval-model = yimei.jss.ruleevaluation.HalfShopEvaluationModel
+eval.problem.eval-model.objectives = 1
+eval.problem.eval-model.objectives.0 = max-tardiness
+eval.problem.eval-model.sim-models = 1
+eval.problem.eval-model.sim-models.0.util-level = 0.85
+eval.problem.eval-model.rotate-sim-seed = true
+
+terminals-from = relative
