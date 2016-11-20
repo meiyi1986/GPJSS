@@ -28,6 +28,7 @@ The main project is located in `/src/yimei/jss/`. It contains the following pack
 * `ruleevalulation/` contains the evaluation models for dispatching rules, such as discrete event simulation, static job shop instances, etc.
 * `ruleoptimisation/` contains the classes for optimisation dispatching rules, e.g. RuleOptimisationProblem.
 * `simulation/` contains the classes for discrete event simulation for dynamic job shop scheduling.
+* `surrogate/` contains the classes for surrogate models and evaluators.
 
 ### Running experiments ###
 
