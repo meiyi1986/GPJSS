@@ -37,14 +37,14 @@ public class Clearing {
             // clear this subpopulation
             for (int i = 0; i < sortedPop.length; i++) {
                 // skip the cleared individuals
-                if (((ClearingKozaFitness)sortedPop[i].fitness).isCleared()) {
+                if (((Clearable)sortedPop[i].fitness).isCleared()) {
                     continue;
                 }
 
                 int numWinners = 1;
                 for (int j = i+1; j < sortedPop.length; j++) {
                     // skip the cleared individuals
-                    if (((ClearingKozaFitness)sortedPop[j].fitness).isCleared()) {
+                    if (((Clearable)sortedPop[j].fitness).isCleared()) {
                         continue;
                     }
 
@@ -61,7 +61,7 @@ public class Clearing {
                     }
                     else {
                         // Clear the fitness of individual j
-                        ((ClearingKozaFitness)sortedPop[j].fitness).clear();
+                        ((Clearable)sortedPop[j].fitness).clear();
                     }
                 }
             }

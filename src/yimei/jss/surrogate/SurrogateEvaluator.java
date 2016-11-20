@@ -4,7 +4,6 @@ import ec.*;
 import ec.simple.SimpleEvaluator;
 import ec.util.Parameter;
 import yimei.jss.ruleevaluation.AbstractEvaluationModel;
-import yimei.jss.ruleevaluation.Surrogate;
 import yimei.jss.ruleoptimisation.RuleOptimizationProblem;
 
 import java.util.Arrays;

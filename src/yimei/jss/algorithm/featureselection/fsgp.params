@@ -47,7 +47,10 @@ pop.subpop.0.species.ind.numtrees = 1
 pop.subpop.0.species.ind.tree.0 = ec.gp.GPTree
 pop.subpop.0.species.ind.tree.0.tc = tc0
 
-pop.subpop.0.species.fitness = yimei.jss.niching.ClearingKozaFitness
+#pop.subpop.0.species.fitness = yimei.jss.niching.ClearingKozaFitness
+pop.subpop.0.species.fitness = yimei.jss.niching.ClearingMultiObjectiveFitness
+pop.subpop.0.species.fitness.num-objectives = 1
+pop.subpop.0.species.fitness.maximize = false
 pop.subpop.0.duplicate-retries = 100
 
 # GP initializer

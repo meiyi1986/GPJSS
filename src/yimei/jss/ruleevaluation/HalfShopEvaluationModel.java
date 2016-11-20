@@ -5,6 +5,7 @@ import ec.Fitness;
 import ec.util.Parameter;
 import yimei.jss.jobshop.SchedulingSet;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.surrogate.Surrogate;
 
 /**
  * The HalfShop surrogate evaluation model proposed in

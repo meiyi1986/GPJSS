@@ -90,8 +90,8 @@ public abstract class AbstractRule {
 //            System.out.println(simulation.workCenterUtilLevelsToString());
 
             for (int i = 0; i < objectives.size(); i++) {
-                double obj = simulation.objectiveValue(objectives.get(i));
-                double lb = schedulingSet.getObjectiveLowerBound(i, col);
+//                double obj = simulation.objectiveValue(objectives.get(i));
+//                double lb = schedulingSet.getObjectiveLowerBound(i, col);
                 double normObjValue = simulation.objectiveValue(objectives.get(i))
                         / schedulingSet.getObjectiveLowerBound(i, col);
                 fitnesses[i] += normObjValue;
@@ -121,14 +121,14 @@ public abstract class AbstractRule {
             fitnesses[i] /= col;
         }
 
-        if (objectives.size() == 1) {
-            KozaFitness f = (KozaFitness) fitness;
-            f.setStandardizedFitness(state, fitnesses[0]);
-        }
-        else {
+//        if (objectives.size() == 1) {
+//            KozaFitness f = (KozaFitness) fitness;
+//            f.setStandardizedFitness(state, fitnesses[0]);
+//        }
+//        else {
             MultiObjectiveFitness f = (MultiObjectiveFitness)fitness;
             f.setObjectives(state, fitnesses);
-        }
+//        }
     }
 
     public Operation priorOperation(DecisionSituation decisionSituation) {

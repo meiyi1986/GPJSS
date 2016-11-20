@@ -5,7 +5,7 @@ import ec.gp.GPIndividual;
 import ec.gp.GPNode;
 import ec.util.Checkpoint;
 import ec.util.Parameter;
-import yimei.jss.ruleevaluation.Surrogate;
+import yimei.jss.surrogate.Surrogate;
 import yimei.jss.feature.FeatureIgnorable;
 import yimei.jss.feature.FeatureUtil;
 import yimei.jss.feature.ignore.Ignorer;

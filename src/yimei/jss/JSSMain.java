@@ -39,7 +39,7 @@ public class JSSMain {
 
         GPRule rule1 = GPRule.readFromLispExpression("(* (max (- (* (* (/ SL WKR) (+ W WIQ)) NIQ) (+ TIS (- PT W))) (+ (- WKR NPT) PT)) (* PT (+ (+ (/ (min (+ OWT WINQ) (+ W WIQ)) W) (- PT W)) (- PT W))))");
         AbstractRule rule2 = new WATC();
-        AbstractRule rule3 = new WSPT();
+        AbstractRule rule3 = new FCFS();
 
         Simulation simulation =
                 Simulation.standardMissing(seed,

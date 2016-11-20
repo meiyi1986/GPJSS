@@ -1,4 +1,4 @@
-package yimei.jss.ruleevaluation;
+package yimei.jss.surrogate;
 
 /**
  * Surrogate interface.
