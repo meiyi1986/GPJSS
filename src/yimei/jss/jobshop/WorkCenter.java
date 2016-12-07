@@ -89,13 +89,17 @@ public class WorkCenter {
         return queue.size();
     }
 
-    public void reset() {
+    public void reset(double readyTime) {
         queue.clear();
         for (int i = 0; i < numMachines; i++) {
-            machineReadyTimes.set(i, 0.0);
+            machineReadyTimes.set(i, readyTime);
         }
         workInQueue = 0.0;
-        busyTime = 0.0;
+        busyTime = readyTime;
+    }
+
+    public void reset() {
+        reset(0.0);
     }
 
     public void addToQueue(Operation o) {

@@ -6,7 +6,9 @@ import ec.util.Parameter;
 import yimei.jss.ruleevaluation.AbstractEvaluationModel;
 import yimei.jss.ruleoptimisation.RuleOptimizationProblem;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by yimei on 11/11/16.
@@ -50,8 +52,26 @@ public class SurrogateEvaluator extends SimpleEvaluator {
             state.population.subpops[x].individuals = archive;
         }
 
+//        List<Double> surrogatefitness = new ArrayList<>();
+//        for (int x = 0; x < state.population.subpops.length; x++) {
+//            for (Individual indi : state.population.subpops[x].individuals) {
+//                surrogatefitness.add(indi.fitness.fitness());
+//            }
+//        }
+
         // Evaluate using the orignial model
         ((Surrogate)evaluationModel).useOriginal();
         super.evaluatePopulation(state);
+
+//        List<Double> testfitness = new ArrayList<>();
+//        for (int x = 0; x < state.population.subpops.length; x++) {
+//            for (Individual indi : state.population.subpops[x].individuals) {
+//                testfitness.add(indi.fitness.fitness());
+//            }
+//        }
+//
+//        for (int i = 0; i < surrogatefitness.size(); i++) {
+//            System.out.println(surrogatefitness.get(i) + "\t " + testfitness.get(i));
+//        }
     }
 }

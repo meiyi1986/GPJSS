@@ -19,7 +19,7 @@ finish = ec.simple.SimpleFinisher
 exch = ec.simple.SimpleExchanger
 breed =	ec.simple.SimpleBreeder
 eval = yimei.jss.surrogate.SurrogateEvaluator
-eval.archive-size.0 = 200
+eval.archive-size.0 = 256
 stat = ec.simple.SimpleStatistics
 stat.file = $out.stat
 stat.num-children = 1
@@ -32,7 +32,7 @@ quit-on-run-complete = true
 pop = ec.Population
 pop.subpops = 1
 pop.subpop.0 = ec.Subpopulation
-pop.subpop.0.size =	1000
+pop.subpop.0.size =	1024
 
 breed.elite.0 = 10
 
@@ -217,11 +217,12 @@ gp.fs.0.func.6.nc = nc2
 
 eval.problem = yimei.jss.ruleoptimisation.RuleOptimizationProblem
 eval.problem.data = yimei.jss.gp.data.DoubleData
-eval.problem.eval-model = yimei.jss.ruleevaluation.HalfShopEvaluationModel
+eval.problem.eval-model = yimei.jss.ruleevaluation.BusyHalfShopEvaluationModel
 eval.problem.eval-model.objectives = 1
 eval.problem.eval-model.objectives.0 = max-tardiness
 eval.problem.eval-model.sim-models = 1
 eval.problem.eval-model.sim-models.0.util-level = 0.85
+eval.problem.eval-model.sim-models.0.replications = 50
 eval.problem.eval-model.rotate-sim-seed = true
 
 terminals-from = relative

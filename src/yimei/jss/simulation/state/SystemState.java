@@ -62,6 +62,18 @@ public class SystemState {
         this.clockTime = clockTime;
     }
 
+    public void setWorkCenters(List<WorkCenter> workCenters) {
+        this.workCenters = workCenters;
+    }
+
+    public void setJobsInSystem(List<Job> jobsInSystem) {
+        this.jobsInSystem = jobsInSystem;
+    }
+
+    public void setJobsCompleted(List<Job> jobsCompleted) {
+        this.jobsCompleted = jobsCompleted;
+    }
+
     public void addWorkCenter(WorkCenter workCenter) {
         workCenters.add(workCenter);
     }

@@ -4,7 +4,7 @@ import yimei.jss.jobshop.Operation;
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.rule.weighted.WSPT;
 import yimei.jss.simulation.DecisionSituation;
-import yimei.jss.simulation.Simulation;
+import yimei.jss.simulation.DynamicSimulation;
 
 import java.util.Collections;
 import java.util.List;
@@ -92,7 +92,7 @@ public class PhenoCharacterisation {
         int numDecisionSituations = 20;
         long shuffleSeed = 8295342;
 
-        Simulation simulation = Simulation.standardFull(0, refRule,
+        DynamicSimulation simulation = DynamicSimulation.standardFull(0, refRule,
                 10, 500, 0, 0.95, 4.0);
 
         List<DecisionSituation> situations = simulation.decisionSituations(minQueueLength);

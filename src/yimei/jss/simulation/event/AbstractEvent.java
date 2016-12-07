@@ -1,6 +1,7 @@
 package yimei.jss.simulation.event;
 
 import yimei.jss.simulation.DecisionSituation;
+import yimei.jss.simulation.DynamicSimulation;
 import yimei.jss.simulation.Simulation;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public abstract class AbstractEvent implements Comparable<AbstractEvent> {
 
     public abstract void trigger(Simulation simulation);
 
-    public abstract void addDecisionSituation(Simulation simulation,
+    public abstract void addDecisionSituation(DynamicSimulation simulation,
                                               List<DecisionSituation> situations,
                                               int minQueueLength);
 

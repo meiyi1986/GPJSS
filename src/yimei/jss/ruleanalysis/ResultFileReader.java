@@ -2,6 +2,7 @@ package yimei.jss.ruleanalysis;
 
 import ec.Fitness;
 import ec.gp.koza.KozaFitness;
+import ec.multiobjective.MultiObjectiveFitness;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import yimei.jss.rule.evolved.GPRule;
 import yimei.util.lisp.LispSimplifier;
@@ -73,10 +74,11 @@ public class ResultFileReader {
         }
         else {
             String[] spaceSegments = line.split("\\s+");
-            String[] equation = spaceSegments[1].split("=");
-            double fitness = Double.valueOf(equation[1]);
-            KozaFitness f = new KozaFitness();
-            f.setStandardizedFitness(null, fitness);
+            String[] fitVec = spaceSegments[1].split("\\[|\\]");
+            double fitness = Double.valueOf(fitVec[1]);
+            MultiObjectiveFitness f = new MultiObjectiveFitness();
+            f.objectives = new double[1];
+            f.objectives[0] = fitness;
 
             return f;
         }

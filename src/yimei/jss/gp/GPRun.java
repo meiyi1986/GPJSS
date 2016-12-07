@@ -6,13 +6,6 @@ import ec.util.Output;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadMXBean;
-
 /**
  * The main program of GP used, extended/simplified from ec.Evolve.
  *

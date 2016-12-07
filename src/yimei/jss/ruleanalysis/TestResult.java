@@ -147,7 +147,7 @@ public class TestResult {
 
 	public void validate(List<Objective> objectives) {
 		SchedulingSet validationSet =
-				SchedulingSet.dynamicMissingSet(validationSimSeed, 0.95, 4.0, objectives);
+				SchedulingSet.dynamicMissingSet(validationSimSeed, 0.95, 4.0, objectives, 50);
 
 		Fitness validationFitness;
 		if (objectives.size() == 1) {

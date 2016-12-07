@@ -5,6 +5,7 @@ import ec.Fitness;
 import ec.util.Parameter;
 import yimei.jss.jobshop.SchedulingSet;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.simulation.DynamicSimulation;
 import yimei.jss.simulation.Simulation;
 
 import java.util.ArrayList;
@@ -101,7 +102,7 @@ public class SimpleEvaluationModel extends AbstractEvaluationModel {
             p = b.push(P_SIM_REPLICATIONS);
             int rep = state.parameters.getIntWithDefault(p, null, 1);
 
-            Simulation simulation = new Simulation(simSeed,
+            Simulation simulation = new DynamicSimulation(simSeed,
                     null, numMachines, numJobs, warmupJobs,
                     minNumOps, maxNumOps, utilLevel, dueDateFactor, false);
 

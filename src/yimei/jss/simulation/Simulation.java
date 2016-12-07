@@ -1,274 +1,65 @@
 package yimei.jss.simulation;
 
-import org.apache.commons.math3.random.RandomDataGenerator;
-import yimei.jss.jobshop.*;
-import yimei.util.random.*;
+import yimei.jss.jobshop.Job;
+import yimei.jss.jobshop.Objective;
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.simulation.event.AbstractEvent;
-import yimei.jss.simulation.event.JobArrivalEvent;
 import yimei.jss.simulation.state.SystemState;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.PriorityQueue;
 
 /**
- * Created by yimei on 22/09/16.
+ * The abstract simulation class for evaluating rules.
+ *
+ * Created by yimei on 21/11/16.
  */
-public class Simulation {
+public abstract class Simulation {
 
-    public final static int SEED_ROTATION = 10000;
+    protected AbstractRule rule;
+    protected SystemState systemState;
+    protected PriorityQueue<AbstractEvent> eventQueue;
 
-    private long seed;
-    private RandomDataGenerator randomDataGenerator;
+    protected int numWorkCenters;
+    protected int numJobsRecorded;
+    protected int warmupJobs;
+    protected int numJobsArrived;
+    protected int throughput;
 
-    private final int numWorkCenters;
-    private final int numJobsRecorded;
-    private final int warmupJobs;
-    private final int minNumOps;
-    private final int maxNumOps;
-    private final double utilLevel;
-    private final double dueDateFactor;
-    private final boolean revisit;
-
-    private AbstractIntegerSampler numOpsSampler;
-    private AbstractRealSampler procTimeSampler;
-    private AbstractRealSampler interArrivalTimeSampler;
-    private AbstractRealSampler jobWeightSampler;
-
-    private AbstractRule rule;
-
-    private SystemState systemState;
-    private PriorityQueue<AbstractEvent> eventQueue;
-    private int numJobsArrived;
-    private int throughput;
-
-    private Simulation(long seed,
-                       AbstractRule rule,
-                       int numWorkCenters,
-                       int numJobsRecorded,
-                       int warmupJobs,
-                       int minNumOps,
-                       int maxNumOps,
-                       double utilLevel,
-                       double dueDateFactor,
-                       boolean revisit,
-                       AbstractIntegerSampler numOpsSampler,
-                       AbstractRealSampler procTimeSampler,
-                       AbstractRealSampler interArrivalTimeSampler,
-                       AbstractRealSampler jobWeightSampler) {
-        this.seed = seed;
-        this.randomDataGenerator = new RandomDataGenerator();
-        this.randomDataGenerator.reSeed(seed);
+    public Simulation(AbstractRule rule,
+                      int numWorkCenters,
+                      int numJobsRecorded,
+                      int warmupJobs) {
         this.rule = rule;
-
         this.numWorkCenters = numWorkCenters;
         this.numJobsRecorded = numJobsRecorded;
         this.warmupJobs = warmupJobs;
-        this.minNumOps = minNumOps;
-        this.maxNumOps = maxNumOps;
-        this.utilLevel = utilLevel;
-        this.dueDateFactor = dueDateFactor;
-        this.revisit = revisit;
 
-        this.numOpsSampler = numOpsSampler;
-        this.procTimeSampler = procTimeSampler;
-        this.interArrivalTimeSampler = interArrivalTimeSampler;
-        this.jobWeightSampler = jobWeightSampler;
-
-        setInterArrivalTimeSamplerMean();
-
-        setup();
-    }
-
-    public Simulation(long seed,
-                      AbstractRule rule,
-                      int numWorkCenters,
-                      int numJobsRecorded,
-                      int warmupJobs,
-                      int minNumOps,
-                      int maxNumOps,
-                      double utilLevel,
-                      double dueDateFactor,
-                      boolean revisit) {
-        this(seed, rule, numWorkCenters, numJobsRecorded, warmupJobs,
-                minNumOps, maxNumOps, utilLevel, dueDateFactor, revisit,
-                new UniformIntegerSampler(minNumOps, maxNumOps),
-                new UniformSampler(1, 99),
-                new ExponentialSampler(),
-                new TwoSixTwoSampler());
-    }
-
-    public SystemState getSystemState() {
-        return systemState;
+        systemState = new SystemState();
+        eventQueue = new PriorityQueue<>();
     }
 
     public AbstractRule getRule() {
         return rule;
     }
 
+    public SystemState getSystemState() {
+        return systemState;
+    }
+
     public PriorityQueue<AbstractEvent> getEventQueue() {
         return eventQueue;
-    }
-
-    public int getNumWorkCenters() {
-        return numWorkCenters;
-    }
-
-    public int getNumJobsRecorded() {
-        return numJobsRecorded;
-    }
-
-    public int getWarmupJobs() {
-        return warmupJobs;
-    }
-
-    public int getMinNumOps() {
-        return minNumOps;
-    }
-
-    public int getMaxNumOps() {
-        return maxNumOps;
-    }
-
-    public double getUtilLevel() {
-        return utilLevel;
-    }
-
-    public double getDueDateFactor() {
-        return dueDateFactor;
-    }
-
-    public boolean isRevisit() {
-        return revisit;
-    }
-
-    public RandomDataGenerator getRandomDataGenerator() {
-        return randomDataGenerator;
-    }
-
-    public AbstractIntegerSampler getNumOpsSampler() {
-        return numOpsSampler;
-    }
-
-    public AbstractRealSampler getProcTimeSampler() {
-        return procTimeSampler;
-    }
-
-    public AbstractRealSampler getInterArrivalTimeSampler() {
-        return interArrivalTimeSampler;
-    }
-
-    public AbstractRealSampler getJobWeightSampler() {
-        return jobWeightSampler;
-    }
-
-    public double getClockTime() {
-        return systemState.getClockTime();
     }
 
     public void setRule(AbstractRule rule) {
         this.rule = rule;
     }
 
+    public double getClockTime() {
+        return systemState.getClockTime();
+    }
+
     public void addEvent(AbstractEvent event) {
         eventQueue.add(event);
-    }
-
-    public void setup() {
-        systemState = new SystemState();
-        for (int i = 0; i < numWorkCenters; i++) {
-            systemState.addWorkCenter(new WorkCenter(i));
-        }
-
-        eventQueue = new PriorityQueue<>();
-
-        numJobsArrived = 0;
-        throughput = 0;
-        generateJob();
-    }
-
-    public void resetState() {
-        systemState.reset();
-        eventQueue.clear();
-
-        numJobsArrived = 0;
-        throughput = 0;
-        generateJob();
-    }
-
-    public void reset(long seed) {
-        reseed(seed);
-        resetState();
-    }
-
-    public void reset() {
-        reset(seed);
-    }
-
-    public void reseed(long seed) {
-        this.seed = seed;
-        randomDataGenerator.reSeed(seed);
-    }
-
-    public void rotateSeed() {
-        seed += SEED_ROTATION;
-        reset();
-    }
-
-    public void generateJob() {
-        double arrivalTime = getClockTime()
-                + interArrivalTimeSampler.next(randomDataGenerator);
-        double weight = jobWeightSampler.next(randomDataGenerator);
-        Job job = new Job(numJobsArrived, new ArrayList<>(),
-                arrivalTime, arrivalTime, 0, weight);
-        int numOps = numOpsSampler.next(randomDataGenerator);
-
-        int[] route = randomDataGenerator.nextPermutation(numWorkCenters, numOps);
-
-        double totalProcTime = 0.0;
-        for (int i = 0; i < numOps; i++) {
-            double procTime = procTimeSampler.next(randomDataGenerator);
-            totalProcTime += procTime;
-
-            Operation o = new Operation(job, i, procTime, systemState.getWorkCenter(route[i]));
-
-            job.addOperation(o);
-        }
-
-        job.linkOperations();
-
-        double dueDate = job.getReleaseTime() + dueDateFactor * totalProcTime;
-        job.setDueDate(dueDate);
-
-        systemState.addJobToSystem(job);
-        numJobsArrived ++;
-
-        eventQueue.add(new JobArrivalEvent(job));
-    }
-
-    public void completeJob(Job job) {
-        if (numJobsArrived > warmupJobs && job.getId() < numJobsRecorded + warmupJobs) {
-            throughput++;
-
-            systemState.addCompletedJob(job);
-        }
-        systemState.removeJobFromSystem(job);
-    }
-
-    public double interArrivalTimeMean(int numWorkCenters,
-                                             int minNumOps,
-                                             int maxNumOps,
-                                             double utilLevel) {
-        double meanNumOps = 0.5 * (minNumOps + maxNumOps);
-        double meanProcTime = procTimeSampler.getMean();
-
-        return (meanNumOps * meanProcTime) / (utilLevel * numWorkCenters);
-    }
-
-    public void setInterArrivalTimeSamplerMean() {
-        double mean = interArrivalTimeMean(numWorkCenters, minNumOps, maxNumOps, utilLevel);
-        interArrivalTimeSampler.setMean(mean);
     }
 
     public void run() {
@@ -283,27 +74,17 @@ public class Simulation {
     public void rerun() {
         resetState();
 
-        while (!eventQueue.isEmpty() && throughput < numJobsRecorded) {
-            AbstractEvent nextEvent = eventQueue.poll();
-
-            systemState.setClockTime(nextEvent.getTime());
-            nextEvent.trigger(this);
-        }
+        run();
     }
 
-    public List<DecisionSituation> decisionSituations(int minQueueLength) {
-        List<DecisionSituation> decisionSituations = new ArrayList<>();
+    public void completeJob(Job job) {
+        if (numJobsArrived > warmupJobs && job.getId() >= 0
+                && job.getId() < numJobsRecorded + warmupJobs) {
+            throughput++;
 
-        while (!eventQueue.isEmpty() && throughput < numJobsRecorded) {
-            AbstractEvent nextEvent = eventQueue.poll();
-
-            systemState.setClockTime(nextEvent.getTime());
-            nextEvent.addDecisionSituation(this, decisionSituations, minQueueLength);
+            systemState.addCompletedJob(job);
         }
-
-        resetState();
-
-        return decisionSituations;
+        systemState.removeJobFromSystem(job);
     }
 
     public double makespan() {
@@ -442,7 +223,7 @@ public class Simulation {
 
     public String workCenterUtilLevelsToString() {
         String string = "[";
-        for (int i = 0; i < numWorkCenters; i++) {
+        for (int i = 0; i < systemState.getWorkCenters().size(); i++) {
             string += String.format("%.3f ", workCenterUtilLevel(i));
         }
         string += "]";
@@ -450,49 +231,13 @@ public class Simulation {
         return string;
     }
 
-    public Simulation surrogate(int numWorkCenters, int numJobsRecorded,
-                                int warmupJobs) {
-        int surrogateMaxNumOps = maxNumOps;
-        AbstractIntegerSampler surrogateNumOpsSampler = numOpsSampler.clone();
-        AbstractRealSampler surrogateInterArrivalTimeSampler = interArrivalTimeSampler.clone();
-        if (surrogateMaxNumOps > numWorkCenters) {
-            surrogateMaxNumOps = numWorkCenters;
-            surrogateNumOpsSampler.setUpper(surrogateMaxNumOps);
-
-            surrogateInterArrivalTimeSampler.setMean(interArrivalTimeMean(numWorkCenters,
-                    minNumOps, surrogateMaxNumOps, utilLevel));
-        }
-
-        Simulation surrogate = new Simulation(seed, rule, numWorkCenters,
-                numJobsRecorded, warmupJobs, minNumOps, surrogateMaxNumOps,
-                utilLevel, dueDateFactor, revisit, surrogateNumOpsSampler,
-                procTimeSampler, surrogateInterArrivalTimeSampler, jobWeightSampler);
-
-        return surrogate;
-    }
-
-    public static Simulation standardFull(
-            long seed,
-            AbstractRule rule,
-            int numWorkCenters,
-            int numJobsRecorded,
-            int warmupJobs,
-            double utilLevel,
-            double dueDateFactor) {
-        return new Simulation(seed, rule, numWorkCenters, numJobsRecorded,
-                warmupJobs, numWorkCenters, numWorkCenters, utilLevel,
-                dueDateFactor, false);
-    }
-
-    public static Simulation standardMissing(
-            long seed,
-            AbstractRule rule,
-            int numWorkCenters,
-            int numJobsRecorded,
-            int warmupJobs,
-            double utilLevel,
-            double dueDateFactor) {
-        return new Simulation(seed, rule, numWorkCenters, numJobsRecorded,
-                warmupJobs, 2, numWorkCenters, utilLevel, dueDateFactor, false);
-    }
+    public abstract void setup();
+    public abstract void resetState();
+    public abstract void reset();
+    public abstract void rotateSeed();
+    public abstract void generateJob();
+    public abstract Simulation surrogate(int numWorkCenters, int numJobsRecorded,
+                                int warmupJobs);
+    public abstract Simulation surrogateBusy(int numWorkCenters, int numJobsRecorded,
+                                         int warmupJobs);
 }

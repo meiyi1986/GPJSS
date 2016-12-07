@@ -2,7 +2,6 @@ package yimei.jss.rule;
 
 import ec.EvolutionState;
 import ec.Fitness;
-import ec.gp.koza.KozaFitness;
 import ec.multiobjective.MultiObjectiveFitness;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -10,8 +9,9 @@ import yimei.jss.jobshop.Objective;
 import yimei.jss.jobshop.Operation;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.jobshop.SchedulingSet;
-import yimei.jss.simulation.Simulation;
+import yimei.jss.simulation.DynamicSimulation;
 import yimei.jss.simulation.DecisionSituation;
+import yimei.jss.simulation.Simulation;
 import yimei.jss.simulation.state.SystemState;
 
 import java.util.List;

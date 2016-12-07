@@ -75,24 +75,8 @@ public class RuleTest {
 	}
 
 	public SchedulingSet generateTestSet() {
-        if (testScenario.equals(Scenario.DYNAMIC_JOB_SHOP.getName())) {
-            String[] parameters = testSetName.split("-");
-            double utilLevel = Double.valueOf(parameters[1]);
-            double dueDateFactor = Double.valueOf(parameters[2]);
-
-            if (parameters[0].equals("missing")) {
-                return SchedulingSet.dynamicMissingSet(simSeed, utilLevel, dueDateFactor, objectives);
-            }
-            else if (parameters[0].equals("full")) {
-                return SchedulingSet.dynamicFullSet(simSeed, utilLevel, dueDateFactor, objectives);
-            }
-            else {
-                return null;
-            }
-        }
-        else {
-            return null;
-        }
+        return SchedulingSet.generateSet(simSeed, testScenario,
+                testSetName, objectives, 50);
     }
 
 	public void writeToCSV() {
@@ -143,37 +127,37 @@ public class RuleTest {
 
                 for (int j = 0; j < result.getGenerationalRules().size(); j++) {
                     GPRule rule = (GPRule)result.getGenerationalRule(j);
+
+                    MultiObjectiveFitness trainFit =
+                            (MultiObjectiveFitness)result.getGenerationalTrainFitness(j);
+                    MultiObjectiveFitness testFit =
+                            (MultiObjectiveFitness)result.getGenerationalTestFitness(j);
+
+                    UniqueTerminalsGatherer gatherer = new UniqueTerminalsGatherer();
+                    int numUniqueTerminals = rule.getGPTree().child.numNodes(gatherer);
+
                     if (objectives.size() == 1) {
-                        KozaFitness trainFit =
-                                (KozaFitness)result.getGenerationalTrainFitness(j);
-                        KozaFitness testFit =
-                                (KozaFitness)result.getGenerationalTestFitness(j);
-
-                        UniqueTerminalsGatherer gatherer = new UniqueTerminalsGatherer();
-                        int numUniqueTerminals = rule.getGPTree().child.numNodes(gatherer);
-
                         writer.write(i + "," + j + "," +
                                 rule.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL) + "," +
                                 numUniqueTerminals + ",0," +
-                                trainFit.standardizedFitness() + "," +
-                                testFit.standardizedFitness() + "," +
+                                trainFit.fitness() + "," +
+                                testFit.fitness() + "," +
                                 result.getGenerationalTime(j));
                         writer.newLine();
                     }
                     else {
-                        MultiObjectiveFitness trainFit =
-                                (MultiObjectiveFitness)result.getGenerationalTrainFitness(j);
-                        MultiObjectiveFitness testFit =
-                                (MultiObjectiveFitness)result.getGenerationalTestFitness(j);
+                        writer.write(i + "," + j + "," +
+                                rule.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL) + "," +
+                                numUniqueTerminals + ",");
 
                         for (int k = 0; k < objectives.size(); k++) {
-                            writer.write(i + "," + j + "," +
-                                    rule.getGPTree().child.numNodes(0) + ",0," +
+                            writer.write(k + "," +
                                     trainFit.getObjective(k) + "," +
-                                    testFit.getObjective(k) + "," +
-                                    result.getGenerationalTime(j));
-                            writer.newLine();
+                                    testFit.getObjective(k) + ",");
                         }
+
+                        writer.write("" + result.getGenerationalTime(j));
+                        writer.newLine();
                     }
                 }
             }

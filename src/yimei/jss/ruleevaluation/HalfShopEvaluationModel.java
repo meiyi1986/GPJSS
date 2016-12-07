@@ -5,7 +5,14 @@ import ec.Fitness;
 import ec.util.Parameter;
 import yimei.jss.jobshop.SchedulingSet;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.simulation.DynamicSimulation;
+import yimei.jss.simulation.Simulation;
 import yimei.jss.surrogate.Surrogate;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The HalfShop surrogate evaluation model proposed in
@@ -21,8 +28,8 @@ import yimei.jss.surrogate.Surrogate;
  */
 public class HalfShopEvaluationModel extends SimpleEvaluationModel implements Surrogate {
 
-    private SchedulingSet surrogateSet;
-    private boolean useSurrogate;
+    protected SchedulingSet surrogateSet;
+    protected boolean useSurrogate;
 
     public SchedulingSet getSurrogateSet() {
         return surrogateSet;

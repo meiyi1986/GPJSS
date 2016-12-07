@@ -2,6 +2,7 @@ package yimei.jss.simulation.event;
 
 import yimei.jss.jobshop.Job;
 import yimei.jss.simulation.DecisionSituation;
+import yimei.jss.simulation.DynamicSimulation;
 import yimei.jss.simulation.Simulation;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class JobArrivalEvent extends AbstractEvent {
     }
 
     @Override
-    public void addDecisionSituation(Simulation simulation,
+    public void addDecisionSituation(DynamicSimulation simulation,
                                      List<DecisionSituation> situations,
                                      int minQueueLength) {
         trigger(simulation);
@@ -42,5 +43,19 @@ public class JobArrivalEvent extends AbstractEvent {
     @Override
     public String toString() {
         return String.format("%.1f: job %d arrives.\n", time, job.getId());
+    }
+
+    @Override
+    public int compareTo(AbstractEvent other) {
+        if (time < other.time)
+            return -1;
+
+        if (time > other.time)
+            return 1;
+
+        if (other instanceof JobArrivalEvent)
+            return 0;
+
+        return -1;
     }
 }

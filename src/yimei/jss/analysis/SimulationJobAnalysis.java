@@ -4,7 +4,7 @@ import yimei.jss.jobshop.Job;
 import yimei.jss.rule.basic.FCFS;
 import yimei.jss.rule.evolved.GPRule;
 import yimei.jss.rule.weighted.WATC;
-import yimei.jss.simulation.Simulation;
+import yimei.jss.simulation.DynamicSimulation;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,7 +16,7 @@ import java.io.IOException;
  */
 public class SimulationJobAnalysis {
 
-    public static void writeJobsToCSV(Simulation simulation, File csvFile) {
+    public static void writeJobsToCSV(DynamicSimulation simulation, File csvFile) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile.getAbsoluteFile()));
             writer.write("Job,NumOps,TotalWork,Weight,ArrivalTime,CompletionTime,DueDate," +
@@ -43,20 +43,20 @@ public class SimulationJobAnalysis {
     }
 
     public static void main(String[] args) {
-        Simulation simulation1 = Simulation.standardMissing(72334,
+        DynamicSimulation simulation1 = DynamicSimulation.standardMissing(72334,
                 new WATC(), 10, 5000, 0, 0.9, 4.0);
         simulation1.run();
         File csvFile1 = new File("jobs-missing-0.9-4-WATC.csv");
         writeJobsToCSV(simulation1, csvFile1);
 
-        Simulation simulation2 = Simulation.standardMissing(72334,
+        DynamicSimulation simulation2 = DynamicSimulation.standardMissing(72334,
                 new FCFS(), 10, 5000, 0, 0.9, 4.0);
         simulation2.run();
         File csvFile2 = new File("jobs-missing-0.9-4-FCFS.csv");
         writeJobsToCSV(simulation2, csvFile2);
 
         GPRule rule = GPRule.readFromLispExpression("(* (max (- (+ PT (min (+ (+ NOR PT) WINQ) (max NOR SL))) (/ WKR W)) (/ (+ PT (min (/ WINQ NOR) (min (max NPT W) (max NPT SL)))) W)) (/ (+ PT (min (/ WINQ (/ WIQ PT)) (max NPT W))) W))");
-        Simulation simulation3 = Simulation.standardMissing(72334,
+        DynamicSimulation simulation3 = DynamicSimulation.standardMissing(72334,
                 rule, 10, 5000, 0, 0.9, 4.0);
         simulation3.run();
         File csvFile3 = new File("jobs-missing-0.9-4-GPRule.csv");

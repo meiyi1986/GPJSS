@@ -3,6 +3,7 @@ package yimei.jss.ruleanalysis;
 import ec.gp.GPNode;
 import ec.gp.GPTree;
 import ec.gp.koza.KozaFitness;
+import ec.multiobjective.MultiObjectiveFitness;
 import yimei.jss.feature.ignore.Ignorer;
 import yimei.jss.feature.ignore.SimpleIgnorer;
 import yimei.jss.gp.terminal.AttributeGPNode;
@@ -90,12 +91,20 @@ public class RuleTestFeatureContribution extends RuleTest {
 
             GPRule bestRule = (GPRule)result.getBestRule();
 
-            KozaFitness allFeaturesFit = new KozaFitness();
+            MultiObjectiveFitness allFeaturesFit = new MultiObjectiveFitness();
+            allFeaturesFit.objectives = new double[1];
+            allFeaturesFit.maxObjective = new double[1];
+            allFeaturesFit.minObjective = new double[1];
+            allFeaturesFit.maximize = new boolean[1];
             bestRule.calcFitness(allFeaturesFit, null, testSet, objectives);
 
             for (int j = 0; j < features.size(); j++) {
                 GPNode feature = features.get(j);
-                KozaFitness fit = new KozaFitness();
+                MultiObjectiveFitness fit = new MultiObjectiveFitness();
+                fit.objectives = new double[1];
+                fit.maxObjective = new double[1];
+                fit.minObjective = new double[1];
+                fit.maximize = new boolean[1];
 
                 GPRule tmpRule = new GPRule((GPTree)(bestRule.getGPTree().clone()));
 
@@ -103,9 +112,9 @@ public class RuleTestFeatureContribution extends RuleTest {
                 tmpRule.calcFitness(fit, null, testSet, objectives);
 
                 System.out.format("Run %d, %s: %.2f\n", i, feature.toString(),
-                        fit.standardizedFitness() - allFeaturesFit.standardizedFitness());
+                        fit.fitness() - allFeaturesFit.fitness());
 
-                featureContributionMtx[i][j] = fit.standardizedFitness() - allFeaturesFit.standardizedFitness();
+                featureContributionMtx[i][j] = fit.fitness() - allFeaturesFit.fitness();
             }
 
             long finish = System.currentTimeMillis();

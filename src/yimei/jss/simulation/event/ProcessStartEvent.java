@@ -3,6 +3,7 @@ package yimei.jss.simulation.event;
 import yimei.jss.jobshop.Process;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.simulation.DecisionSituation;
+import yimei.jss.simulation.DynamicSimulation;
 import yimei.jss.simulation.Simulation;
 
 import java.util.List;
@@ -39,7 +40,7 @@ public class ProcessStartEvent extends AbstractEvent {
     }
 
     @Override
-    public void addDecisionSituation(Simulation simulation,
+    public void addDecisionSituation(DynamicSimulation simulation,
                                      List<DecisionSituation> situations,
                                      int minQueueLength) {
         trigger(simulation);
@@ -52,5 +53,22 @@ public class ProcessStartEvent extends AbstractEvent {
                 process.getOperation().getJob().getId(),
                 process.getOperation().getId(),
                 process.getWorkCenter().getId());
+    }
+
+    @Override
+    public int compareTo(AbstractEvent other) {
+        if (time < other.time)
+            return -1;
+
+        if (time > other.time)
+            return 1;
+
+        if (other instanceof ProcessStartEvent)
+            return 0;
+
+        if (other instanceof ProcessFinishEvent)
+            return -1;
+
+        return 1;
     }
 }
