@@ -3,7 +3,7 @@
 # See the file "LICENSE" for more information
 
 parent.0 = client.params
-exch.id = EllisIsland
+exch.optionId = EllisIsland
 stat.file = $ellis.stat
 
 # We need to give this island its own unique random number seed

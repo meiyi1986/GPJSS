@@ -51,7 +51,7 @@ public class ProcessStartEvent extends AbstractEvent {
         return String.format("%.1f: job %d op %d started on work center %d.\n",
                 time,
                 process.getOperation().getJob().getId(),
-                process.getOperation().getId(),
+                process.getOperation().getOperation().getId(),
                 process.getWorkCenter().getId());
     }
 

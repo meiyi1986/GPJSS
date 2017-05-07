@@ -1,12 +1,10 @@
 package yimei.jss.rule.weighted;
 
 import yimei.jss.jobshop.Operation;
+import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
-import yimei.jss.rule.AbstractRule;
 import yimei.jss.rule.composite.ATC;
 import yimei.jss.simulation.state.SystemState;
-
-import java.util.List;
 
 /**
  * Created by YiMei on 27/09/16.
@@ -27,7 +25,7 @@ public class WATC extends ATC {
     }
 
     @Override
-    public double priority(Operation op, WorkCenter workCenter, SystemState systemState) {
+    public double priority(OperationOption op, WorkCenter workCenter, SystemState systemState) {
         calcSlackNorm(op, workCenter, systemState);
         calcExpWaitingTime(op);
 

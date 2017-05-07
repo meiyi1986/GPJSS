@@ -1,14 +1,10 @@
 package yimei.jss.simulation.state;
 
 import yimei.jss.jobshop.*;
-import yimei.jss.jobshop.Process;
-import yimei.jss.rule.AbstractRule;
-import yimei.jss.simulation.event.AbstractEvent;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.PriorityQueue;
 
 /**
  * The state of the discrete event simulation system.
@@ -99,13 +95,13 @@ public class SystemState {
         jobsCompleted.clear();
     }
 
-    public double slack(Operation operation) {
-        return operation.getJob().getDueDate()
+    public double slack(OperationOption operation) {
+        return operation.getOperation().getJob().getDueDate()
                 - getClockTime() - operation.getWorkRemaining();
     }
 
-    public double workInNextQueue(Operation operation) {
-        Operation nextOp = operation.getNext();
+    public double workInNextQueue(OperationOption operation) {
+        OperationOption nextOp = operation.getNext();
         if (nextOp == null) {
             return 0;
         }
@@ -113,8 +109,8 @@ public class SystemState {
         return nextOp.getWorkCenter().getWorkInQueue();
     }
 
-    public double numOpsInNextQueue(Operation operation) {
-        Operation nextOp = operation.getNext();
+    public double numOpsInNextQueue(OperationOption operation) {
+        OperationOption nextOp = operation.getNext();
         if (nextOp == null) {
             return 0;
         }
@@ -122,8 +118,8 @@ public class SystemState {
         return nextOp.getWorkCenter().getQueue().size();
     }
 
-    public double nextReadyTime(Operation operation) {
-        Operation nextOp = operation.getNext();
+    public double nextReadyTime(OperationOption operation) {
+        OperationOption nextOp = operation.getNext();
         if (nextOp == null) {
             return 0;
         }

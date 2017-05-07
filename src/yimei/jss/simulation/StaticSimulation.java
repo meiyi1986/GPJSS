@@ -16,12 +16,12 @@ import java.util.List;
  */
 public class StaticSimulation extends Simulation {
 
-    private StaticInstance instance;
+    private JSSInstance instance;
     private Shop shop;
     private List<Process> dummyProcesses;
 
-    public StaticSimulation(AbstractRule rule, StaticInstance instance) {
-        super(rule, instance.numWorkCenters, instance.numJobs, 0);
+    public StaticSimulation(AbstractRule rule, JSSInstance instance) {
+        super(rule, instance.getNumWorkCenters(), instance.getNumJobs(), 0);
 
         this.instance = instance;
 
@@ -38,7 +38,7 @@ public class StaticSimulation extends Simulation {
         // Create the work centers of the system state
         systemState.setWorkCenters(shop.getWorkCenters());
 
-        numJobsArrived = instance.numJobs;
+        numJobsArrived = instance.getNumJobs();
 
         setup();
     }
@@ -52,11 +52,12 @@ public class StaticSimulation extends Simulation {
         for (Job job : shop.getJobs()) {
             systemState.addJobToSystem(job);
 
-            if (job.getArrivalTime() > job.getOperation(0).getWorkCenter().getReadyTime()) {
+            if (job.getArrivalTime() > job.getOperation(0).getChosenOperationOption().getWorkCenter().getReadyTime()) {
                 eventQueue.add(new JobArrivalEvent(job));
             }
             else {
-                job.getOperation(0).getWorkCenter().addToQueue(job.getOperation(0));
+                job.getOperation(0).getChosenOperationOption().getWorkCenter().addToQueue(
+                        job.getOperation(0).getChosenOperationOption());
             }
         }
 
@@ -67,10 +68,10 @@ public class StaticSimulation extends Simulation {
 //                DecisionSituation decisionSituation =
 //                        new DecisionSituation(wc.getQueue(), wc, systemState);
 //
-//                Operation dispatchedOp = rule.priorOperation(decisionSituation);
+//                OperationOption dispatchedOp = rule.priorOperation(decisionSituation);
 //
 //                wc.removeFromQueue(dispatchedOp);
-//                Process nextP = new Process(wc, wc.earliestReadyMachine().getId(),
+//                Process nextP = new Process(wc, wc.earliestReadyMachine().getOptionId(),
 //                        dispatchedOp, getClockTime());
 //                addEvent(new ProcessStartEvent(nextP));
 //            }
@@ -120,9 +121,8 @@ public class StaticSimulation extends Simulation {
     public Process createDummyProcess(WorkCenter workCenter, double readyTime) {
         Job job = new Job(-1-workCenter.getId(), new ArrayList<>());
         Operation op = new Operation(job, 0, readyTime, workCenter);
-        op.setNext(null);
-
-        Process process = new Process(workCenter, 0, op, 0);
+        op.chooseOperationOption();
+        Process process = new Process(workCenter, 0, op.getChosenOperationOption(), 0);
 
         return process;
     }

@@ -102,7 +102,7 @@ Each island is defined with several parameters in the server's parameter files.
 In the examples below, replace n with the numbers 0 through the number of
 islands (minus 1).
 
-	exch.island.n.id	The name of island number n (a string)
+	exch.island.n.optionId	The name of island number n (a string)
 	exch.island.n.num-mig	How many islands this island sends to.
 	exch.island.n.mig.m	The name of island number m that this island
 				sends to.  (m is a number from 0 to
@@ -140,7 +140,7 @@ some clients.  Client parameters are quite simple.  The primary ones are:
 				the island model.  This should be different 
 				than server-port if you have a client which is
 				also a server.
-	exch.id			The name of the client's island.  The server
+	exch.optionId			The name of the client's island.  The server
 				will use this name information to determine the
 				topology as above.
 	exch.select		The selection method used to pick individuals

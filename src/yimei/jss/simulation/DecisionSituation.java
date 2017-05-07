@@ -1,6 +1,7 @@
 package yimei.jss.simulation;
 
 import yimei.jss.jobshop.Operation;
+import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.simulation.state.SystemState;
 
@@ -14,11 +15,11 @@ import java.util.List;
  */
 public class DecisionSituation {
 
-    private List<Operation> queue;
+    private List<OperationOption> queue;
     private WorkCenter workCenter;
     private SystemState systemState;
 
-    public DecisionSituation(List<Operation> queue,
+    public DecisionSituation(List<OperationOption> queue,
                              WorkCenter workCenter,
                              SystemState systemState) {
         this.queue = queue;
@@ -26,7 +27,7 @@ public class DecisionSituation {
         this.systemState = systemState;
     }
 
-    public List<Operation> getQueue() {
+    public List<OperationOption> getQueue() {
         return queue;
     }
 
@@ -39,7 +40,7 @@ public class DecisionSituation {
     }
 
     public DecisionSituation clone() {
-        List<Operation> clonedQ = new ArrayList<>(queue);
+        List<OperationOption> clonedQ = new ArrayList<>(queue);
         WorkCenter clonedWC = workCenter.clone();
         SystemState clonedState = systemState.clone();
 

@@ -5,11 +5,7 @@ import ec.Fitness;
 import ec.multiobjective.MultiObjectiveFitness;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
-import yimei.jss.jobshop.Objective;
-import yimei.jss.jobshop.Operation;
-import yimei.jss.jobshop.WorkCenter;
-import yimei.jss.jobshop.SchedulingSet;
-import yimei.jss.simulation.DynamicSimulation;
+import yimei.jss.jobshop.*;
 import yimei.jss.simulation.DecisionSituation;
 import yimei.jss.simulation.Simulation;
 import yimei.jss.simulation.state.SystemState;
@@ -131,17 +127,17 @@ public abstract class AbstractRule {
 //        }
     }
 
-    public Operation priorOperation(DecisionSituation decisionSituation) {
-        List<Operation> queue = decisionSituation.getQueue();
+    public OperationOption priorOperation(DecisionSituation decisionSituation) {
+        List<OperationOption> queue = decisionSituation.getQueue();
         WorkCenter workCenter = decisionSituation.getWorkCenter();
         SystemState systemState = decisionSituation.getSystemState();
 
-        Operation priorOp = queue.get(0);
+        OperationOption priorOp = queue.get(0);
         priorOp.setPriority(
                 priority(priorOp, workCenter, systemState));
 
         for (int i = 1; i < queue.size(); i++) {
-            Operation op = queue.get(i);
+            OperationOption op = queue.get(i);
             op.setPriority(priority(op, workCenter, systemState));
 
             if (op.priorTo(priorOp))
@@ -151,7 +147,7 @@ public abstract class AbstractRule {
         return priorOp;
     }
 
-    public abstract double priority(Operation op,
+    public abstract double priority(OperationOption op,
                                     WorkCenter workCenter,
                                     SystemState systemState);
 }

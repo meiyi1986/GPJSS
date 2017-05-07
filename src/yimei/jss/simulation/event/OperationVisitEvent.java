@@ -1,8 +1,6 @@
 package yimei.jss.simulation.event;
 
-import yimei.jss.jobshop.Machine;
-import yimei.jss.jobshop.Operation;
-import yimei.jss.jobshop.WorkCenter;
+import yimei.jss.jobshop.*;
 import yimei.jss.jobshop.Process;
 import yimei.jss.simulation.DecisionSituation;
 import yimei.jss.simulation.DynamicSimulation;
@@ -15,14 +13,14 @@ import java.util.List;
  */
 public class OperationVisitEvent extends AbstractEvent {
 
-    private Operation operation;
+    private OperationOption operation;
 
-    public OperationVisitEvent(double time, Operation operation) {
+    public OperationVisitEvent(double time, OperationOption operation) {
         super(time);
         this.operation = operation;
     }
 
-    public OperationVisitEvent(Operation operation) {
+    public OperationVisitEvent(OperationOption operation) {
         this(operation.getReadyTime(), operation);
     }
 
@@ -52,7 +50,7 @@ public class OperationVisitEvent extends AbstractEvent {
     @Override
     public String toString() {
         return String.format("%.1f: job %d op %d visits.\n",
-                time, operation.getJob().getId(), operation.getId());
+                time, operation.getJob().getId(), operation.getOperation().getId());
     }
 
     @Override

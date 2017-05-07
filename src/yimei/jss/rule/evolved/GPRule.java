@@ -7,6 +7,7 @@ import yimei.jss.gp.CalcPriorityProblem;
 import yimei.jss.gp.data.DoubleData;
 import yimei.jss.gp.GPNodeComparator;
 import yimei.jss.jobshop.Operation;
+import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.simulation.state.SystemState;
@@ -62,7 +63,7 @@ public class GPRule extends AbstractRule {
         ignore(gpTree.child, feature, ignorer);
     }
 
-    public double priority(Operation op, WorkCenter workCenter,
+    public double priority(OperationOption op, WorkCenter workCenter,
                            SystemState systemState) {
         CalcPriorityProblem calcPrioProb =
                 new CalcPriorityProblem(op, workCenter, systemState);

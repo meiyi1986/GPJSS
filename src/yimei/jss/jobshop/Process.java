@@ -7,11 +7,11 @@ public class Process implements Comparable<Process> {
 
     private WorkCenter workCenter;
     private int machineId;
-    private Operation operation;
+    private OperationOption operation;
     private double startTime;
     private double finishTime;
 
-    public Process(WorkCenter workCenter, int machineId, Operation operation, double startTime) {
+    public Process(WorkCenter workCenter, int machineId, OperationOption operation, double startTime) {
         this.workCenter = workCenter;
         this.machineId = machineId;
         this.operation = operation;
@@ -27,7 +27,7 @@ public class Process implements Comparable<Process> {
         return machineId;
     }
 
-    public Operation getOperation() {
+    public OperationOption getOperation() {
         return operation;
     }
 
@@ -46,7 +46,7 @@ public class Process implements Comparable<Process> {
     @Override
     public String toString() {
         return String.format("([W%d,M%d], [J%d,O%d]: %.1f --> %.1f.\n",
-                workCenter.getId(), machineId, operation.getJob().getId(), operation.getId(), startTime, finishTime);
+                workCenter.getId(), machineId, operation.getJob().getId(), operation.getOptionId(), startTime, finishTime);
     }
 
     @Override

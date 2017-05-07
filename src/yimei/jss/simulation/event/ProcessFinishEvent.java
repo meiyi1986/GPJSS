@@ -33,7 +33,7 @@ public class ProcessFinishEvent extends AbstractEvent {
                     new DecisionSituation(workCenter.getQueue(), workCenter,
                             simulation.getSystemState());
 
-            Operation dispatchedOp =
+            OperationOption dispatchedOp =
                     simulation.getRule().priorOperation(decisionSituation);
 
             workCenter.removeFromQueue(dispatchedOp);
@@ -42,7 +42,7 @@ public class ProcessFinishEvent extends AbstractEvent {
             simulation.addEvent(new ProcessStartEvent(nextP));
         }
 
-        Operation nextOp = process.getOperation().getNext();
+        OperationOption nextOp = process.getOperation().getNext();
 
         if (nextOp == null) {
             Job job = process.getOperation().getJob();
@@ -69,7 +69,7 @@ public class ProcessFinishEvent extends AbstractEvent {
                 situations.add(decisionSituation.clone());
             }
 
-            Operation dispatchedOp =
+            OperationOption dispatchedOp =
                     simulation.getRule().priorOperation(decisionSituation);
 
             workCenter.removeFromQueue(dispatchedOp);
@@ -78,7 +78,7 @@ public class ProcessFinishEvent extends AbstractEvent {
             simulation.addEvent(new ProcessStartEvent(nextP));
         }
 
-        Operation nextOp = process.getOperation().getNext();
+        OperationOption nextOp = process.getOperation().getNext();
         if (nextOp == null) {
             Job job = process.getOperation().getJob();
             job.setCompletionTime(process.getFinishTime());
@@ -94,7 +94,7 @@ public class ProcessFinishEvent extends AbstractEvent {
         return String.format("%.1f: job %d op %d finished on work center %d.\n",
                 time,
                 process.getOperation().getJob().getId(),
-                process.getOperation().getId(),
+                process.getOperation().getOperation().getId(),
                 process.getWorkCenter().getId());
     }
 

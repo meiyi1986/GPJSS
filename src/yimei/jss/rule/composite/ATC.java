@@ -1,6 +1,7 @@
 package yimei.jss.rule.composite;
 
 import yimei.jss.jobshop.Operation;
+import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.simulation.state.SystemState;
@@ -49,24 +50,24 @@ public class ATC extends AbstractRule {
     protected double slackNorm;
     protected double expWaitingTime;
 
-    public void calcSlackNorm(Operation op, WorkCenter workCenter, SystemState systemState) {
+    public void calcSlackNorm(OperationOption op, WorkCenter workCenter, SystemState systemState) {
         slackNorm = 0.0d;
 
         // Get the queue that the processing is in
-        List<Operation> queue = workCenter.getQueue();
-        for (Operation o : queue) {
+        List<OperationOption> queue = workCenter.getQueue();
+        for (OperationOption o : queue) {
             slackNorm += o.getProcTime();
         }
 
         slackNorm = (slackNorm / queue.size()) * k;
     }
 
-    public void calcExpWaitingTime(Operation op) {
+    public void calcExpWaitingTime(OperationOption op) {
         expWaitingTime = b * (op.getWorkRemaining() - op.getProcTime());
     }
 
     @Override
-    public double priority(Operation op, WorkCenter workCenter, SystemState systemState) {
+    public double priority(OperationOption op, WorkCenter workCenter, SystemState systemState) {
         calcSlackNorm(op, workCenter, systemState);
         calcExpWaitingTime(op);
 

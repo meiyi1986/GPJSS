@@ -1,6 +1,7 @@
 package yimei.jss.niching;
 
 import yimei.jss.jobshop.Operation;
+import yimei.jss.jobshop.OperationOption;
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.rule.weighted.WSPT;
 import yimei.jss.simulation.DecisionSituation;
@@ -45,7 +46,7 @@ public class PhenoCharacterisation {
     private void calcReferenceIndexes() {
         for (int i = 0; i < decisionSituations.size(); i++) {
             DecisionSituation situation = decisionSituations.get(i);
-            Operation op = referenceRule.priorOperation(situation);
+            OperationOption op = referenceRule.priorOperation(situation);
             int index = situation.getQueue().indexOf(op);
             referenceIndexes[i] = index;
         }
@@ -62,12 +63,12 @@ public class PhenoCharacterisation {
 
         for (int i = 0; i < decisionSituations.size(); i++) {
             DecisionSituation situation = decisionSituations.get(i);
-            List<Operation> queue = situation.getQueue();
+            List<OperationOption> queue = situation.getQueue();
 
             int refIdx = referenceIndexes[i];
 
             // Calculate the priority for all the operations.
-            for (Operation op : queue) {
+            for (OperationOption op : queue) {
                 op.setPriority(rule.priority(
                         op, situation.getWorkCenter(), situation.getSystemState()));
             }

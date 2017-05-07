@@ -1,11 +1,10 @@
 package yimei.jss.rule.composite;
 
 import yimei.jss.jobshop.Operation;
+import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.simulation.state.SystemState;
-
-import java.util.List;
 
 /**
  * Created by YiMei on 28/09/16.
@@ -48,12 +47,12 @@ public class COVERT extends AbstractRule {
 
     protected double totalExpWaitingTime;
 
-    public void calcTotalExpWaitingTime(Operation op) {
+    public void calcTotalExpWaitingTime(OperationOption op) {
         totalExpWaitingTime = b * op.getWorkRemaining();
     }
 
     @Override
-    public double priority(Operation op, WorkCenter workCenter, SystemState systemState) {
+    public double priority(OperationOption op, WorkCenter workCenter, SystemState systemState) {
         calcTotalExpWaitingTime(op);
 
         double slack = op.getJob().getDueDate() - systemState.getClockTime() - op.getWorkRemaining();

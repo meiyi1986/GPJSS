@@ -133,7 +133,7 @@ public class MultiObjectiveFitness extends Fitness
     public boolean[] maximize;
 
     /** The various fitnesses. */
-    protected double[] objectives; // values range from 0 (worst) to 1 INCLUSIVE
+    public double[] objectives; // values range from 0 (worst) to 1 INCLUSIVE
 
     /** Returns auxilliary fitness value names to be printed by the statistics object.
         By default, an empty array is returned, but various algorithms may override this to provide additional columns.

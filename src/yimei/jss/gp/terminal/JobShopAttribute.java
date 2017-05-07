@@ -2,6 +2,7 @@ package yimei.jss.gp.terminal;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import yimei.jss.jobshop.Operation;
+import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.simulation.state.SystemState;
 
@@ -72,7 +73,7 @@ public enum JobShopAttribute {
         return lookup.get(name);
     }
 
-    public double value(Operation op, WorkCenter workCenter, SystemState systemState) {
+    public double value(OperationOption op, WorkCenter workCenter, SystemState systemState) {
         double value = -1;
 
         switch (this) {
@@ -153,7 +154,7 @@ public enum JobShopAttribute {
         return value;
     }
 
-    public static double valueOfString(String attribute, Operation op, WorkCenter workCenter,
+    public static double valueOfString(String attribute, OperationOption op, WorkCenter workCenter,
                                        SystemState systemState,
                                        List<JobShopAttribute> ignoredAttributes) {
         JobShopAttribute a = get(attribute);

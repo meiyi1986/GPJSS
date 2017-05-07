@@ -1,6 +1,5 @@
 package yimei.jss.jobshop;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,7 +36,8 @@ public class Job implements Comparable<Job> {
     }
 
     public Job(int id, List<Operation> operations) {
-        this(id, operations, 0, 0, Double.POSITIVE_INFINITY, 1.0);
+        this(id, operations,
+                0, 0, Double.POSITIVE_INFINITY, 1.0);
     }
 
     public int getId() {
@@ -113,28 +113,31 @@ public class Job implements Comparable<Job> {
     }
 
     public void linkOperations() {
-        Operation next = null;
+        OperationOption next = null;
         double nextProcTime = 0.0;
 
         double fdd = releaseTime;
 
         for (int i = 0; i < operations.size(); i++) {
-            fdd += operations.get(i).getProcTime();
-            operations.get(i).setFlowDueDate(fdd);
+            operations.get(i).chooseOperationOption(); //intialise the option operation will use
+            OperationOption op = operations.get(i).getChosenOperationOption();
+            fdd += op.getProcTime();
+            op.setFlowDueDate(fdd);
         }
 
         double workRemaining = 0.0;
         int numOpsRemaining = 0;
         for (int i = operations.size()-1; i > -1; i--) {
-            workRemaining += operations.get(i).getProcTime();
-            operations.get(i).setWorkRemaining(workRemaining);
+            OperationOption op = operations.get(i).getChosenOperationOption();
+            workRemaining += op.getProcTime();
+            op.setWorkRemaining(workRemaining);
 
-            operations.get(i).setNumOpsRemaining(numOpsRemaining);
+            op.setNumOpsRemaining(numOpsRemaining);
             numOpsRemaining ++;
 
-            operations.get(i).setNext(next);
-            operations.get(i).setNextProcTime(nextProcTime);
-            next = operations.get(i);
+            op.setNext(next);
+            op.setNextProcTime(nextProcTime);
+            next = operations.get(i).getChosenOperationOption();
             nextProcTime = next.getProcTime();
         }
         totalProcTime = workRemaining;
@@ -146,7 +149,7 @@ public class Job implements Comparable<Job> {
         String string = String.format("Job %d, arrives at %.1f, due at %.1f, weight is %.1f. It has %d operations:\n",
                 id, arrivalTime, dueDate, weight, operations.size());
         for (Operation op : operations) {
-            string += op.toString();
+            string += op.getChosenOperationOption().toString();
         }
 
         return string;

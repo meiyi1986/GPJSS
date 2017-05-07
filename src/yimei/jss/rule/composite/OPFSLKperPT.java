@@ -1,6 +1,7 @@
 package yimei.jss.rule.composite;
 
 import yimei.jss.jobshop.Operation;
+import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.simulation.state.SystemState;
@@ -15,7 +16,7 @@ public class OPFSLKperPT extends AbstractRule {
     }
 
     @Override
-    public double priority(Operation op, WorkCenter workCenter, SystemState systemState) {
+    public double priority(OperationOption op, WorkCenter workCenter, SystemState systemState) {
         double value = (systemState.getClockTime() + op.getProcTime()
                 - op.getFlowDueDate()) / op.getProcTime();
 

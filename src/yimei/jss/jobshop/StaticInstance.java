@@ -19,7 +19,7 @@ import java.util.*;
  * Created by yimei on 22/11/16.
  */
 
-public class StaticInstance {
+public class StaticInstance implements JSSInstance {
 
     public final int numWorkCenters;
     public final int numJobs;
@@ -45,6 +45,10 @@ public class StaticInstance {
         this(numWorkCenters, numJobs,
                 new ArrayList<>(Collections.nCopies(numWorkCenters, 0.0)));
     }
+
+    public int getNumJobs() { return numJobs; }
+
+    public int getNumWorkCenters() { return numWorkCenters; }
 
     public List<Double> getWorkCenterReadyTimes() {
         return workCenterReadyTimes;

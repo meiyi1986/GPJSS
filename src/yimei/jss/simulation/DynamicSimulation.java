@@ -6,11 +6,9 @@ import yimei.util.random.*;
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.simulation.event.AbstractEvent;
 import yimei.jss.simulation.event.JobArrivalEvent;
-import yimei.jss.simulation.state.SystemState;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PriorityQueue;
 
 /**
  * The dynamic simulation -- discrete event simulation

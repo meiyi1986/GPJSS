@@ -14,13 +14,13 @@ public class WorkCenter {
     private int numMachines;
 
     // Attributes for simulation.
-    private LinkedList<Operation> queue;
+    private LinkedList<OperationOption> queue;
     private List<Double> machineReadyTimes;
     private double workInQueue;
     private double busyTime;
 
     public WorkCenter(int id, int numMachines,
-                      LinkedList<Operation> queue,
+                      LinkedList<OperationOption> queue,
                       List<Double> machineReadyTimes,
                       double workInQueue, double busyTime) {
         this.id = id;
@@ -49,7 +49,7 @@ public class WorkCenter {
         return numMachines;
     }
 
-    public LinkedList<Operation> getQueue() {
+    public LinkedList<OperationOption> getQueue() {
         return queue;
     }
 
@@ -102,12 +102,12 @@ public class WorkCenter {
         reset(0.0);
     }
 
-    public void addToQueue(Operation o) {
+    public void addToQueue(OperationOption o) {
         queue.add(o);
         workInQueue += o.getProcTime();
     }
 
-    public void removeFromQueue(Operation o) {
+    public void removeFromQueue(OperationOption o) {
         queue.remove(o);
         workInQueue -= o.getProcTime();
     }
@@ -138,7 +138,7 @@ public class WorkCenter {
     }
 
     public WorkCenter clone() {
-        LinkedList<Operation> clonedQ = new LinkedList<>(queue);
+        LinkedList<OperationOption> clonedQ = new LinkedList<>(queue);
         List<Double> clonedMRT = new ArrayList<>(machineReadyTimes);
 
         return new WorkCenter(id, numMachines,
@@ -151,9 +151,10 @@ public class WorkCenter {
             string += String.format("(M%d,R%.1f) ", i, machineReadyTimes.get(i));
         }
         string += "\n Queue: ";
-        for (Operation o : queue) {
-            string += String.format("(J%d,O%d,R%.1f) ",
-                    o.getJob().getId(), o.getId(), o.getReadyTime());
+        for (OperationOption o : queue) {
+            string += String.format("(J%d,O%d-%d,R%.1f) ",
+                    o.getOperation().getJob().getId(), o.getOperation().getId(),
+                    o.getOptionId(), o.getReadyTime());
         }
         string += "\n";
 

@@ -1,33 +1,29 @@
 package yimei.jss.jobshop;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by yimei on 22/09/16.
  */
-public class Operation implements Comparable<Operation> {
-
+public class Operation {
     private final Job job;
     private final int id;
-    private double procTime;
-    private WorkCenter workCenter;
-    private Operation next;
+    private Set<OperationOption> operationOptionSet;
+    private OperationOption chosenOperationOption;
 
-    // Attributes for simulation.
-    private double readyTime;
-    private double workRemaining;
-    private int numOpsRemaining;
-    private double flowDueDate;
-    private double nextProcTime;
-    private double priority;
+    public Operation(Job job, int id) {
+        this.job = job;
+        this.id = id;
+        this.operationOptionSet = new HashSet<>();
+    }
 
     public Operation(Job job, int id, double procTime, WorkCenter workCenter) {
         this.job = job;
         this.id = id;
-        this.procTime = procTime;
-        this.workCenter = workCenter;
+        this.operationOptionSet = new HashSet<>();
+        operationOptionSet.add(new OperationOption(this,
+                operationOptionSet.size()+1,procTime,workCenter));
     }
 
     public Job getJob() {
@@ -38,104 +34,40 @@ public class Operation implements Comparable<Operation> {
         return id;
     }
 
-    public double getProcTime() {
-        return procTime;
+    public void addOperationOption(OperationOption option) {
+        operationOptionSet.add(option);
     }
 
-    public WorkCenter getWorkCenter() {
-        return workCenter;
+    public Set<OperationOption> getOperationSet() {
+        return operationOptionSet;
     }
 
-    public Operation getNext() {
-        return next;
+    public OperationOption getChosenOperationOption() {
+        return chosenOperationOption;
     }
 
-    public double getReadyTime() {
-        return readyTime;
-    }
-
-    public double getWorkRemaining() {
-        return workRemaining;
-    }
-
-    public int getNumOpsRemaining() {
-        return numOpsRemaining;
-    }
-
-    public double getFlowDueDate() {
-        return flowDueDate;
-    }
-
-    public double getNextProcTime() {
-        return nextProcTime;
-    }
-
-    public double getPriority() {
-        return priority;
-    }
-
-    public void setNext(Operation next) {
-        this.next = next;
-
-    }
-
-    public void setWorkRemaining(double workRemaining) {
-        this.workRemaining = workRemaining;
-    }
-
-    public void setNextProcTime(double nextProcTime) {
-        this.nextProcTime = nextProcTime;
-    }
-
-    public void setNumOpsRemaining(int numOpsRemaining) {
-        this.numOpsRemaining = numOpsRemaining;
-    }
-
-    public void setReadyTime(double readyTime) {
-        this.readyTime = readyTime;
-    }
-
-    public void setFlowDueDate(double flowDueDate) {
-        this.flowDueDate = flowDueDate;
-    }
-
-    public void setPriority(double priority) {
-        this.priority = priority;
-    }
-
-    /**
-     * Compare with another process based on priority.
-     * @param other the other process.
-     * @return true if prior to other, and false otherwise.
+    /*
+    This method should employ a heuristic to select which work center
+    this operation should use. Should only be called once all options
+    have been added to Operation.
      */
-    public boolean priorTo(Operation other) {
-        if (Double.compare(priority, other.priority) < 0)
-            return true;
-
-        if (Double.compare(priority, other.priority) > 0)
-            return false;
-
-        return job.getId() < other.job.getId();
-    }
-
-    @Override
-    public String toString() {
-        return String.format("[J%d, O%d, W%d, T%.1f]",
-                job.getId(), id, workCenter.getId(), procTime);
-    }
-
-    public boolean equals(Operation other) {
-        return id == other.id;
-    }
-
-    @Override
-    public int compareTo(Operation other) {
-        if (readyTime < other.readyTime)
-            return -1;
-
-        if (readyTime > other.readyTime)
-            return 1;
-
-        return 0;
+    public void chooseOperationOption() {
+        //TODO: For now basic heuristic - will update later
+        if (chosenOperationOption == null) {
+            if (operationOptionSet.size() > 1) {
+                OperationOption bestOption = null;
+                double leastProcTime = Double.MAX_VALUE;
+                for (OperationOption op: operationOptionSet) {
+                    if (op.getProcTime() < leastProcTime) {
+                        leastProcTime = op.getProcTime();
+                        bestOption = op;
+                    }
+                }
+                this.chosenOperationOption = bestOption;
+            }
+            else if (operationOptionSet.size() == 1) {
+                this.chosenOperationOption = operationOptionSet.iterator().next();
+            }
+        }
     }
 }
