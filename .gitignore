@@ -44,3 +44,4 @@ fabric.properties
 .metadata/
 GPJSS.iml
 out.stat
+data/
