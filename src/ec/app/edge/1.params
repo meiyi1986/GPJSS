@@ -35,7 +35,7 @@ gp.fs.0.func.9 = ec.app.edge.func.Epsilon
 gp.fs.0.func.9.nc = nc0
 
 #
-# Uncomment this to use the additional operationOptionOptions
+# Uncomment this to use the additional operations
 #
 
 gp.fs.0.size = 14

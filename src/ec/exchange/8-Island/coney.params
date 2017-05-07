@@ -3,7 +3,7 @@
 # See the file "LICENSE" for more information
 
 parent.0 = client.params
-exch.optionId = ConeyIsland
+exch.id = ConeyIsland
 stat.file = $coney.stat
 
 # We need to give this island its own unique random number seed

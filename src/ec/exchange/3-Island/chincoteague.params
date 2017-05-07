@@ -3,7 +3,7 @@
 # See the file "LICENSE" for more information
 
 parent.0 = client.params
-exch.optionId = ChincoteagueIsland
+exch.id = ChincoteagueIsland
 stat.file = $chincoteague.stat
 
 # We need to give this island its own unique random number seed

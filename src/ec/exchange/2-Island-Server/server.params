@@ -16,7 +16,7 @@ exch.i-am-server = true
 
 exch.num-islands = 2
 
-exch.island.0.optionId = Minoa
+exch.island.0.id = Minoa
 exch.island.0.num-mig = 1
 exch.island.0.mig.0 = Crete
 exch.island.0.size = 4
@@ -24,7 +24,7 @@ exch.island.0.mod = 6
 exch.island.0.start = 3
 exch.island.0.mailbox-capacity = 20
 
-exch.island.1.optionId = Crete
+exch.island.1.id = Crete
 exch.island.1.num-mig = 1
 exch.island.1.mig.0 = Minoa
 exch.island.1.size = 4
