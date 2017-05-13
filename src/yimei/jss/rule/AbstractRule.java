@@ -41,7 +41,7 @@ public abstract class AbstractRule {
 
         for (int j = 0; j < simulations.size(); j++) {
             Simulation simulation = simulations.get(j);
-            simulation.setRule(this);
+            simulation.setSequencingRule(this);
 
             simulation.run();
 //            System.out.println(simulation.workCenterUtilLevelsToString());
@@ -80,7 +80,7 @@ public abstract class AbstractRule {
 
         for (int j = 0; j < simulations.size(); j++) {
             Simulation simulation = simulations.get(j);
-            simulation.setRule(this);
+            simulation.setSequencingRule(this);
 
             simulation.run();
 //            System.out.println(simulation.workCenterUtilLevelsToString());

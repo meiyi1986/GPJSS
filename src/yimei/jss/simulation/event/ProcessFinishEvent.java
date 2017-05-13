@@ -34,7 +34,7 @@ public class ProcessFinishEvent extends AbstractEvent {
                             simulation.getSystemState());
 
             OperationOption dispatchedOp =
-                    simulation.getRule().priorOperation(decisionSituation);
+                    simulation.getSequencingRule().priorOperation(decisionSituation);
 
             workCenter.removeFromQueue(dispatchedOp);
             Process nextP = new Process(workCenter, process.getMachineId(),
@@ -70,7 +70,7 @@ public class ProcessFinishEvent extends AbstractEvent {
             }
 
             OperationOption dispatchedOp =
-                    simulation.getRule().priorOperation(decisionSituation);
+                    simulation.getSequencingRule().priorOperation(decisionSituation);
 
             workCenter.removeFromQueue(dispatchedOp);
             Process nextP = new Process(workCenter, process.getMachineId(),

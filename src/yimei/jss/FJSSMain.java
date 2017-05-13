@@ -25,7 +25,8 @@ public class FJSSMain {
 
     public static void calculateFitness(List<Objective> objectives,
                                         GPRule sequencingRule1, AbstractRule sequencingRule2,
-                                        AbstractRule sequencingRule3, FlexibleStaticInstance instance) {
+                                        AbstractRule sequencingRule3, AbstractRule dispatchingRule,
+                                        FlexibleStaticInstance instance) {
         long start, finish, duration;
         MultiObjectiveFitness fitness = new MultiObjectiveFitness();
         fitness.objectives = new double[1];
@@ -35,7 +36,7 @@ public class FJSSMain {
 
         //System.out.println(instance);
 
-        Simulation simulation = new StaticSimulation(sequencingRule1, instance);
+        Simulation simulation = new StaticSimulation(sequencingRule1, dispatchingRule, instance);
         List<Simulation> simulations = new ArrayList<>();
         simulations.add(simulation);
 
@@ -135,14 +136,15 @@ public class FJSSMain {
         GPRule rule1 = GPRule.readFromLispExpression("(* (max (- (* (* (/ SL WKR) (+ W WIQ)) NIQ) (+ TIS (- PT W))) (+ (- WKR NPT) PT)) (* PT (+ (+ (/ (min (+ OWT WINQ) (+ W WIQ)) W) (- PT W)) (- PT W))))");
         AbstractRule rule2 = new FDD();
         AbstractRule rule3 = new EDD();
+        AbstractRule dispatchingRule = new FCFS();
 
-        //the fitness is deterministic once the rule has been decided
+        //the fitness is deterministic once the sequencingRule has been decided
         List<String> fileNames = getFileNames(new ArrayList<String>(), Paths.get(path));
         for (int i = 0; i < fileNames.size(); ++i) {
             String fileName = fileNames.get(i);
             System.out.println("\nInstance "+(i+1)+" - Path: "+fileName);
-            FlexibleStaticInstance instance = FlexibleStaticInstance.readFromAbsPath(fileName, new LPT());
-            calculateFitness(objectives, rule1, rule2, rule3, instance);
+            FlexibleStaticInstance instance = FlexibleStaticInstance.readFromAbsPath(fileName, dispatchingRule);
+            calculateFitness(objectives, rule1, rule2, rule3, dispatchingRule, instance);
         }
     }
 

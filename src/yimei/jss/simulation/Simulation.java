@@ -15,7 +15,8 @@ import java.util.PriorityQueue;
  */
 public abstract class Simulation {
 
-    protected AbstractRule rule;
+    protected AbstractRule sequencingRule;
+    protected AbstractRule dispatchingRule;
     protected SystemState systemState;
     protected PriorityQueue<AbstractEvent> eventQueue;
 
@@ -25,11 +26,13 @@ public abstract class Simulation {
     protected int numJobsArrived;
     protected int throughput;
 
-    public Simulation(AbstractRule rule,
+    public Simulation(AbstractRule sequencingRule,
+                      AbstractRule dispatchingRule,
                       int numWorkCenters,
                       int numJobsRecorded,
                       int warmupJobs) {
-        this.rule = rule;
+        this.sequencingRule = sequencingRule;
+        this.dispatchingRule = dispatchingRule;
         this.numWorkCenters = numWorkCenters;
         this.numJobsRecorded = numJobsRecorded;
         this.warmupJobs = warmupJobs;
@@ -38,8 +41,12 @@ public abstract class Simulation {
         eventQueue = new PriorityQueue<>();
     }
 
-    public AbstractRule getRule() {
-        return rule;
+    public AbstractRule getSequencingRule() {
+        return sequencingRule;
+    }
+
+    public AbstractRule getDispatchingRuleRule() {
+        return dispatchingRule;
     }
 
     public SystemState getSystemState() {
@@ -50,8 +57,12 @@ public abstract class Simulation {
         return eventQueue;
     }
 
-    public void setRule(AbstractRule rule) {
-        this.rule = rule;
+    public void setSequencingRule(AbstractRule sequencingRule) {
+        this.sequencingRule = sequencingRule;
+    }
+
+    public void setDispatchingRuleRule(AbstractRule dispatchingRule) {
+        this.dispatchingRule = dispatchingRule;
     }
 
     public double getClockTime() {

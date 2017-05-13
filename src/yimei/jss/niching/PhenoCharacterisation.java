@@ -3,6 +3,7 @@ package yimei.jss.niching;
 import yimei.jss.jobshop.Operation;
 import yimei.jss.jobshop.OperationOption;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.basic.SPT;
 import yimei.jss.rule.weighted.WSPT;
 import yimei.jss.simulation.DecisionSituation;
 import yimei.jss.simulation.DynamicSimulation;
@@ -89,11 +90,12 @@ public class PhenoCharacterisation {
 
     public static PhenoCharacterisation defaultPhenoCharacterisation() {
         AbstractRule refRule = new WSPT();
+        AbstractRule defaultDispatchingRule = new SPT();
         int minQueueLength = 10;
         int numDecisionSituations = 20;
         long shuffleSeed = 8295342;
 
-        DynamicSimulation simulation = DynamicSimulation.standardFull(0, refRule,
+        DynamicSimulation simulation = DynamicSimulation.standardFull(0, refRule, defaultDispatchingRule,
                 10, 500, 0, 0.95, 4.0);
 
         List<DecisionSituation> situations = simulation.decisionSituations(minQueueLength);

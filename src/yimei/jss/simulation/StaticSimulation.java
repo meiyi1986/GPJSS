@@ -1,5 +1,6 @@
 package yimei.jss.simulation;
 
+import org.apache.commons.math3.analysis.function.Abs;
 import yimei.jss.jobshop.*;
 import yimei.jss.jobshop.Process;
 import yimei.jss.rule.AbstractRule;
@@ -20,11 +21,13 @@ public class StaticSimulation extends Simulation {
     private JSSInstance instance;
     private Shop shop;
     private List<Process> dummyProcesses;
+    private AbstractRule dispatchingRule;
 
-    public StaticSimulation(AbstractRule rule, JSSInstance instance) {
-        super(rule, instance.getNumWorkCenters(), instance.getNumJobs(), 0);
+    public StaticSimulation(AbstractRule sequencingRule, AbstractRule dispatchingRule, JSSInstance instance) {
+        super(sequencingRule, dispatchingRule, instance.getNumWorkCenters(), instance.getNumJobs(), 0);
 
         this.instance = instance;
+        this.dispatchingRule = dispatchingRule;
 
         // Create the shop
         shop = instance.createShop();
@@ -69,7 +72,7 @@ public class StaticSimulation extends Simulation {
 //                DecisionSituation decisionSituation =
 //                        new DecisionSituation(wc.getQueue(), wc, systemState);
 //
-//                OperationOption dispatchedOp = rule.priorOperation(decisionSituation);
+//                OperationOption dispatchedOp = sequencingRule.priorOperation(decisionSituation);
 //
 //                wc.removeFromQueue(dispatchedOp);
 //                Process nextP = new Process(wc, wc.earliestReadyMachine().getOptionId(),
@@ -121,7 +124,7 @@ public class StaticSimulation extends Simulation {
 
     public Process createDummyProcess(WorkCenter workCenter, double readyTime) {
         Job job = new Job(-1-workCenter.getId(), new ArrayList<>());
-        Operation op = new Operation(job, 0, readyTime, workCenter, new SPT());
+        Operation op = new Operation(job, 0, readyTime, workCenter, dispatchingRule);
         Process process = new Process(workCenter, 0, op.getOperationOption(systemState), 0);
 
         return process;

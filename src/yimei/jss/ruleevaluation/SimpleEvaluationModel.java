@@ -103,7 +103,7 @@ public class SimpleEvaluationModel extends AbstractEvaluationModel {
             int rep = state.parameters.getIntWithDefault(p, null, 1);
 
             Simulation simulation = new DynamicSimulation(simSeed,
-                    null, numMachines, numJobs, warmupJobs,
+                    null, null, numMachines, numJobs, warmupJobs,
                     minNumOps, maxNumOps, utilLevel, dueDateFactor, false);
 
             trainSimulations.add(simulation);

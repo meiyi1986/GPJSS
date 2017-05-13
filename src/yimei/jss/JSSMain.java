@@ -48,6 +48,7 @@ public class JSSMain {
         GPRule rule1 = GPRule.readFromLispExpression("(* (max (- (* (* (/ SL WKR) (+ W WIQ)) NIQ) (+ TIS (- PT W))) (+ (- WKR NPT) PT)) (* PT (+ (+ (/ (min (+ OWT WINQ) (+ W WIQ)) W) (- PT W)) (- PT W))))");
         AbstractRule rule2 = new FDD();
         AbstractRule rule3 = new EDD();
+        AbstractRule dispatchingRule = new SPT();
 
 //        DynamicSimulation simulation =
 //                DynamicSimulation.standardMissing(seed,
@@ -64,7 +65,7 @@ public class JSSMain {
 
         System.out.println(instance);
 
-        Simulation simulation = new StaticSimulation(rule1, instance);
+        Simulation simulation = new StaticSimulation(rule1, dispatchingRule, instance);
         List<Simulation> simulations = new ArrayList<>();
         simulations.add(simulation);
 

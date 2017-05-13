@@ -72,10 +72,10 @@ public class Operation {
     procedure time, aka the most pessimistic procedure time guess.
      */
     public OperationOption getOperationOption() {
-        double highestProcTime = Double.MIN_VALUE;
+        double highestProcTime = Double.NEGATIVE_INFINITY;
         OperationOption best = null;
         for (OperationOption option: operationOptionSet) {
-            if (option.getProcTime() > highestProcTime) {
+            if (option.getProcTime() > highestProcTime || highestProcTime == Double.NEGATIVE_INFINITY) {
                 highestProcTime = option.getProcTime();
                 best = option;
             }
@@ -88,13 +88,13 @@ public class Operation {
     informed decision in choosing which operation option to use.
      */
     public OperationOption getOperationOption(SystemState systemState) {
-        //TODO: Check assumption - lowest value is best
-        double highestPriority = Double.MAX_VALUE;
+        //TODO: Check assumption - lowest priority value is best
+        double lowestPriority = Double.POSITIVE_INFINITY;
         OperationOption best = null;
         for (OperationOption option: operationOptionSet) {
             double priority = rule.priority(option, option.getWorkCenter(), systemState);
-            if (priority < highestPriority) {
-                highestPriority = priority;
+            if (priority < lowestPriority || lowestPriority == Double.POSITIVE_INFINITY) {
+                lowestPriority = priority;
                 best = option;
             }
         }
