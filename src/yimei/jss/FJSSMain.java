@@ -14,10 +14,10 @@ import yimei.jss.simulation.DynamicSimulation;
 import yimei.jss.simulation.Simulation;
 import yimei.jss.simulation.StaticSimulation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.*;
 
 /**
  * The main program of job shop scheduling, for basic testing.
@@ -26,40 +26,17 @@ import java.util.Random;
  */
 public class FJSSMain {
 
-    public static void main(String[] args) {
+    public static void calculateFitness(List<Objective> objectives,
+                                        GPRule rule1, AbstractRule rule2,
+                                        AbstractRule rule3, FlexibleStaticInstance instance) {
         long start, finish, duration;
-
         MultiObjectiveFitness fitness = new MultiObjectiveFitness();
         fitness.objectives = new double[1];
         fitness.maxObjective = new double[1];
         fitness.minObjective = new double[1];
         fitness.maximize = new boolean[1];
 
-        long seed = 968356;
-
-        List<Objective> objectives = new ArrayList<>();
-//        objectives.add(Objective.MAKESPAN);
-//        objectives.add(Objective.MEAN_FLOWTIME);
-        objectives.add(Objective.MEAN_FLOWTIME);
-
-        GPRule rule1 = GPRule.readFromLispExpression("(* (max (- (* (* (/ SL WKR) (+ W WIQ)) NIQ) (+ TIS (- PT W))) (+ (- WKR NPT) PT)) (* PT (+ (+ (/ (min (+ OWT WINQ) (+ W WIQ)) W) (- PT W)) (- PT W))))");
-        AbstractRule rule2 = new FDD();
-        AbstractRule rule3 = new EDD();
-
-//        DynamicSimulation simulation =
-//                DynamicSimulation.standardMissing(seed,
-//                        rule1, 10, 5000, 1000, 0.85, 4.0);
-
-        FlexibleStaticInstance instance = FlexibleStaticInstance.readFromFile("Barnes/Text/mt10c1.fjs");
-        List<Integer> permutation = new ArrayList<>();
-        for (int i = 0; i < instance.numWorkCenters; i++) {
-            permutation.add(i);
-        }
-        Collections.shuffle(permutation, new Random(13));
-
-        instance.permutateWorkCenter(permutation);
-
-        System.out.println(instance);
+        //System.out.println(instance);
 
         Simulation simulation = new StaticSimulation(rule1, instance);
         List<Simulation> simulations = new ArrayList<>();
@@ -118,6 +95,58 @@ public class FJSSMain {
 
         System.out.println("Duration = " + duration + " ms.");
 
+    }
+
+    private static List<String> getFileNames(List<String> fileNames, Path dir) {
+        if (dir.toAbsolutePath().toString().endsWith(".fjs")) {
+            //have been passed a file, can return it
+            fileNames.add(dir.toString());
+        } else {
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
+                for (Path path : stream) {
+                    if (path.toFile().isDirectory()) {
+                        getFileNames(fileNames, path);
+                    } else {
+                        if (path.toString().endsWith(".fjs")) {
+                            fileNames.add(path.toString());
+                        }
+                    }
+                }
+            }
+            catch(IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return fileNames;
+    }
+
+    public static void main(String[] args) {
+        String path = "";
+        //path may be a directory path or a file path
+        //example file path: Hurink_Data/Text/sdata/la10.fjs
+        if (args.length > 0) {
+            //allow more specific folder or file paths to be used
+            path = args[0];
+        }
+        path = (new File("")).getAbsolutePath() + "/data/FJSS/" + path;
+
+        List<Objective> objectives = new ArrayList<>();
+        objectives.add(Objective.MAKESPAN);
+        //objectives.add(Objective.MEAN_FLOWTIME);
+        //objectives.add(Objective.MEAN_FLOWTIME);
+
+        GPRule rule1 = GPRule.readFromLispExpression("(* (max (- (* (* (/ SL WKR) (+ W WIQ)) NIQ) (+ TIS (- PT W))) (+ (- WKR NPT) PT)) (* PT (+ (+ (/ (min (+ OWT WINQ) (+ W WIQ)) W) (- PT W)) (- PT W))))");
+        AbstractRule rule2 = new FDD();
+        AbstractRule rule3 = new EDD();
+
+        //the fitness is deterministic once the rule has been decided
+        List<String> fileNames = getFileNames(new ArrayList<String>(), Paths.get(path));
+        for (int i = 0; i < fileNames.size(); ++i) {
+            String fileName = fileNames.get(i);
+            System.out.println("\nInstance "+(i+1)+" - Path: "+fileName);
+            FlexibleStaticInstance instance = FlexibleStaticInstance.readFromAbsPath(fileName);
+            calculateFitness(objectives, rule1, rule2, rule3, instance);
+        }
     }
 
 }

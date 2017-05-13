@@ -53,7 +53,7 @@ public class JSSMain {
 //                DynamicSimulation.standardMissing(seed,
 //                        rule1, 10, 5000, 1000, 0.85, 4.0);
 
-        StaticInstance instance = StaticInstance.readFromFile("complete-20_5_0.txt");
+        StaticInstance instance = StaticInstance.readFromFile("JSS_Data/complete-20_5_0.txt");
         List<Integer> permutation = new ArrayList<>();
         for (int i = 0; i < instance.numWorkCenters; i++) {
             permutation.add(i);

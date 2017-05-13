@@ -41,9 +41,14 @@ public class FlexibleStaticInstance implements JSSInstance {
         this.workCenterReadyTimes = workCenterReadyTimes;
     }
 
-    public static FlexibleStaticInstance readFromFile(String fileName) {
+    public static FlexibleStaticInstance readFromAbsPath(String filePath) {
+        File datafile = new File(filePath);
+        return readFromFile(datafile);
+    }
+
+    public static FlexibleStaticInstance readFromPath(String filePath) {
         String projPath = (new File("")).getAbsolutePath();
-        File datafile = new File(projPath + "/data/" + fileName);
+        File datafile = new File(projPath + "/data/" + filePath);
 
         return readFromFile(datafile);
     }
@@ -66,13 +71,18 @@ public class FlexibleStaticInstance implements JSSInstance {
             int numOperations;
             //Read in the jobs
             for (int i = 0; i < numJobs; ++i) {
+                int index = 0;
                 line = br.readLine();
                 segments = line.split("\\s+");
-                numOperations = Integer.valueOf(segments[0]);
+                if (segments[0].equals("")) {
+                    //brandimarte_data starts rows with space, this is a workaround
+                    index++;
+                }
+                numOperations = Integer.valueOf(segments[index]);
+                index++;
 
                 JobInformation job = new JobInformation(numOperations);
                 int numOperatableMachines;
-                int index = 1;
                 for (int j = 0; j < numOperations; ++j) {
                     numOperatableMachines = Integer.valueOf(segments[index]);
                     OperationInformation operation = new OperationInformation();
@@ -192,34 +202,9 @@ public class FlexibleStaticInstance implements JSSInstance {
         return workCenterReadyTimes;
     }
 
-    public void permutateWorkCenter(List<Integer> permutation) {
-        List<Double> permReadyTimes = new ArrayList<>();
-        for (int i = 0; i < numWorkCenters; i++) {
-            permReadyTimes.add(workCenterReadyTimes.get(permutation.get(i)));
-        }
-        workCenterReadyTimes = permReadyTimes;
-
-        for (JobInformation jobInfo : jobInformations) {
-            List<Integer> permRoute = new ArrayList<>();
-            for (int i = 0; i < jobInfo.getNumOps(); i++) {
-                permRoute.add(permutation.get(jobInfo.getRoute().get(i)));
-            }
-
-            jobInfo.route = permRoute;
-
-            //have our reshuffled route, now we should reshuffle operations
-            List<OperationInformation> permOperations = new ArrayList<OperationInformation>();
-            for (int i = 0; i < jobInfo.getNumOps(); ++i) {
-                permOperations.add(jobInfo.getOperations().get(permRoute.get(i)));
-            }
-            jobInfo.operations = permOperations;
-        }
-    }
-
     public static class JobInformation {
         private int numOps;
         private List<OperationInformation> operations;
-        private List<Integer> route; //used for compatability with existing code
         private double arrivalTime;
         private double dueDate;
         private double weight;
@@ -240,19 +225,6 @@ public class FlexibleStaticInstance implements JSSInstance {
             this.dueDate = dueDate;
             this.weight = weight;
             this.operations = new ArrayList<>();
-        }
-
-        public List<Integer> getRoute() {
-            if (route == null) {
-                List<Integer> route = new ArrayList<Integer>();
-                for (OperationInformation op: operations) {
-                    op.chooseOperationOption();
-                    OperationOptionInformation option = op.getChosenOption();
-                    route.add(option.getWorkCenterId());
-                }
-                this.route = route;
-            }
-            return this.route;
         }
 
         public List<OperationInformation> getOperations() {
@@ -323,7 +295,7 @@ public class FlexibleStaticInstance implements JSSInstance {
     }
 
     public static void main(String[] args) {
-        FlexibleStaticInstance instance = FlexibleStaticInstance.readFromFile("Hurink_Data/Text/edata/abz5.fjs");
+        FlexibleStaticInstance instance = FlexibleStaticInstance.readFromPath("FJSS/Brandimarte_Data/Text/Mk01.fjs");
         //System.out.println(instance.toString());
         instance.createShop();
     }
