@@ -42,7 +42,7 @@ public class ProcessFinishEvent extends AbstractEvent {
             simulation.addEvent(new ProcessStartEvent(nextP));
         }
 
-        OperationOption nextOp = process.getOperation().getNext();
+        OperationOption nextOp = process.getOperation().getNext(simulation.getSystemState());
 
         if (nextOp == null) {
             Job job = process.getOperation().getJob();
@@ -78,7 +78,7 @@ public class ProcessFinishEvent extends AbstractEvent {
             simulation.addEvent(new ProcessStartEvent(nextP));
         }
 
-        OperationOption nextOp = process.getOperation().getNext();
+        OperationOption nextOp = process.getOperation().getNext(simulation.getSystemState());
         if (nextOp == null) {
             Job job = process.getOperation().getJob();
             job.setCompletionTime(process.getFinishTime());

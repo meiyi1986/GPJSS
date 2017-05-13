@@ -3,10 +3,7 @@ package yimei.jss;
 import ec.multiobjective.MultiObjectiveFitness;
 import yimei.jss.jobshop.*;
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.rule.basic.EDD;
-import yimei.jss.rule.basic.FCFS;
-import yimei.jss.rule.basic.FDD;
-import yimei.jss.rule.basic.SPT;
+import yimei.jss.rule.basic.*;
 import yimei.jss.rule.composite.TwoPTplusWINQplusNPT;
 import yimei.jss.rule.evolved.GPRule;
 import yimei.jss.rule.weighted.WATC;
@@ -27,8 +24,8 @@ import java.util.*;
 public class FJSSMain {
 
     public static void calculateFitness(List<Objective> objectives,
-                                        GPRule rule1, AbstractRule rule2,
-                                        AbstractRule rule3, FlexibleStaticInstance instance) {
+                                        GPRule sequencingRule1, AbstractRule sequencingRule2,
+                                        AbstractRule sequencingRule3, FlexibleStaticInstance instance) {
         long start, finish, duration;
         MultiObjectiveFitness fitness = new MultiObjectiveFitness();
         fitness.objectives = new double[1];
@@ -38,7 +35,7 @@ public class FJSSMain {
 
         //System.out.println(instance);
 
-        Simulation simulation = new StaticSimulation(rule1, instance);
+        Simulation simulation = new StaticSimulation(sequencingRule1, instance);
         List<Simulation> simulations = new ArrayList<>();
         simulations.add(simulation);
 
@@ -49,7 +46,7 @@ public class FJSSMain {
                 replications, objectives);
 
         SchedulingSet originalSet = set;
-        SchedulingSet surrogateSet = originalSet.surrogate(5, 500, 100, objectives);
+        //SchedulingSet surrogateSet = originalSet.surrogate(5, 500, 100, objectives);
 
         set = originalSet;
 
@@ -58,7 +55,7 @@ public class FJSSMain {
 //        RealMatrix matrix = rule1.objectiveValueMatrix(schedulingSet, objectives);
 //        System.out.println(matrix);
 
-        rule1.calcFitness(fitness, null, set, objectives);
+        sequencingRule1.calcFitness(fitness, null, set, objectives);
         System.out.println("Fitness = " + fitness.fitnessToStringForHumans());
 
         finish = System.currentTimeMillis();
@@ -72,7 +69,7 @@ public class FJSSMain {
 //        matrix = rule2.objectiveValueMatrix(schedulingSet, objectives);
 //        System.out.println(matrix);
 
-        rule2.calcFitness(fitness, null, set, objectives);
+        sequencingRule2.calcFitness(fitness, null, set, objectives);
         System.out.println("Fitness = " + fitness.fitnessToStringForHumans());
 
         finish = System.currentTimeMillis();
@@ -86,7 +83,7 @@ public class FJSSMain {
 //        matrix = rule3.objectiveValueMatrix(schedulingSet, objectives);
 //        System.out.println(matrix);
 
-        rule3.calcFitness(fitness, null, set, objectives);
+        sequencingRule3.calcFitness(fitness, null, set, objectives);
         System.out.println("Fitness = " + fitness.fitnessToStringForHumans());
 
         finish = System.currentTimeMillis();
@@ -99,7 +96,7 @@ public class FJSSMain {
 
     private static List<String> getFileNames(List<String> fileNames, Path dir) {
         if (dir.toAbsolutePath().toString().endsWith(".fjs")) {
-            //have been passed a file, can return it
+            //have been passed a file
             fileNames.add(dir.toString());
         } else {
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
@@ -144,7 +141,7 @@ public class FJSSMain {
         for (int i = 0; i < fileNames.size(); ++i) {
             String fileName = fileNames.get(i);
             System.out.println("\nInstance "+(i+1)+" - Path: "+fileName);
-            FlexibleStaticInstance instance = FlexibleStaticInstance.readFromAbsPath(fileName);
+            FlexibleStaticInstance instance = FlexibleStaticInstance.readFromAbsPath(fileName, new LPT());
             calculateFitness(objectives, rule1, rule2, rule3, instance);
         }
     }

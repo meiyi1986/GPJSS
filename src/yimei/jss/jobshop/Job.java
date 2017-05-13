@@ -113,32 +113,46 @@ public class Job implements Comparable<Job> {
     }
 
     public void linkOperations() {
-        OperationOption next = null;
+        Operation next = null;
         double nextProcTime = 0.0;
 
         double fdd = releaseTime;
 
         for (int i = 0; i < operations.size(); i++) {
-            operations.get(i).chooseOperationOption(); //intialise the option operation will use
-            OperationOption op = operations.get(i).getChosenOperationOption();
-            fdd += op.getProcTime();
-            op.setFlowDueDate(fdd);
+            Operation operation = operations.get(i);
+            for (OperationOption option: operation.getOperationOptionSet()) {
+                option.setFlowDueDate(fdd + option.getProcTime());
+            }
+            //fdd needs to be incremented
+            //don't know which option to go with yet - will choose highest time for now
+            //TODO: Talk to Yi about this
+            fdd += operation.getOperationOption().getProcTime();
         }
 
         double workRemaining = 0.0;
         int numOpsRemaining = 0;
         for (int i = operations.size()-1; i > -1; i--) {
-            OperationOption op = operations.get(i).getChosenOperationOption();
-            workRemaining += op.getProcTime();
-            op.setWorkRemaining(workRemaining);
+            Operation operation = operations.get(i);
+            for (OperationOption option: operation.getOperationOptionSet()) {
 
-            op.setNumOpsRemaining(numOpsRemaining);
+                option.setWorkRemaining(workRemaining + option.getProcTime());
+
+                option.setNumOpsRemaining(numOpsRemaining);
+
+                option.setNextProcTime(nextProcTime);
+            }
+
             numOpsRemaining ++;
+            OperationOption worstOption = operation.getOperationOption();
+            workRemaining += worstOption.getProcTime(); //worst case scenario
 
-            op.setNext(next);
-            op.setNextProcTime(nextProcTime);
-            next = operations.get(i).getChosenOperationOption();
-            nextProcTime = next.getProcTime();
+            operation.setNext(next);
+
+            next = operation;
+            nextProcTime = worstOption.getProcTime(); //pessimistic guess
+
+            //TODO: Same assumption as above
+
         }
         totalProcTime = workRemaining;
         avgProcTime = totalProcTime / operations.size();
@@ -148,8 +162,8 @@ public class Job implements Comparable<Job> {
     public String toString() {
         String string = String.format("Job %d, arrives at %.1f, due at %.1f, weight is %.1f. It has %d operations:\n",
                 id, arrivalTime, dueDate, weight, operations.size());
-        for (Operation op : operations) {
-            string += op.getChosenOperationOption().toString();
+        for (Operation operation: operations) {
+            string += operation.toString();
         }
 
         return string;

@@ -1,5 +1,7 @@
 package yimei.jss.jobshop;
 
+import yimei.jss.simulation.state.SystemState;
+
 /**
  * Created by dyska on 7/05/17.
  *
@@ -12,7 +14,6 @@ public class OperationOption implements Comparable<OperationOption> {
     private final int optionId;
     private double procTime;
     private WorkCenter workCenter;
-    private OperationOption next;
 
     // Attributes for simulation.
     private double readyTime;
@@ -45,7 +46,13 @@ public class OperationOption implements Comparable<OperationOption> {
         return workCenter;
     }
 
-    public OperationOption getNext() { return next; }
+    public Operation getNext() { return operation.getNext(); }
+
+    public OperationOption getNext(SystemState state) {
+        if (operation.getNext() != null) {
+            return operation.getNext().getOperationOption(state);
+        } return null;
+    }
 
     public double getReadyTime() {
         return readyTime;
@@ -79,10 +86,6 @@ public class OperationOption implements Comparable<OperationOption> {
         this.workRemaining = workRemaining;
     }
 
-    public void setNextProcTime(double nextProcTime) {
-        this.nextProcTime = nextProcTime;
-    }
-
     public void setNumOpsRemaining(int numOpsRemaining) {
         this.numOpsRemaining = numOpsRemaining;
     }
@@ -95,11 +98,11 @@ public class OperationOption implements Comparable<OperationOption> {
         this.flowDueDate = flowDueDate;
     }
 
+    public void setNextProcTime(double nextProcTime) {this.nextProcTime = nextProcTime; }
+
     public void setPriority(double priority) {
         this.priority = priority;
     }
-
-    public void setNext(OperationOption operationOption) { this.next = operationOption; }
 
     /**
      * Compare with another process based on priority.

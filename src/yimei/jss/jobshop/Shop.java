@@ -1,5 +1,7 @@
 package yimei.jss.jobshop;
 
+import yimei.jss.rule.basic.SPT;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -101,7 +103,7 @@ public class Shop {
                     double procTime = Double.valueOf(segments[2 * i + 2]);
                     totalProcTime += procTime;
 
-                    Operation o = new Operation(job, i, procTime, shop.getWorkCenter(wcid));
+                    Operation o = new Operation(job, i, procTime, shop.getWorkCenter(wcid), new SPT());
 
                     job.addOperation(o);
                 }

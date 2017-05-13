@@ -101,7 +101,7 @@ public class SystemState {
     }
 
     public double workInNextQueue(OperationOption operation) {
-        OperationOption nextOp = operation.getNext();
+        OperationOption nextOp = operation.getNext(this);
         if (nextOp == null) {
             return 0;
         }
@@ -110,7 +110,7 @@ public class SystemState {
     }
 
     public double numOpsInNextQueue(OperationOption operation) {
-        OperationOption nextOp = operation.getNext();
+        OperationOption nextOp = operation.getNext(this);
         if (nextOp == null) {
             return 0;
         }
@@ -119,7 +119,7 @@ public class SystemState {
     }
 
     public double nextReadyTime(OperationOption operation) {
-        OperationOption nextOp = operation.getNext();
+        OperationOption nextOp = operation.getNext(this);
         if (nextOp == null) {
             return 0;
         }

@@ -3,6 +3,7 @@ package yimei.jss.simulation;
 import yimei.jss.jobshop.*;
 import yimei.jss.jobshop.Process;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.basic.SPT;
 import yimei.jss.simulation.event.JobArrivalEvent;
 import yimei.jss.simulation.event.ProcessFinishEvent;
 
@@ -52,12 +53,12 @@ public class StaticSimulation extends Simulation {
         for (Job job : shop.getJobs()) {
             systemState.addJobToSystem(job);
 
-            if (job.getArrivalTime() > job.getOperation(0).getChosenOperationOption().getWorkCenter().getReadyTime()) {
+            if (job.getArrivalTime() > job.getOperation(0).getOperationOption(systemState).getWorkCenter().getReadyTime()) {
                 eventQueue.add(new JobArrivalEvent(job));
             }
             else {
-                job.getOperation(0).getChosenOperationOption().getWorkCenter().addToQueue(
-                        job.getOperation(0).getChosenOperationOption());
+                job.getOperation(0).getOperationOption(systemState).getWorkCenter().addToQueue(
+                        job.getOperation(0).getOperationOption(systemState));
             }
         }
 
@@ -120,9 +121,8 @@ public class StaticSimulation extends Simulation {
 
     public Process createDummyProcess(WorkCenter workCenter, double readyTime) {
         Job job = new Job(-1-workCenter.getId(), new ArrayList<>());
-        Operation op = new Operation(job, 0, readyTime, workCenter);
-        op.chooseOperationOption();
-        Process process = new Process(workCenter, 0, op.getChosenOperationOption(), 0);
+        Operation op = new Operation(job, 0, readyTime, workCenter, new SPT());
+        Process process = new Process(workCenter, 0, op.getOperationOption(systemState), 0);
 
         return process;
     }

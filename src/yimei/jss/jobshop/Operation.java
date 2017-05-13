@@ -1,5 +1,10 @@
 package yimei.jss.jobshop;
 
+import org.apache.commons.math3.analysis.function.Abs;
+import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.basic.LPT;
+import yimei.jss.simulation.state.SystemState;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,19 +16,35 @@ public class Operation {
     private final int id;
     private Set<OperationOption> operationOptionSet;
     private OperationOption chosenOperationOption;
+    private AbstractRule rule;
+    private Operation next;
 
-    public Operation(Job job, int id) {
+    public Operation(Job job, int id, AbstractRule rule) {
         this.job = job;
         this.id = id;
+        this.rule = rule;
         this.operationOptionSet = new HashSet<>();
     }
 
-    public Operation(Job job, int id, double procTime, WorkCenter workCenter) {
+    public Operation(Job job, int id, double procTime, WorkCenter workCenter, AbstractRule rule) {
         this.job = job;
         this.id = id;
         this.operationOptionSet = new HashSet<>();
+        this.rule = rule;
+        this.next = null;
         operationOptionSet.add(new OperationOption(this,
                 operationOptionSet.size()+1,procTime,workCenter));
+    }
+
+    public String toString() {
+        String msg = "";
+        for (OperationOption option: operationOptionSet) {
+            msg += String.format("[O%d-%d, W%d, T%.1f], ",
+                    id, option.getOptionId(), option.getWorkCenter().getId(), option.getProcTime());
+        }
+        msg = msg.substring(0, msg.length()-2);
+        msg += "\n";
+        return msg;
     }
 
     public Job getJob() {
@@ -34,40 +55,49 @@ public class Operation {
         return id;
     }
 
+    public void setNext(Operation next) {this.next = next; }
+
+    public Operation getNext() { return next; }
+
+    public Set<OperationOption> getOperationOptionSet() { return operationOptionSet; }
+
     public void addOperationOption(OperationOption option) {
         operationOptionSet.add(option);
     }
 
-    public Set<OperationOption> getOperationSet() {
-        return operationOptionSet;
-    }
 
-    public OperationOption getChosenOperationOption() {
-        return chosenOperationOption;
+    /*
+    This method is to be called before a simulation has begun and additional information
+    has been made availble. It will simply return the OperationOption with the highest
+    procedure time, aka the most pessimistic procedure time guess.
+     */
+    public OperationOption getOperationOption() {
+        double highestProcTime = Double.MIN_VALUE;
+        OperationOption best = null;
+        for (OperationOption option: operationOptionSet) {
+            if (option.getProcTime() > highestProcTime) {
+                highestProcTime = option.getProcTime();
+                best = option;
+            }
+        }
+        return best;
     }
 
     /*
-    This method should employ a heuristic to select which work center
-    this operation should use. Should only be called once all options
-    have been added to Operation.
+    This method is to be called with the system state parameter. It allows for an
+    informed decision in choosing which operation option to use.
      */
-    public void chooseOperationOption() {
-        //TODO: For now basic heuristic - will update later
-        if (chosenOperationOption == null) {
-            if (operationOptionSet.size() > 1) {
-                OperationOption bestOption = null;
-                double leastProcTime = Double.MAX_VALUE;
-                for (OperationOption op: operationOptionSet) {
-                    if (op.getProcTime() < leastProcTime) {
-                        leastProcTime = op.getProcTime();
-                        bestOption = op;
-                    }
-                }
-                this.chosenOperationOption = bestOption;
-            }
-            else if (operationOptionSet.size() == 1) {
-                this.chosenOperationOption = operationOptionSet.iterator().next();
+    public OperationOption getOperationOption(SystemState systemState) {
+        //TODO: Check assumption - lowest value is best
+        double highestPriority = Double.MAX_VALUE;
+        OperationOption best = null;
+        for (OperationOption option: operationOptionSet) {
+            double priority = rule.priority(option, option.getWorkCenter(), systemState);
+            if (priority < highestPriority) {
+                highestPriority = priority;
+                best = option;
             }
         }
+        return best;
     }
 }

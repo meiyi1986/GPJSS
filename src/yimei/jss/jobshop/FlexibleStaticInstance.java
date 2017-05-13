@@ -1,5 +1,8 @@
 package yimei.jss.jobshop;
 
+import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.basic.SPT;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,10 +27,12 @@ public class FlexibleStaticInstance implements JSSInstance {
     public final int numJobs;
     private List<JobInformation> jobInformations;
     private List<Double> workCenterReadyTimes;
+    private AbstractRule dispatchingRule;
 
-    public FlexibleStaticInstance(int numWorkCenters, int numJobs) {
+    public FlexibleStaticInstance(int numWorkCenters, int numJobs, AbstractRule dispatchingRule) {
         this.numWorkCenters = numWorkCenters;
         this.numJobs = numJobs;
+        this.dispatchingRule = dispatchingRule;
         this.jobInformations = new ArrayList<>();
         this.workCenterReadyTimes = new ArrayList<>(
                 Collections.nCopies(numWorkCenters, 0.0));
@@ -41,19 +46,19 @@ public class FlexibleStaticInstance implements JSSInstance {
         this.workCenterReadyTimes = workCenterReadyTimes;
     }
 
-    public static FlexibleStaticInstance readFromAbsPath(String filePath) {
+    public static FlexibleStaticInstance readFromAbsPath(String filePath, AbstractRule dispatchingRule) {
         File datafile = new File(filePath);
-        return readFromFile(datafile);
+        return readFromFile(datafile, dispatchingRule);
     }
 
-    public static FlexibleStaticInstance readFromPath(String filePath) {
+    public static FlexibleStaticInstance readFromPath(String filePath, AbstractRule dispatchingRule) {
         String projPath = (new File("")).getAbsolutePath();
         File datafile = new File(projPath + "/data/" + filePath);
 
-        return readFromFile(datafile);
+        return readFromFile(datafile, dispatchingRule);
     }
 
-    public static FlexibleStaticInstance readFromFile(File file) {
+    public static FlexibleStaticInstance readFromFile(File file, AbstractRule dispatchingRule) {
         FlexibleStaticInstance instance = null;
 
         String line;
@@ -66,7 +71,7 @@ public class FlexibleStaticInstance implements JSSInstance {
             int numJobs = Integer.valueOf(segments[0]);
             int numWorkCenters = Integer.valueOf(segments[1]); //work centers = machines
 
-            instance = new FlexibleStaticInstance(numWorkCenters,numJobs);
+            instance = new FlexibleStaticInstance(numWorkCenters,numJobs, dispatchingRule);
 
             int numOperations;
             //Read in the jobs
@@ -84,14 +89,17 @@ public class FlexibleStaticInstance implements JSSInstance {
                 JobInformation job = new JobInformation(numOperations);
                 int numOperatableMachines;
                 for (int j = 0; j < numOperations; ++j) {
+
                     numOperatableMachines = Integer.valueOf(segments[index]);
                     OperationInformation operation = new OperationInformation();
+
                     for (int k = 0; k < numOperatableMachines; ++k) {
                         //read in k (machine, processing time) pairs
                         int workCentreNumber = Integer.valueOf(segments[2*k+index+1]);
                         int processingTime = Integer.valueOf(segments[2*k+index+2]);
                         operation.getOperationOptions().add(
-                                new OperationOptionInformation(workCentreNumber, processingTime));
+                                new OperationOptionInformation(workCentreNumber, processingTime)
+                        );
                     }
                     job.getOperations().add(operation);
                     index += numOperatableMachines * 2 + 1;
@@ -159,7 +167,7 @@ public class FlexibleStaticInstance implements JSSInstance {
 
             for (int k = 0; k < jobInfo.getNumOps(); ++k) {
                 OperationInformation operationInfo = jobInfo.getOperations().get(k);
-                Operation operation = new Operation(job, k);
+                Operation operation = new Operation(job, k, dispatchingRule);
 
                 for (int l = 0; l < operationInfo.getOperationOptions().size(); ++l) {
                     OperationOptionInformation operationOptionInformation = operationInfo.getOperationOptions().get(l);
@@ -295,8 +303,11 @@ public class FlexibleStaticInstance implements JSSInstance {
     }
 
     public static void main(String[] args) {
-        FlexibleStaticInstance instance = FlexibleStaticInstance.readFromPath("FJSS/Brandimarte_Data/Text/Mk01.fjs");
+        FlexibleStaticInstance instance = FlexibleStaticInstance.readFromPath(
+                "FJSS/Brandimarte_Data/Text/Mk01.fjs", new SPT()
+        );
         //System.out.println(instance.toString());
-        instance.createShop();
+        Shop shop = instance.createShop();
+        System.out.println(shop.toString());
     }
 }

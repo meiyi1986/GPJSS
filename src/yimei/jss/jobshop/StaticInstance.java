@@ -1,5 +1,7 @@
 package yimei.jss.jobshop;
 
+import yimei.jss.rule.basic.SPT;
+
 import java.io.*;
 import java.util.*;
 
@@ -204,7 +206,7 @@ public class StaticInstance implements JSSInstance {
                     jobInfo.arrivalTime, jobInfo.dueDate, jobInfo.weight);
             for (int k = 0; k < jobInfo.numOps; k++) {
                 Operation op = new Operation(job, k, jobInfo.procTimes.get(k),
-                        shop.getWorkCenter(jobInfo.route.get(k)));
+                        shop.getWorkCenter(jobInfo.route.get(k)), new SPT());
 
                 job.addOperation(op);
             }

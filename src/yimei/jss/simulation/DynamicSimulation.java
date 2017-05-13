@@ -2,6 +2,7 @@ package yimei.jss.simulation;
 
 import org.apache.commons.math3.random.RandomDataGenerator;
 import yimei.jss.jobshop.*;
+import yimei.jss.rule.basic.SPT;
 import yimei.util.random.*;
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.simulation.event.AbstractEvent;
@@ -196,7 +197,7 @@ public class DynamicSimulation extends Simulation {
             double procTime = procTimeSampler.next(randomDataGenerator);
             totalProcTime += procTime;
 
-            Operation o = new Operation(job, i, procTime, systemState.getWorkCenter(route[i]));
+            Operation o = new Operation(job, i, procTime, systemState.getWorkCenter(route[i]), new SPT());
 
             job.addOperation(o);
         }
