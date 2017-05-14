@@ -28,12 +28,14 @@ public class FlexibleStaticInstance implements JSSInstance {
     private List<JobInformation> jobInformations;
     private List<Double> workCenterReadyTimes;
     private AbstractRule dispatchingRule;
+    private String filePath;
 
-    public FlexibleStaticInstance(int numWorkCenters, int numJobs, AbstractRule dispatchingRule) {
+    public FlexibleStaticInstance(int numWorkCenters, int numJobs, String filePath, AbstractRule dispatchingRule) {
         this.numWorkCenters = numWorkCenters;
         this.numJobs = numJobs;
         this.dispatchingRule = dispatchingRule;
         this.jobInformations = new ArrayList<>();
+        this.filePath = filePath;
         this.workCenterReadyTimes = new ArrayList<>(
                 Collections.nCopies(numWorkCenters, 0.0));
     }
@@ -71,7 +73,7 @@ public class FlexibleStaticInstance implements JSSInstance {
             int numJobs = Integer.valueOf(segments[0]);
             int numWorkCenters = Integer.valueOf(segments[1]); //work centers = machines
 
-            instance = new FlexibleStaticInstance(numWorkCenters,numJobs, dispatchingRule);
+            instance = new FlexibleStaticInstance(numWorkCenters,numJobs,file.getPath(),dispatchingRule);
 
             int numOperations;
             //Read in the jobs
@@ -204,6 +206,8 @@ public class FlexibleStaticInstance implements JSSInstance {
     public int getNumJobs() {
         return numJobs;
     }
+
+    public String getFilePath() { return filePath; }
 
     @Override
     public List<Double> getWorkCenterReadyTimes() {

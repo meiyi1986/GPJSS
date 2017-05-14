@@ -21,9 +21,16 @@ import yimei.util.lisp.LispParser;
 public class GPRule extends AbstractRule {
 
     private GPTree gpTree;
+    private String lispString;
 
     public GPRule(GPTree gpTree) {
         name = "\"GPRule\"";
+        this.gpTree = gpTree;
+    }
+
+    public GPRule(GPTree gpTree, String expression) {
+        name = "\"GPRule\"";
+        this.lispString = expression;
         this.gpTree = gpTree;
     }
 
@@ -35,10 +42,14 @@ public class GPRule extends AbstractRule {
         this.gpTree = gpTree;
     }
 
+    public String getLispString() {
+        return lispString;
+    }
+
     public static GPRule readFromLispExpression(String expression) {
         GPTree tree = LispParser.parseJobShopRule(expression);
 
-        return new GPRule(tree);
+        return new GPRule(tree, expression);
     }
 
     public void ignore(GPNode tree, GPNode feature, Ignorer ignorer) {
