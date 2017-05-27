@@ -1,10 +1,8 @@
 package yimei.jss.simulation;
 
-import org.apache.commons.math3.analysis.function.Abs;
 import yimei.jss.jobshop.*;
 import yimei.jss.jobshop.Process;
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.rule.basic.SPT;
 import yimei.jss.simulation.event.JobArrivalEvent;
 import yimei.jss.simulation.event.ProcessFinishEvent;
 
@@ -21,18 +19,18 @@ public class StaticSimulation extends Simulation {
     private JSSInstance instance;
     private Shop shop;
     private List<Process> dummyProcesses;
-    private AbstractRule dispatchingRule;
+    private AbstractRule routingRule;
 
-    public StaticSimulation(AbstractRule sequencingRule, AbstractRule dispatchingRule, JSSInstance instance) {
-        super(sequencingRule, dispatchingRule, instance.getNumWorkCenters(), instance.getNumJobs(), 0);
+    public StaticSimulation(AbstractRule sequencingRule, AbstractRule routingRule, JSSInstance instance) {
+        super(sequencingRule, routingRule, instance.getNumWorkCenters(), instance.getNumJobs(), 0);
 
         this.instance = instance;
-        this.dispatchingRule = dispatchingRule;
+        this.routingRule = routingRule;
 
         // Create the shop
         shop = instance.createShop();
 
-        // Create the dymmy processes to fill the initial ready time
+        // Create the dummy processes to fill the initial ready time
         dummyProcesses = new ArrayList<>();
         for (int i = 0; i < shop.getWorkCenters().size(); i++) {
             dummyProcesses.add(createDummyProcess(shop.getWorkCenter(i),
@@ -56,7 +54,8 @@ public class StaticSimulation extends Simulation {
         for (Job job : shop.getJobs()) {
             systemState.addJobToSystem(job);
 
-            if (job.getArrivalTime() > job.getOperation(0).getOperationOption(systemState).getWorkCenter().getReadyTime()) {
+            if (job.getArrivalTime() >
+                    job.getOperation(0).getOperationOption(systemState).getWorkCenter().getReadyTime()) {
                 eventQueue.add(new JobArrivalEvent(job));
             }
             else {
@@ -64,22 +63,6 @@ public class StaticSimulation extends Simulation {
                         job.getOperation(0).getOperationOption(systemState));
             }
         }
-
-//        // The machines are initially ready, and queue may not be empty.
-//        // Dispatch the next operations to the machines.
-//        for (WorkCenter wc : systemState.getWorkCenters()) {
-//            if (!wc.getQueue().isEmpty()) {
-//                DecisionSituation decisionSituation =
-//                        new DecisionSituation(wc.getQueue(), wc, systemState);
-//
-//                OperationOption dispatchedOp = sequencingRule.priorOperation(decisionSituation);
-//
-//                wc.removeFromQueue(dispatchedOp);
-//                Process nextP = new Process(wc, wc.earliestReadyMachine().getOptionId(),
-//                        dispatchedOp, getClockTime());
-//                addEvent(new ProcessStartEvent(nextP));
-//            }
-//        }
 
         throughput = 0;
     }
@@ -124,7 +107,7 @@ public class StaticSimulation extends Simulation {
 
     public Process createDummyProcess(WorkCenter workCenter, double readyTime) {
         Job job = new Job(-1-workCenter.getId(), new ArrayList<>());
-        Operation op = new Operation(job, 0, readyTime, workCenter, dispatchingRule);
+        Operation op = new Operation(job, 0, readyTime, workCenter, routingRule);
         Process process = new Process(workCenter, 0, op.getOperationOption(systemState), 0);
 
         return process;

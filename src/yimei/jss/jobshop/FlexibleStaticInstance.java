@@ -27,13 +27,13 @@ public class FlexibleStaticInstance implements JSSInstance {
     public final int numJobs;
     private List<JobInformation> jobInformations;
     private List<Double> workCenterReadyTimes;
-    private AbstractRule dispatchingRule;
+    private AbstractRule routingRule;
     private String filePath;
 
-    public FlexibleStaticInstance(int numWorkCenters, int numJobs, String filePath, AbstractRule dispatchingRule) {
+    public FlexibleStaticInstance(int numWorkCenters, int numJobs, String filePath, AbstractRule routingRule) {
         this.numWorkCenters = numWorkCenters;
         this.numJobs = numJobs;
-        this.dispatchingRule = dispatchingRule;
+        this.routingRule = routingRule;
         this.jobInformations = new ArrayList<>();
         this.filePath = filePath;
         this.workCenterReadyTimes = new ArrayList<>(
@@ -48,19 +48,19 @@ public class FlexibleStaticInstance implements JSSInstance {
         this.workCenterReadyTimes = workCenterReadyTimes;
     }
 
-    public static FlexibleStaticInstance readFromAbsPath(String filePath, AbstractRule dispatchingRule) {
+    public static FlexibleStaticInstance readFromAbsPath(String filePath, AbstractRule routingRule) {
         File datafile = new File(filePath);
-        return readFromFile(datafile, dispatchingRule);
+        return readFromFile(datafile, routingRule);
     }
 
-    public static FlexibleStaticInstance readFromPath(String filePath, AbstractRule dispatchingRule) {
+    public static FlexibleStaticInstance readFromPath(String filePath, AbstractRule routingRule) {
         String projPath = (new File("")).getAbsolutePath();
         File datafile = new File(projPath + "/data/" + filePath);
 
-        return readFromFile(datafile, dispatchingRule);
+        return readFromFile(datafile, routingRule);
     }
 
-    public static FlexibleStaticInstance readFromFile(File file, AbstractRule dispatchingRule) {
+    public static FlexibleStaticInstance readFromFile(File file, AbstractRule routingRule) {
         FlexibleStaticInstance instance = null;
 
         String line;
@@ -73,7 +73,7 @@ public class FlexibleStaticInstance implements JSSInstance {
             int numJobs = Integer.valueOf(segments[0]);
             int numWorkCenters = Integer.valueOf(segments[1]); //work centers = machines
 
-            instance = new FlexibleStaticInstance(numWorkCenters,numJobs,file.getPath(),dispatchingRule);
+            instance = new FlexibleStaticInstance(numWorkCenters,numJobs,file.getPath(),routingRule);
 
             int numOperations;
             //Read in the jobs
@@ -169,7 +169,7 @@ public class FlexibleStaticInstance implements JSSInstance {
 
             for (int k = 0; k < jobInfo.getNumOps(); ++k) {
                 OperationInformation operationInfo = jobInfo.getOperations().get(k);
-                Operation operation = new Operation(job, k, dispatchingRule);
+                Operation operation = new Operation(job, k, routingRule);
 
                 for (int l = 0; l < operationInfo.getOperationOptions().size(); ++l) {
                     OperationOptionInformation operationOptionInformation = operationInfo.getOperationOptions().get(l);

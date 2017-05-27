@@ -3,20 +3,14 @@ package yimei.jss;
 import ec.multiobjective.MultiObjectiveFitness;
 import yimei.jss.jobshop.Objective;
 import yimei.jss.jobshop.SchedulingSet;
-import yimei.jss.jobshop.Shop;
 import yimei.jss.jobshop.StaticInstance;
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.rule.basic.EDD;
-import yimei.jss.rule.basic.FCFS;
 import yimei.jss.rule.basic.FDD;
 import yimei.jss.rule.basic.SPT;
-import yimei.jss.rule.composite.TwoPTplusWINQplusNPT;
 import yimei.jss.rule.evolved.GPRule;
-import yimei.jss.rule.weighted.WATC;
-import yimei.jss.simulation.DynamicSimulation;
 import yimei.jss.simulation.Simulation;
 import yimei.jss.simulation.StaticSimulation;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +42,7 @@ public class JSSMain {
         GPRule rule1 = GPRule.readFromLispExpression("(* (max (- (* (* (/ SL WKR) (+ W WIQ)) NIQ) (+ TIS (- PT W))) (+ (- WKR NPT) PT)) (* PT (+ (+ (/ (min (+ OWT WINQ) (+ W WIQ)) W) (- PT W)) (- PT W))))");
         AbstractRule rule2 = new FDD();
         AbstractRule rule3 = new EDD();
-        AbstractRule dispatchingRule = new SPT();
+        AbstractRule routingRule = new SPT();
 
 //        DynamicSimulation simulation =
 //                DynamicSimulation.standardMissing(seed,
@@ -65,7 +59,7 @@ public class JSSMain {
 
         System.out.println(instance);
 
-        Simulation simulation = new StaticSimulation(rule1, dispatchingRule, instance);
+        Simulation simulation = new StaticSimulation(rule1, routingRule, instance);
         List<Simulation> simulations = new ArrayList<>();
         simulations.add(simulation);
 

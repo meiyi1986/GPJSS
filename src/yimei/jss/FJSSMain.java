@@ -23,13 +23,13 @@ import java.util.*;
  */
 public class FJSSMain {
 
-    public static void calculateFitness(boolean doStore, String fileName,
+    private static void calculateFitness(boolean doStore, String fileName,
                                         List<Objective> objectives,
                                         List<AbstractRule> sequencingRules,
-                                        List<AbstractRule> dispatchingRules) {
+                                        List<AbstractRule> routingRules) {
         BufferedWriter writer = null;
 
-        if (sequencingRules.size() == 0 || dispatchingRules.size() == 0 || objectives.size() == 0) {
+        if (sequencingRules.size() == 0 || routingRules.size() == 0 || objectives.size() == 0) {
             return;
         }
 
@@ -37,20 +37,20 @@ public class FJSSMain {
             writer = createFileWriter(fileName);
         }
 
-        for (AbstractRule dispatchingRule: dispatchingRules) {
+        for (AbstractRule routingRule: routingRules) {
             MultiObjectiveFitness fitness = new MultiObjectiveFitness();
             fitness.objectives = new double[1];
             fitness.maxObjective = new double[1];
             fitness.minObjective = new double[1];
             fitness.maximize = new boolean[1];
 
-            FlexibleStaticInstance instance = FlexibleStaticInstance.readFromAbsPath(fileName, dispatchingRule);
+            FlexibleStaticInstance instance = FlexibleStaticInstance.readFromAbsPath(fileName, routingRule);
 
             List<Integer> replications = new ArrayList<>();
             replications.add(1);
 
             //use first rule in sequencing rules to build simulation
-            Simulation simulation = new StaticSimulation(sequencingRules.get(0), dispatchingRule, instance);
+            Simulation simulation = new StaticSimulation(sequencingRules.get(0), routingRule, instance);
             List<Simulation> simulations = new ArrayList<>();
             simulations.add(simulation);
 
@@ -62,7 +62,7 @@ public class FJSSMain {
                 //store fitness result with sequencing rule and dispatching rule
                 if (doStore) {
                     try {
-                        writer.write(String.format("DR:%s SR:%s - %s", getRuleName(dispatchingRule),
+                        writer.write(String.format("RR:%s SR:%s - %s", getRuleName(routingRule),
                                 getRuleName(sequencingRule), fitnessResult));
                         writer.newLine();
                     } catch (IOException e) {
@@ -71,10 +71,12 @@ public class FJSSMain {
                 }
             }
         }
-        try {
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (doStore) {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -123,7 +125,7 @@ public class FJSSMain {
         return output;
     }
 
-    private static List<String> getFileNames(List<String> fileNames, Path dir) {
+    public static List<String> getFileNames(List<String> fileNames, Path dir) {
         if (dir.toAbsolutePath().toString().endsWith(".fjs")) {
             //have been passed a file
             fileNames.add(dir.toString());
@@ -147,33 +149,34 @@ public class FJSSMain {
     }
 
     public static void main(String[] args) {
-        String path = "";
         //path may be a directory path or a file path
         //example file path: Hurink_Data/Text/sdata/la10.fjs
+        String path = "";
         if (args.length > 0) {
             //allow more specific folder or file paths to be used
             path = args[0];
         }
         path = (new File("")).getAbsolutePath() + "/data/FJSS/" + path;
 
+        boolean doStore = true;
         List<Objective> objectives = new ArrayList<>();
-        objectives.add(Objective.MAKESPAN);
-
         List<AbstractRule> sequencingRules = new ArrayList();
         List<AbstractRule> dispatchingRules = new ArrayList();
 
-        sequencingRules.add(GPRule.readFromLispExpression(
-                "(* (max (- (* (* (/ SL WKR) (+ W WIQ)) NIQ) (+ TIS (- PT W))) (+ (- WKR NPT) PT)) (* PT (+ (+ (/ (min (+ OWT WINQ) (+ W WIQ)) W) (- PT W)) (- PT W))))")
-        );
-        sequencingRules.add(new FDD());
+        objectives.add(Objective.MAKESPAN);
+
+        //sequencingRules.add(GPRule.readFromLispExpression(
+                //"(* (max (- (* (* (/ SL WKR) (+ W WIQ)) NIQ) (+ TIS (- PT W))) (+ (- WKR NPT) PT)) (* PT (+ (+ (/ (min (+ OWT WINQ) (+ W WIQ)) W) (- PT W)) (- PT W))))")
+        //);
+        //sequencingRules.add(new FDD());
         sequencingRules.add(new EDD());
 
-        dispatchingRules.add(new FCFS());
+        //dispatchingRules.add(new FCFS());
         dispatchingRules.add(new SPT());
-        boolean doStore = true;
 
-        //BUG: Different fitness values being returned when a single file is specified vs all files
-        //Not sure why
+        //There is some randomness component - seed should be set
+        //We get same result every time we run the whole thing, but if the same instance
+        //is run multiple times it changes
 
         List<String> fileNames = getFileNames(new ArrayList(), Paths.get(path));
         for (int i = 0; i < fileNames.size(); ++i) {
@@ -181,5 +184,6 @@ public class FJSSMain {
             System.out.println("\nInstance "+(i+1)+" - Path: "+fileName);
             calculateFitness(doStore, fileName, objectives, sequencingRules, dispatchingRules);
         }
+
     }
 }

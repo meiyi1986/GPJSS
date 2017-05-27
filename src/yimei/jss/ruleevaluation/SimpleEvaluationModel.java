@@ -3,10 +3,11 @@ package yimei.jss.ruleevaluation;
 import ec.EvolutionState;
 import ec.Fitness;
 import ec.util.Parameter;
+import yimei.jss.jobshop.FlexibleStaticInstance;
 import yimei.jss.jobshop.SchedulingSet;
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.simulation.DynamicSimulation;
 import yimei.jss.simulation.Simulation;
+import yimei.jss.simulation.StaticSimulation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,26 +86,27 @@ public class SimpleEvaluationModel extends AbstractEvaluationModel {
             int numJobs = state.parameters.getIntWithDefault(p, null, 5000);
             // Number of warmup jobs
             p = b.push(P_SIM_WARMUP_JOBS);
-            int warmupJobs = state.parameters.getIntWithDefault(p, null, 1000);
-            // Min number of operations
-            p = b.push(P_SIM_MIN_NUM_OPS);
-            int minNumOps = state.parameters.getIntWithDefault(p, null, 2);
-            // Max number of operations
-            p = b.push(P_SIM_MAX_NUM_OPS);
-            int maxNumOps = state.parameters.getIntWithDefault(p, null, numMachines);
-            // Utilization level
-            p = b.push(P_SIM_UTIL_LEVEL);
-            double utilLevel = state.parameters.getDoubleWithDefault(p, null, 0.85);
-            // Due date factor
-            p = b.push(P_SIM_DUE_DATE_FACTOR);
-            double dueDateFactor = state.parameters.getDoubleWithDefault(p, null, 4.0);
+//            int warmupJobs = state.parameters.getIntWithDefault(p, null, 1000);
+//            // Min number of operations
+//            p = b.push(P_SIM_MIN_NUM_OPS);
+//            int minNumOps = state.parameters.getIntWithDefault(p, null, 2);
+//            // Max number of operations
+//            p = b.push(P_SIM_MAX_NUM_OPS);
+//            int maxNumOps = state.parameters.getIntWithDefault(p, null, numMachines);
+//            // Utilization level
+//            p = b.push(P_SIM_UTIL_LEVEL);
+//            double utilLevel = state.parameters.getDoubleWithDefault(p, null, 0.85);
+//            // Due date factor
+//            p = b.push(P_SIM_DUE_DATE_FACTOR);
+//            double dueDateFactor = state.parameters.getDoubleWithDefault(p, null, 4.0);
             // Number of replications
             p = b.push(P_SIM_REPLICATIONS);
             int rep = state.parameters.getIntWithDefault(p, null, 1);
 
-            Simulation simulation = new DynamicSimulation(simSeed,
-                    null, null, numMachines, numJobs, warmupJobs,
-                    minNumOps, maxNumOps, utilLevel, dueDateFactor, false);
+            String filePath = state.parameters.getString(new Parameter("filePath"), null);
+            FlexibleStaticInstance instance = FlexibleStaticInstance.readFromAbsPath(filePath, null);
+
+            Simulation simulation = new StaticSimulation(null, null, instance);
 
             trainSimulations.add(simulation);
             replications.add(new Integer(rep));

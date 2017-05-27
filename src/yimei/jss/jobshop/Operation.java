@@ -1,8 +1,7 @@
 package yimei.jss.jobshop;
 
-import org.apache.commons.math3.analysis.function.Abs;
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.rule.basic.LPT;
+import yimei.jss.rule.basic.SPT;
 import yimei.jss.simulation.state.SystemState;
 
 import java.util.HashSet;
@@ -15,7 +14,6 @@ public class Operation {
     private final Job job;
     private final int id;
     private Set<OperationOption> operationOptionSet;
-    private OperationOption chosenOperationOption;
     private AbstractRule rule;
     private Operation next;
 
@@ -65,7 +63,6 @@ public class Operation {
         operationOptionSet.add(option);
     }
 
-
     /*
     This method is to be called before a simulation has begun and additional information
     has been made availble. It will simply return the OperationOption with the highest
@@ -88,7 +85,17 @@ public class Operation {
     informed decision in choosing which operation option to use.
      */
     public OperationOption getOperationOption(SystemState systemState) {
+        if (operationOptionSet.size() == 1) {
+            return operationOptionSet.iterator().next();
+        }
+
         //TODO: Check assumption - lowest priority value is best
+        AbstractRule rule = this.rule;
+        if (rule == null) {
+            rule = new SPT();
+            //System.out.println("hi");
+        }
+
         double lowestPriority = Double.POSITIVE_INFINITY;
         OperationOption best = null;
         for (OperationOption option: operationOptionSet) {

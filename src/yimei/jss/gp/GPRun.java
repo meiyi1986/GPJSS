@@ -19,6 +19,7 @@ public class GPRun extends Evolve {
         ParameterDatabase parameters;
 
         parameters = loadParameterDatabase(args);
+
         int numJobs = parameters.getIntWithDefault(new Parameter("jobs"), null, 1);
         if (numJobs < 1)
             Output.initialError("The 'jobs' parameter must be >= 1 (or not exist, which defaults to 1)");
@@ -58,9 +59,6 @@ public class GPRun extends Evolve {
                 // Here you can set up the EvolutionState's parameters further before it's setup(...).
                 // This includes replacing the random number generators, changing values in state.parameters,
                 // changing instance variables (except for job and runtimeArguments, please), etc.
-
-
-
 
                 // now we let it go
                 state.run(EvolutionState.C_STARTED_FRESH);
