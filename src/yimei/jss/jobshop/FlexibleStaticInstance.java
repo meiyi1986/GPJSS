@@ -1,7 +1,7 @@
 package yimei.jss.jobshop;
 
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.rule.basic.SPT;
+import yimei.jss.rule.basic.FCFS;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -308,7 +308,7 @@ public class FlexibleStaticInstance implements JSSInstance {
 
     public static void main(String[] args) {
         FlexibleStaticInstance instance = FlexibleStaticInstance.readFromPath(
-                "FJSS/Brandimarte_Data/Text/Mk01.fjs", new SPT()
+                "FJSS/Brandimarte_Data/Text/Mk01.fjs", new FCFS()
         );
         //System.out.println(instance.toString());
         Shop shop = instance.createShop();

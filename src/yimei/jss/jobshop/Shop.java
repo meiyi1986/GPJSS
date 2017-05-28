@@ -1,6 +1,5 @@
 package yimei.jss.jobshop;
 
-import yimei.jss.rule.basic.SPT;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

@@ -1,7 +1,6 @@
 package yimei.jss.algorithm.surrogategp;
 
 import yimei.jss.rule.basic.FCFS;
-import yimei.jss.rule.basic.SPT;
 import yimei.jss.simulation.DynamicSimulation;
 
 /**
@@ -13,7 +12,7 @@ import yimei.jss.simulation.DynamicSimulation;
 public class StaticInstanceGenerator {
 
     DynamicSimulation simulation = DynamicSimulation.standardMissing(72334,
-            new FCFS(), new SPT(), 10, 500000, 0, 0.95, 4.0);
+            new FCFS(), new FCFS(), 10, 500000, 0, 0.95, 4.0);
 
 
 }

@@ -1,7 +1,7 @@
 package yimei.jss.jobshop;
 
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.rule.basic.SPT;
+import yimei.jss.rule.basic.FCFS;
 import yimei.jss.simulation.state.SystemState;
 
 import java.util.HashSet;
@@ -92,8 +92,7 @@ public class Operation {
         //TODO: Check assumption - lowest priority value is best
         AbstractRule rule = this.rule;
         if (rule == null) {
-            rule = new SPT();
-            //System.out.println("hi");
+            rule = new FCFS();
         }
 
         double lowestPriority = Double.POSITIVE_INFINITY;

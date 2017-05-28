@@ -5,16 +5,19 @@ import org.apache.commons.math3.analysis.function.Abs;
 import yimei.jss.jobshop.*;
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.rule.basic.*;
-import yimei.jss.rule.composite.TwoPTplusWINQplusNPT;
+import yimei.jss.rule.composite.*;
 import yimei.jss.rule.evolved.GPRule;
 import yimei.jss.rule.weighted.WATC;
-import yimei.jss.simulation.DynamicSimulation;
+import yimei.jss.rule.weighted.WCOVERT;
+import yimei.jss.rule.weighted.WSPT;
 import yimei.jss.simulation.Simulation;
 import yimei.jss.simulation.StaticSimulation;
 
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
+
+import static yimei.jss.ruleevaluation.RuleComparison.EvaluateOutput;
 
 /**
  * The main program of job shop scheduling, for basic testing.
@@ -59,7 +62,7 @@ public class FJSSMain {
             for (AbstractRule sequencingRule: sequencingRules) {
                 String fitnessResult = calcFitness(sequencingRule, fitness, set, objectives);
 
-                //store fitness result with sequencing rule and dispatching rule
+                //store fitness result with sequencing rule and routing rule
                 if (doStore) {
                     try {
                         writer.write(String.format("RR:%s SR:%s - %s", getRuleName(routingRule),
@@ -161,18 +164,78 @@ public class FJSSMain {
         boolean doStore = true;
         List<Objective> objectives = new ArrayList<>();
         List<AbstractRule> sequencingRules = new ArrayList();
-        List<AbstractRule> dispatchingRules = new ArrayList();
+        List<AbstractRule> routingRules = new ArrayList();
 
         objectives.add(Objective.MAKESPAN);
 
-        //sequencingRules.add(GPRule.readFromLispExpression(
-                //"(* (max (- (* (* (/ SL WKR) (+ W WIQ)) NIQ) (+ TIS (- PT W))) (+ (- WKR NPT) PT)) (* PT (+ (+ (/ (min (+ OWT WINQ) (+ W WIQ)) W) (- PT W)) (- PT W))))")
-        //);
-        //sequencingRules.add(new FDD());
+//        sequencingRules.add(GPRule.readFromLispExpression(
+//                "(* (max (- (* (* (/ SL WKR) (+ W WIQ)) NIQ) (+ TIS (- PT W))) (+ (- WKR NPT) PT)) (* PT (+ (+ (/ (min (+ OWT WINQ) (+ W WIQ)) W) (- PT W)) (- PT W))))")
+//        );
+        sequencingRules.add(new AVPRO());
+        sequencingRules.add(new CR());
         sequencingRules.add(new EDD());
+        sequencingRules.add(new FCFS());
+        sequencingRules.add(new FDD());
+        sequencingRules.add(new LCFS());
+        sequencingRules.add(new LPT());
+        sequencingRules.add(new LWKR());
+        sequencingRules.add(new MOPNR());
+        sequencingRules.add(new MWKR());
+        sequencingRules.add(new NPT());
+        sequencingRules.add(new PW());
+        sequencingRules.add(new SL());
+        sequencingRules.add(new Slack());
+        sequencingRules.add(new SPT());
+        sequencingRules.add(new ATC());
+        sequencingRules.add(new COVERT());
+        sequencingRules.add(new CRplusPT());
+        sequencingRules.add(new LWKRplusPT());
+        sequencingRules.add(new OPFSLKperPT());
+        sequencingRules.add(new PTplusPW());
+        sequencingRules.add(new PTplusPWplusFDD());
+        //routingRules.add(new PTplusWINQ());
+        //routingRules.add(new PTplusWINQplusNPTplusWSL());
+        //routingRules.add(new PTplusWINQplusSL());
+        sequencingRules.add(new SlackperOPN());
+        sequencingRules.add(new SlackperRPTplusPT());
+        //routingRules.add(new TwoPTplusWINQplusNPT());
+        sequencingRules.add(new WATC());
+        sequencingRules.add(new WCOVERT());
+        sequencingRules.add(new WSPT());
 
-        //dispatchingRules.add(new FCFS());
-        dispatchingRules.add(new SPT());
+        routingRules.add(new AVPRO());
+        routingRules.add(new CR());
+        routingRules.add(new EDD());
+        routingRules.add(new FCFS());
+        routingRules.add(new FDD());
+        routingRules.add(new LCFS());
+        routingRules.add(new LPT());
+        routingRules.add(new LWKR());
+        routingRules.add(new MOPNR());
+        routingRules.add(new MWKR());
+        routingRules.add(new NPT());
+        routingRules.add(new PW());
+        routingRules.add(new SL());
+        routingRules.add(new Slack());
+        routingRules.add(new SPT());
+        routingRules.add(new ATC());
+        routingRules.add(new COVERT());
+        routingRules.add(new CRplusPT());
+        routingRules.add(new LWKRplusPT());
+        routingRules.add(new OPFSLKperPT());
+        routingRules.add(new PTplusPW());
+        routingRules.add(new PTplusPWplusFDD());
+        //routingRules.add(new PTplusWINQ());
+        //routingRules.add(new PTplusWINQplusNPTplusWSL());
+        //routingRules.add(new PTplusWINQplusSL());
+        routingRules.add(new SlackperOPN());
+        routingRules.add(new SlackperRPTplusPT());
+        //routingRules.add(new TwoPTplusWINQplusNPT());
+        routingRules.add(new WATC());
+        routingRules.add(new WCOVERT());
+        routingRules.add(new WSPT());
+        //no winq
+
 
         //There is some randomness component - seed should be set
         //We get same result every time we run the whole thing, but if the same instance
@@ -182,8 +245,9 @@ public class FJSSMain {
         for (int i = 0; i < fileNames.size(); ++i) {
             String fileName = fileNames.get(i);
             System.out.println("\nInstance "+(i+1)+" - Path: "+fileName);
-            calculateFitness(doStore, fileName, objectives, sequencingRules, dispatchingRules);
+            calculateFitness(doStore, fileName, objectives, sequencingRules, routingRules);
         }
 
+        EvaluateOutput("/out/test/", "RR");
     }
 }
