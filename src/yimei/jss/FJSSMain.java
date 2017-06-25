@@ -1,15 +1,13 @@
 package yimei.jss;
 
 import ec.multiobjective.MultiObjectiveFitness;
-import org.apache.commons.math3.analysis.function.Abs;
 import yimei.jss.jobshop.*;
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.rule.basic.*;
-import yimei.jss.rule.composite.*;
-import yimei.jss.rule.evolved.GPRule;
-import yimei.jss.rule.weighted.WATC;
-import yimei.jss.rule.weighted.WCOVERT;
-import yimei.jss.rule.weighted.WSPT;
+import yimei.jss.rule.operation.basic.*;
+import yimei.jss.rule.operation.composite.*;
+import yimei.jss.rule.operation.evolved.GPRule;
+import yimei.jss.rule.operation.weighted.*;
+import yimei.jss.rule.workcenter.basic.*;
 import yimei.jss.simulation.Simulation;
 import yimei.jss.simulation.StaticSimulation;
 
@@ -193,12 +191,8 @@ public class FJSSMain {
         sequencingRules.add(new OPFSLKperPT());
         sequencingRules.add(new PTplusPW());
         sequencingRules.add(new PTplusPWplusFDD());
-        //routingRules.add(new PTplusWINQ());
-        //routingRules.add(new PTplusWINQplusNPTplusWSL());
-        //routingRules.add(new PTplusWINQplusSL());
         sequencingRules.add(new SlackperOPN());
         sequencingRules.add(new SlackperRPTplusPT());
-        //routingRules.add(new TwoPTplusWINQplusNPT());
         sequencingRules.add(new WATC());
         sequencingRules.add(new WCOVERT());
         sequencingRules.add(new WSPT());
@@ -225,17 +219,19 @@ public class FJSSMain {
         routingRules.add(new OPFSLKperPT());
         routingRules.add(new PTplusPW());
         routingRules.add(new PTplusPWplusFDD());
-        //routingRules.add(new PTplusWINQ());
-        //routingRules.add(new PTplusWINQplusNPTplusWSL());
-        //routingRules.add(new PTplusWINQplusSL());
         routingRules.add(new SlackperOPN());
         routingRules.add(new SlackperRPTplusPT());
-        //routingRules.add(new TwoPTplusWINQplusNPT());
         routingRules.add(new WATC());
         routingRules.add(new WCOVERT());
         routingRules.add(new WSPT());
-        //no winq
 
+        //also add work center specific rules
+        routingRules.add(new LBT());
+        routingRules.add(new LRT());
+        routingRules.add(new NIQ());
+        routingRules.add(new SBT());
+        routingRules.add(new SRT());
+        routingRules.add(new WIQ());
 
         //There is some randomness component - seed should be set
         //We get same result every time we run the whole thing, but if the same instance

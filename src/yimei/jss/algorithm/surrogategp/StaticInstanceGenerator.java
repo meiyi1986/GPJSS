@@ -1,6 +1,6 @@
 package yimei.jss.algorithm.surrogategp;
 
-import yimei.jss.rule.basic.FCFS;
+import yimei.jss.rule.operation.basic.FCFS;
 import yimei.jss.simulation.DynamicSimulation;
 
 /**

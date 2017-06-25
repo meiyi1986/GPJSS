@@ -2,7 +2,6 @@ package yimei.jss.ruleanalysis;
 
 import ec.gp.GPNode;
 import ec.gp.GPTree;
-import ec.gp.koza.KozaFitness;
 import ec.multiobjective.MultiObjectiveFitness;
 import yimei.jss.feature.ignore.Ignorer;
 import yimei.jss.feature.ignore.SimpleIgnorer;
@@ -10,7 +9,7 @@ import yimei.jss.gp.terminal.AttributeGPNode;
 import yimei.jss.gp.terminal.JobShopAttribute;
 import yimei.jss.jobshop.Objective;
 import yimei.jss.jobshop.SchedulingSet;
-import yimei.jss.rule.evolved.GPRule;
+import yimei.jss.rule.operation.evolved.GPRule;
 
 import java.io.BufferedWriter;
 import java.io.File;

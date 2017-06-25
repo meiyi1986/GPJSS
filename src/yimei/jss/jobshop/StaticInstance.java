@@ -1,6 +1,6 @@
 package yimei.jss.jobshop;
 
-import yimei.jss.rule.basic.FCFS;
+import yimei.jss.rule.operation.basic.FCFS;
 
 import java.io.*;
 import java.util.*;

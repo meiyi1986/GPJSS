@@ -2,8 +2,8 @@ package yimei.jss.niching;
 
 import yimei.jss.jobshop.OperationOption;
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.rule.basic.FCFS;
-import yimei.jss.rule.weighted.WSPT;
+import yimei.jss.rule.operation.basic.FCFS;
+import yimei.jss.rule.operation.weighted.WSPT;
 import yimei.jss.simulation.DecisionSituation;
 import yimei.jss.simulation.DynamicSimulation;
 

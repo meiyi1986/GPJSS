@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * The abstract dispatching rule for job shop scheduling.
- *
+ * <p>
  * Created by yimei on 22/09/16.
  */
 public abstract class AbstractRule {
@@ -51,7 +51,7 @@ public abstract class AbstractRule {
                         simulation.objectiveValue(objectives.get(i)));
             }
 
-            col ++;
+            col++;
 
             for (int k = 1; k < schedulingSet.getReplications().get(j); k++) {
                 simulation.rerun();
@@ -62,7 +62,7 @@ public abstract class AbstractRule {
                             simulation.objectiveValue(objectives.get(i)));
                 }
 
-                col ++;
+                col++;
             }
 
             simulation.reset();
@@ -93,7 +93,7 @@ public abstract class AbstractRule {
                 fitnesses[i] += normObjValue;
             }
 
-            col ++;
+            col++;
 
             for (int k = 1; k < schedulingSet.getReplications().get(j); k++) {
                 simulation.rerun();
@@ -107,7 +107,7 @@ public abstract class AbstractRule {
                     fitnesses[i] += normObjValue;
                 }
 
-                col ++;
+                col++;
             }
 
             simulation.reset();
@@ -122,8 +122,8 @@ public abstract class AbstractRule {
 //            f.setStandardizedFitness(state, fitnesses[0]);
 //        }
 //        else {
-            MultiObjectiveFitness f = (MultiObjectiveFitness)fitness;
-            f.setObjectives(state, fitnesses);
+        MultiObjectiveFitness f = (MultiObjectiveFitness) fitness;
+        f.setObjectives(state, fitnesses);
 //        }
     }
 

@@ -56,6 +56,8 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
         }
 
 
+
+        //indivdual should be rr and sr
     public void evaluate(final EvolutionState state,
         final Individual[] ind,  // the individuals to evaluate together
         final boolean[] updateFitness,  // should this individuals' fitness be updated?

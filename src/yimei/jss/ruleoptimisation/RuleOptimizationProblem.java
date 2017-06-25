@@ -8,7 +8,7 @@ import ec.simple.SimpleProblemForm;
 import ec.util.Parameter;
 import yimei.jss.ruleevaluation.AbstractEvaluationModel;
 import yimei.jss.jobshop.Objective;
-import yimei.jss.rule.evolved.GPRule;
+import yimei.jss.rule.operation.evolved.GPRule;
 
 import java.util.List;
 

@@ -26,14 +26,17 @@ public class RuleComparison {
         List<String> fileNames = getFileNames(new ArrayList(), Paths.get(path));
         List<String> bestRulesTotal = new ArrayList<String>();
         for (String fileName: fileNames) {
-            //assess individual file
-            List<String> bestRules = EvaluateFile(fileName, ruleType);
-            String message = fileName + " best "+ruleType+" rule for this instance: ";
-            for (String rule: bestRules) {
-                message += rule +", ";
+            if (!fileName.contains("sdata")) {
+                //sdata is not FJSS data, shouldn't inform decision
+                //assess individual file
+                List<String> bestRules = EvaluateFile(fileName, ruleType);
+                String message = fileName + " best "+ruleType+" rule for this instance: ";
+                for (String rule: bestRules) {
+                    message += rule +", ";
+                }
+                System.out.println(message.substring(0, message.length()-2));
+                bestRulesTotal.addAll(bestRules);
             }
-            System.out.println(message.substring(0, message.length()-2));
-            bestRulesTotal.addAll(bestRules);
         }
 
         List<String> bestOverallRules = getBestRules(bestRulesTotal);

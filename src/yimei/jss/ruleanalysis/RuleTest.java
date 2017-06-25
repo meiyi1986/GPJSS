@@ -1,12 +1,10 @@
 package yimei.jss.ruleanalysis;
 
 import ec.gp.GPNode;
-import ec.gp.koza.KozaFitness;
 import ec.multiobjective.MultiObjectiveFitness;
 import yimei.jss.jobshop.Objective;
-import yimei.jss.jobshop.Scenario;
 import yimei.jss.jobshop.SchedulingSet;
-import yimei.jss.rule.evolved.GPRule;
+import yimei.jss.rule.operation.evolved.GPRule;
 
 import java.io.BufferedWriter;
 import java.io.File;

@@ -1,7 +1,7 @@
 package yimei.jss.jobshop;
 
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.rule.basic.FCFS;
+import yimei.jss.rule.operation.basic.FCFS;
 import yimei.jss.simulation.state.SystemState;
 
 import java.util.HashSet;
@@ -14,21 +14,21 @@ public class Operation {
     private final Job job;
     private final int id;
     private Set<OperationOption> operationOptionSet;
-    private AbstractRule rule;
+    private AbstractRule routingRule;
     private Operation next;
 
-    public Operation(Job job, int id, AbstractRule rule) {
+    public Operation(Job job, int id, AbstractRule routingRule) {
         this.job = job;
         this.id = id;
-        this.rule = rule;
+        this.routingRule = routingRule;
         this.operationOptionSet = new HashSet<>();
     }
 
-    public Operation(Job job, int id, double procTime, WorkCenter workCenter, AbstractRule rule) {
+    public Operation(Job job, int id, double procTime, WorkCenter workCenter, AbstractRule routingRule) {
         this.job = job;
         this.id = id;
         this.operationOptionSet = new HashSet<>();
-        this.rule = rule;
+        this.routingRule = routingRule;
         this.next = null;
         operationOptionSet.add(new OperationOption(this,
                 operationOptionSet.size()+1,procTime,workCenter));
@@ -90,15 +90,15 @@ public class Operation {
         }
 
         //TODO: Check assumption - lowest priority value is best
-        AbstractRule rule = this.rule;
-        if (rule == null) {
-            rule = new FCFS();
+        AbstractRule routingRule = this.routingRule;
+        if (routingRule == null) {
+            routingRule = new FCFS();
         }
 
         double lowestPriority = Double.POSITIVE_INFINITY;
         OperationOption best = null;
         for (OperationOption option: operationOptionSet) {
-            double priority = rule.priority(option, option.getWorkCenter(), systemState);
+            double priority = routingRule.priority(option, option.getWorkCenter(), systemState);
             if (priority < lowestPriority || lowestPriority == Double.POSITIVE_INFINITY) {
                 lowestPriority = priority;
                 best = option;

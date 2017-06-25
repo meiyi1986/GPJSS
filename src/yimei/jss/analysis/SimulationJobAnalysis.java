@@ -1,9 +1,9 @@
 package yimei.jss.analysis;
 
 import yimei.jss.jobshop.Job;
-import yimei.jss.rule.basic.FCFS;
-import yimei.jss.rule.evolved.GPRule;
-import yimei.jss.rule.weighted.WATC;
+import yimei.jss.rule.operation.basic.FCFS;
+import yimei.jss.rule.operation.evolved.GPRule;
+import yimei.jss.rule.operation.weighted.WATC;
 import yimei.jss.simulation.DynamicSimulation;
 
 import java.io.BufferedWriter;

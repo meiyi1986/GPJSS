@@ -4,8 +4,8 @@ import ec.multiobjective.MultiObjectiveFitness;
 import yimei.jss.jobshop.Objective;
 import yimei.jss.jobshop.SchedulingSet;
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.rule.basic.*;
-import yimei.jss.rule.composite.*;
+import yimei.jss.rule.operation.basic.*;
+import yimei.jss.rule.operation.composite.*;
 
 import java.util.ArrayList;
 import java.util.List;

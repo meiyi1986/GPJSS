@@ -4,7 +4,7 @@ import ec.EvolutionState;
 import ec.Individual;
 import ec.Subpopulation;
 import ec.gp.GPIndividual;
-import yimei.jss.rule.evolved.GPRule;
+import yimei.jss.rule.operation.evolved.GPRule;
 
 import java.util.ArrayList;
 import java.util.Arrays;

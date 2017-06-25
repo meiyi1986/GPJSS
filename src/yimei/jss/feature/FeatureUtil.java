@@ -15,7 +15,7 @@ import yimei.jss.gp.terminal.BuildingBlock;
 import yimei.jss.gp.terminal.ConstantTerminal;
 import yimei.jss.niching.ClearingEvaluator;
 import yimei.jss.niching.PhenoCharacterisation;
-import yimei.jss.rule.evolved.GPRule;
+import yimei.jss.rule.operation.evolved.GPRule;
 import yimei.jss.ruleoptimisation.RuleOptimizationProblem;
 
 import java.io.BufferedWriter;

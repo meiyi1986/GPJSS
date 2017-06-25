@@ -4,7 +4,7 @@ import ec.Fitness;
 import ec.gp.koza.KozaFitness;
 import ec.multiobjective.MultiObjectiveFitness;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import yimei.jss.rule.evolved.GPRule;
+import yimei.jss.rule.operation.evolved.GPRule;
 import yimei.util.lisp.LispSimplifier;
 
 import java.io.BufferedReader;
