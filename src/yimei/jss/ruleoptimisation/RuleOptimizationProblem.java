@@ -10,6 +10,7 @@ import yimei.jss.ruleevaluation.AbstractEvaluationModel;
 import yimei.jss.jobshop.Objective;
 import yimei.jss.rule.operation.evolved.GPRule;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -63,7 +64,11 @@ public class RuleOptimizationProblem extends GPProblem implements SimpleProblemF
             System.exit(1);
         }
 
-        evaluationModel.evaluate(indi.fitness, rule, state);
+        List rules = new ArrayList();
+        List fitnesses = new ArrayList();
+        rules.add(rule);
+        fitnesses.add(indi.fitness);
+        evaluationModel.evaluate(fitnesses, rules, state);
 
 //        sequencingRule.calcFitness(indi.fitness, state, trainSet, objectives);
 

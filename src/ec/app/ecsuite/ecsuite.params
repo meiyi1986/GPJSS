@@ -36,12 +36,12 @@ eval.problem.type = rastrigin
 
 state = 				ec.simple.SimpleEvolutionState
 init = 					ec.simple.SimpleInitializer
-finish = 	        		ec.simple.SimpleFinisher
+finish = 	        	ec.simple.SimpleFinisher
 exch = 					ec.simple.SimpleExchanger
 breed =					ec.simple.SimpleBreeder
 eval =					ec.simple.SimpleEvaluator
 stat =					ec.simple.SimpleStatistics
-generations =				1000
+generations =			1000
 quit-on-run-complete =			true
 pop = 					ec.Population
 pop.subpops =				1

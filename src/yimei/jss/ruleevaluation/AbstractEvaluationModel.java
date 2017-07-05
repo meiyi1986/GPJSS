@@ -45,8 +45,8 @@ public abstract class AbstractEvaluationModel {
         }
     }
 
-    public abstract void evaluate(Fitness fitness,
-                                  AbstractRule rule,
+    public abstract void evaluate(List<Fitness> fitnesses,
+                                  List<AbstractRule> rule,
                                   EvolutionState state);
 
     public abstract boolean isRotatable();

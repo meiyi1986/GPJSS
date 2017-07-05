@@ -166,72 +166,69 @@ public class FJSSMain {
 
         objectives.add(Objective.MAKESPAN);
 
-//        sequencingRules.add(GPRule.readFromLispExpression(
-//                "(* (max (- (* (* (/ SL WKR) (+ W WIQ)) NIQ) (+ TIS (- PT W))) (+ (- WKR NPT) PT)) (* PT (+ (+ (/ (min (+ OWT WINQ) (+ W WIQ)) W) (- PT W)) (- PT W))))")
-//        );
-        sequencingRules.add(new AVPRO());
-        sequencingRules.add(new CR());
-        sequencingRules.add(new EDD());
+//        sequencingRules.add(new AVPRO());
+//        sequencingRules.add(new CR());
+//        sequencingRules.add(new EDD());
         sequencingRules.add(new FCFS());
-        sequencingRules.add(new FDD());
-        sequencingRules.add(new LCFS());
-        sequencingRules.add(new LPT());
-        sequencingRules.add(new LWKR());
-        sequencingRules.add(new MOPNR());
-        sequencingRules.add(new MWKR());
-        sequencingRules.add(new NPT());
-        sequencingRules.add(new PW());
-        sequencingRules.add(new SL());
-        sequencingRules.add(new Slack());
-        sequencingRules.add(new SPT());
-        sequencingRules.add(new ATC());
-        sequencingRules.add(new COVERT());
-        sequencingRules.add(new CRplusPT());
-        sequencingRules.add(new LWKRplusPT());
-        sequencingRules.add(new OPFSLKperPT());
-        sequencingRules.add(new PTplusPW());
-        sequencingRules.add(new PTplusPWplusFDD());
-        sequencingRules.add(new SlackperOPN());
-        sequencingRules.add(new SlackperRPTplusPT());
-        sequencingRules.add(new WATC());
-        sequencingRules.add(new WCOVERT());
-        sequencingRules.add(new WSPT());
+//        sequencingRules.add(new FDD());
+//        sequencingRules.add(new LCFS());
+//        sequencingRules.add(new LPT());
+//        sequencingRules.add(new LWKR());
+//        sequencingRules.add(new MOPNR());
+//        sequencingRules.add(new MWKR());
+//        sequencingRules.add(new NPT());
+//        sequencingRules.add(new PW());
+//        sequencingRules.add(new SL());
+//        sequencingRules.add(new Slack());
+//        sequencingRules.add(new SPT());
+//        sequencingRules.add(new ATC());
+//        sequencingRules.add(new COVERT());
+//        sequencingRules.add(new CRplusPT());
+//        sequencingRules.add(new LWKRplusPT());
+//        sequencingRules.add(new OPFSLKperPT());
+//        sequencingRules.add(new PTplusPW());
+//        sequencingRules.add(new PTplusPWplusFDD());
+//        sequencingRules.add(new SlackperOPN());
+//        sequencingRules.add(new SlackperRPTplusPT());
+//        sequencingRules.add(new WATC());
+//        sequencingRules.add(new WCOVERT());
+//        sequencingRules.add(new WSPT());
 
-        routingRules.add(new AVPRO());
-        routingRules.add(new CR());
-        routingRules.add(new EDD());
-        routingRules.add(new FCFS());
-        routingRules.add(new FDD());
-        routingRules.add(new LCFS());
-        routingRules.add(new LPT());
-        routingRules.add(new LWKR());
-        routingRules.add(new MOPNR());
-        routingRules.add(new MWKR());
-        routingRules.add(new NPT());
-        routingRules.add(new PW());
-        routingRules.add(new SL());
-        routingRules.add(new Slack());
-        routingRules.add(new SPT());
-        routingRules.add(new ATC());
-        routingRules.add(new COVERT());
-        routingRules.add(new CRplusPT());
-        routingRules.add(new LWKRplusPT());
-        routingRules.add(new OPFSLKperPT());
-        routingRules.add(new PTplusPW());
-        routingRules.add(new PTplusPWplusFDD());
-        routingRules.add(new SlackperOPN());
-        routingRules.add(new SlackperRPTplusPT());
-        routingRules.add(new WATC());
-        routingRules.add(new WCOVERT());
-        routingRules.add(new WSPT());
-
-        //also add work center specific rules
-        routingRules.add(new LBT());
-        routingRules.add(new LRT());
-        routingRules.add(new NIQ());
-        routingRules.add(new SBT());
-        routingRules.add(new SRT());
-        routingRules.add(new WIQ());
+//        routingRules.add(new AVPRO());
+//        routingRules.add(new CR());
+//        routingRules.add(new EDD());
+//        routingRules.add(new FCFS());
+//        routingRules.add(new FDD());
+//        routingRules.add(new LCFS());
+//        routingRules.add(new LPT());
+//        routingRules.add(new LWKR());
+//        routingRules.add(new MOPNR());
+//        routingRules.add(new MWKR());
+//        routingRules.add(new NPT());
+//        routingRules.add(new PW());
+//        routingRules.add(new SL());
+//        routingRules.add(new Slack());
+//        routingRules.add(new SPT());
+//        routingRules.add(new ATC());
+//        routingRules.add(new COVERT());
+//        routingRules.add(new CRplusPT());
+//        routingRules.add(new LWKRplusPT());
+//        routingRules.add(new OPFSLKperPT());
+//        routingRules.add(new PTplusPW());
+//        routingRules.add(new PTplusPWplusFDD());
+//        routingRules.add(new SlackperOPN());
+//        routingRules.add(new SlackperRPTplusPT());
+//        routingRules.add(new WATC());
+//        routingRules.add(new WCOVERT());
+//        routingRules.add(new WSPT());
+//
+//        //also add work center specific rules
+//        routingRules.add(new LBT());
+//        routingRules.add(new LRT());
+//        routingRules.add(new NIQ());
+//        routingRules.add(new SBT());
+//        routingRules.add(new SRT());
+//        routingRules.add(new WIQ());
 
         //There is some randomness component - seed should be set
         //We get same result every time we run the whole thing, but if the same instance
