@@ -23,7 +23,8 @@ stat = ec.simple.SimpleStatistics
 stat.file = $out.stat
 stat.num-children = 1
 stat.child.0 = ec.gp.koza.KozaShortStatistics
-stat.child.0.file = $outtabular.stat
+stat.do-generation = false
+stat.do-message = false
 
 generations = 51
 quit-on-run-complete = true
@@ -34,7 +35,6 @@ pop.subpop.0 = ec.Subpopulation
 pop.subpop.0.size =	1024
 
 breed.elite.0 = 10
-
 
 # ==============================
 # GP general parameters
