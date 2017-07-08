@@ -23,7 +23,7 @@ public class RuleComparison {
         //ruleType = sequencingRule or routingRule
 
         String path = (new File("")).getAbsolutePath() + dirPath;
-        List<String> fileNames = getFileNames(new ArrayList(), Paths.get(path));
+        List<String> fileNames = getFileNames(new ArrayList(), Paths.get(path), ".fjs");
         List<String> bestRulesTotal = new ArrayList<String>();
         for (String fileName: fileNames) {
             if (!fileName.contains("sdata")) {

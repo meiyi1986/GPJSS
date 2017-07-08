@@ -48,12 +48,12 @@ public class GPMain {
         //include path to params file
         List<String> gpRunArgs = new ArrayList<>();
         gpRunArgs.add("-file");
-        //gpRunArgs.add("/Users/dyska/Desktop/Uni/COMP489/GPJSS/src/yimei/jss/algorithm/simplegp/simplegp.params");
-        gpRunArgs.add("/Users/dyska/Desktop/Uni/COMP489/GPJSS/src/yimei/jss/algorithm/coevolutiongp/coevolutiongp.params");
+        gpRunArgs.add("/Users/dyska/Desktop/Uni/COMP489/GPJSS/src/yimei/jss/algorithm/simplegp/simplegp.params");
+        //gpRunArgs.add("/Users/dyska/Desktop/Uni/COMP489/GPJSS/src/yimei/jss/algorithm/coevolutiongp/coevolutiongp.params");
         //gpRunArgs.add("/Users/dyska/Desktop/Uni/COMP489/GPJSS/src/ec/app/coevolve2/coevolve2.params");
         gpRunArgs.add("-p");
 
-        List<String> fileNames = getFileNames(new ArrayList(), Paths.get(path));
+        List<String> fileNames = getFileNames(new ArrayList(), Paths.get(path), ".fjs");
 
         boolean isTest = true;
         int maxTests = 1;

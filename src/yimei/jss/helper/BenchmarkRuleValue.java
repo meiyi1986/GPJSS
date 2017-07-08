@@ -1,16 +1,11 @@
 package yimei.jss.helper;
 
-import ec.app.sum.Sum;
 import yimei.jss.FJSSMain;
 import yimei.jss.jobshop.FlexibleStaticInstance;
 import yimei.jss.jobshop.Objective;
 import yimei.jss.jobshop.SchedulingSet;
-import yimei.jss.rule.AbstractRule;
-import yimei.jss.rule.operation.basic.FCFS;
 import yimei.jss.simulation.Simulation;
 import yimei.jss.simulation.StaticSimulation;
-
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -39,7 +34,7 @@ public class BenchmarkRuleValue {
         List<Integer> replications = new ArrayList<Integer>();
         replications.add(new Integer(1));
 
-        List<String> fileNames = FJSSMain.getFileNames(new ArrayList(), Paths.get(dataPath));
+        List<String> fileNames = FJSSMain.getFileNames(new ArrayList(), Paths.get(dataPath), ".fjs");
         HashMap<String, Double> map = new HashMap<String, Double>();
         for (String fileName: fileNames) {
             List<Simulation> simulations = new ArrayList<Simulation>();
@@ -52,8 +47,6 @@ public class BenchmarkRuleValue {
             fileName = fileName.substring(dataPath.length());
             map.put(fileName, makeSpan);
         }
-
-        System.out.println(map.keySet().size()+" entries.");
 
         //now write to csv file
         String csvFile = homePath+"out/test/benchmarkmakespan.csv";

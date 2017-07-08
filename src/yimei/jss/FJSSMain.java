@@ -126,17 +126,17 @@ public class FJSSMain {
         return output;
     }
 
-    public static List<String> getFileNames(List<String> fileNames, Path dir) {
-        if (dir.toAbsolutePath().toString().endsWith(".fjs")) {
+    public static List<String> getFileNames(List<String> fileNames, Path dir, String ext) {
+        if (dir.toAbsolutePath().toString().endsWith(ext)) {
             //have been passed a file
             fileNames.add(dir.toString());
         } else {
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
                 for (Path path : stream) {
                     if (path.toFile().isDirectory()) {
-                        getFileNames(fileNames, path);
+                        getFileNames(fileNames, path, ".fjs");
                     } else {
-                        if (path.toString().endsWith(".fjs")) {
+                        if (path.toString().endsWith(ext)) {
                             fileNames.add(path.toString());
                         }
                     }
@@ -234,7 +234,7 @@ public class FJSSMain {
         //We get same result every time we run the whole thing, but if the same instance
         //is run multiple times it changes
 
-        List<String> fileNames = getFileNames(new ArrayList(), Paths.get(path));
+        List<String> fileNames = getFileNames(new ArrayList(), Paths.get(path), ".fjs");
         for (int i = 0; i < fileNames.size(); ++i) {
             String fileName = fileNames.get(i);
             System.out.println("\nInstance "+(i+1)+" - Path: "+fileName);
