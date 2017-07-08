@@ -24,9 +24,17 @@ import java.util.List;
  */
 public class BenchmarkRuleValue {
 
-    private static final char DEFAULT_SEPARATOR = ',';
+    private HashMap<String, Double> makeSpans;
 
-    public static void main(String args[]) {
+    public BenchmarkRuleValue() {
+        this.makeSpans = InitMakespans();
+    }
+
+    public HashMap<String, Double> GetMakespans() {
+        return makeSpans;
+    }
+
+    private HashMap<String, Double> InitMakespans() {
         String homePath = "/Users/dyska/Desktop/Uni/COMP489/GPJSS/";
         String dataPath = homePath + "data/FJSS/";
         List<Objective> objectives = new ArrayList<Objective>();
@@ -35,7 +43,7 @@ public class BenchmarkRuleValue {
         replications.add(new Integer(1));
 
         List<String> fileNames = FJSSMain.getFileNames(new ArrayList(), Paths.get(dataPath), ".fjs");
-        HashMap<String, Double> map = new HashMap<String, Double>();
+        HashMap<String, Double> makeSpans = new HashMap<String, Double>();
         for (String fileName: fileNames) {
             List<Simulation> simulations = new ArrayList<Simulation>();
             FlexibleStaticInstance instance = FlexibleStaticInstance.readFromAbsPath(fileName, null);
@@ -45,67 +53,10 @@ public class BenchmarkRuleValue {
 
             double makeSpan = schedulingSet.getObjectiveLowerBoundMtx().getData()[0][0];
             fileName = fileName.substring(dataPath.length());
-            map.put(fileName, makeSpan);
+            makeSpans.put(fileName, makeSpan);
         }
-
-        //now write to csv file
-        String csvFile = homePath+"out/test/benchmarkmakespan.csv";
-        try (FileWriter writer = new FileWriter(csvFile)) {
-            for (String fileName: map.keySet()) {
-                List<String> keyValuePair = new ArrayList<String>();
-                keyValuePair.add(fileName);
-                keyValuePair.add(map.get(fileName).toString());
-                writeLine(writer, keyValuePair);
-            }
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return makeSpans;
     }
 
-    /*
-    All the code below this line is not mine, taken from:
-    https://www.mkyong.com/java/how-to-export-data-to-csv-file-java/
-     */
 
-    public static void writeLine(Writer w, List<String> values, char separators, char customQuote) throws IOException {
-
-        boolean first = true;
-
-        //default customQuote is empty
-
-        if (separators == ' ') {
-            separators = DEFAULT_SEPARATOR;
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (String value : values) {
-            if (!first) {
-                sb.append(separators);
-            }
-            if (customQuote == ' ') {
-                sb.append(followCVSformat(value));
-            } else {
-                sb.append(customQuote).append(followCVSformat(value)).append(customQuote);
-            }
-
-            first = false;
-        }
-        sb.append("\n");
-        w.append(sb.toString());
-    }
-
-    private static String followCVSformat(String value) {
-
-        String result = value;
-        if (result.contains("\"")) {
-            result = result.replace("\"", "\"\"");
-        }
-        return result;
-    }
-
-    public static void writeLine(Writer w, List<String> values) throws IOException {
-        writeLine(w, values, DEFAULT_SEPARATOR, ' ');
-    }
 }
