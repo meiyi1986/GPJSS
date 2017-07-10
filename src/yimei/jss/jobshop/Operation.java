@@ -1,7 +1,7 @@
 package yimei.jss.jobshop;
 
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.rule.operation.basic.FCFS;
+import yimei.jss.rule.workcenter.basic.SBT;
 import yimei.jss.simulation.state.SystemState;
 
 import java.util.ArrayList;
@@ -93,7 +93,7 @@ public class Operation {
 
         AbstractRule routingRule = this.routingRule;
         if (routingRule == null) {
-            routingRule = new FCFS();
+            routingRule = new SBT();
         }
 
         double lowestPriority = Double.POSITIVE_INFINITY;

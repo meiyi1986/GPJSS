@@ -4,6 +4,7 @@ import yimei.jss.jobshop.OperationOption;
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.rule.operation.basic.FCFS;
 import yimei.jss.rule.operation.weighted.WSPT;
+import yimei.jss.rule.workcenter.basic.SBT;
 import yimei.jss.simulation.DecisionSituation;
 import yimei.jss.simulation.DynamicSimulation;
 
@@ -89,7 +90,7 @@ public class PhenoCharacterisation {
 
     public static PhenoCharacterisation defaultPhenoCharacterisation() {
         AbstractRule refRule = new WSPT();
-        AbstractRule defaultRoutingRule = new FCFS();
+        AbstractRule defaultRoutingRule = new SBT();
         int minQueueLength = 10;
         int numDecisionSituations = 20;
         long shuffleSeed = 8295342;

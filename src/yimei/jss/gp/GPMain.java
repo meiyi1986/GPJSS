@@ -31,7 +31,7 @@ public class GPMain {
         List<String> fileNames = getFileNames(new ArrayList(), Paths.get(path), ".fjs");
 
         boolean isTest = false;
-        int maxTests = 50;
+        int maxTests = 1;
 
         for (String fileName: fileNames) {
             //worry about saving output later

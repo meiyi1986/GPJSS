@@ -86,6 +86,8 @@ public abstract class AbstractRule {
             simulation.run();
 
             for (int i = 0; i < objectives.size(); i++) {
+/*                System.out.println("Makespan: "+simulation.objectiveValue(objectives.get(i)));
+                System.out.println("Benchmark makespan: "+schedulingSet.getObjectiveLowerBound(i, col));*/
                 double normObjValue = simulation.objectiveValue(objectives.get(i))
                         / schedulingSet.getObjectiveLowerBound(i, col);
                 fitnesses[i] += normObjValue;
