@@ -4,7 +4,9 @@ import yimei.jss.rule.AbstractRule;
 import yimei.jss.rule.operation.basic.FCFS;
 import yimei.jss.simulation.state.SystemState;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -13,7 +15,7 @@ import java.util.Set;
 public class Operation {
     private final Job job;
     private final int id;
-    private Set<OperationOption> operationOptionSet;
+    private List<OperationOption> operationOptions;
     private AbstractRule routingRule;
     private Operation next;
 
@@ -21,22 +23,22 @@ public class Operation {
         this.job = job;
         this.id = id;
         this.routingRule = routingRule;
-        this.operationOptionSet = new HashSet<>();
+        this.operationOptions = new ArrayList<>();
     }
 
     public Operation(Job job, int id, double procTime, WorkCenter workCenter, AbstractRule routingRule) {
         this.job = job;
         this.id = id;
-        this.operationOptionSet = new HashSet<>();
+        this.operationOptions = new ArrayList<>();
         this.routingRule = routingRule;
         this.next = null;
-        operationOptionSet.add(new OperationOption(this,
-                operationOptionSet.size()+1,procTime,workCenter));
+        operationOptions.add(new OperationOption(this,
+                operationOptions.size()+1,procTime,workCenter));
     }
 
     public String toString() {
         String msg = "";
-        for (OperationOption option: operationOptionSet) {
+        for (OperationOption option: operationOptions) {
             msg += String.format("[O%d-%d, W%d, T%.1f], ",
                     id, option.getOptionId(), option.getWorkCenter().getId(), option.getProcTime());
         }
@@ -57,10 +59,10 @@ public class Operation {
 
     public Operation getNext() { return next; }
 
-    public Set<OperationOption> getOperationOptionSet() { return operationOptionSet; }
+    public List<OperationOption> getOperationOptions() { return operationOptions; }
 
     public void addOperationOption(OperationOption option) {
-        operationOptionSet.add(option);
+        operationOptions.add(option);
     }
 
     /*
@@ -71,7 +73,7 @@ public class Operation {
     public OperationOption getOperationOption() {
         double highestProcTime = Double.NEGATIVE_INFINITY;
         OperationOption best = null;
-        for (OperationOption option: operationOptionSet) {
+        for (OperationOption option: operationOptions) {
             if (option.getProcTime() > highestProcTime || highestProcTime == Double.NEGATIVE_INFINITY) {
                 highestProcTime = option.getProcTime();
                 best = option;
@@ -85,11 +87,10 @@ public class Operation {
     informed decision in choosing which operation option to use.
      */
     public OperationOption getOperationOption(SystemState systemState) {
-        if (operationOptionSet.size() == 1) {
-            return operationOptionSet.iterator().next();
+        if (operationOptions.size() == 1) {
+            return operationOptions.iterator().next();
         }
 
-        //TODO: Check assumption - lowest priority value is best
         AbstractRule routingRule = this.routingRule;
         if (routingRule == null) {
             routingRule = new FCFS();
@@ -97,7 +98,7 @@ public class Operation {
 
         double lowestPriority = Double.POSITIVE_INFINITY;
         OperationOption best = null;
-        for (OperationOption option: operationOptionSet) {
+        for (OperationOption option: operationOptions) {
             double priority = routingRule.priority(option, option.getWorkCenter(), systemState);
             if (priority < lowestPriority || lowestPriority == Double.POSITIVE_INFINITY) {
                 lowestPriority = priority;

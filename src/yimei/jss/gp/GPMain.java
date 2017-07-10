@@ -12,31 +12,7 @@ import static yimei.jss.FJSSMain.getFileNames;
  */
 public class GPMain {
 
-//    //-file + path to params file
-//
-//    //want to evaluate every file
-//
-//    String path = "";
-//        if (args.length > 2) {
-//        //allow more specific folder or file paths to be used
-//        path = args[2];
-//    }
-//    path = (new File("")).getAbsolutePath() + "/data/FJSS/" + path;
-//    List<String> fileNames = getFileNames(new ArrayList(), Paths.get(path));
-
-    /*
-    Arguments should be a params file, number of runs per
-     */
     public static void main(String[] args) {
-        //TODO: use args
-//        -file
-//                /Users/dyska/Desktop/Uni/COMP489/GPJSS/src/yimei/jss/algorithm/simplegp/simplegp.params
-//                -p
-//        seed.0=2
-//                -p
-//        filePath=/Users/dyska/Desktop/Uni/COMP489/GPJSS/data/FJSS/Hurink_Data/Text/sdata/la10.fjs
-        //example file path: Hurink_Data/Text/sdata/la10.fjs
-
         String path = "";
         if (args.length > 0) {
             //allow more specific folder or file paths to be used
@@ -50,13 +26,12 @@ public class GPMain {
         gpRunArgs.add("-file");
         gpRunArgs.add("/Users/dyska/Desktop/Uni/COMP489/GPJSS/src/yimei/jss/algorithm/simplegp/simplegp.params");
         //gpRunArgs.add("/Users/dyska/Desktop/Uni/COMP489/GPJSS/src/yimei/jss/algorithm/coevolutiongp/coevolutiongp.params");
-        //gpRunArgs.add("/Users/dyska/Desktop/Uni/COMP489/GPJSS/src/ec/app/coevolve2/coevolve2.params");
         gpRunArgs.add("-p");
 
         List<String> fileNames = getFileNames(new ArrayList(), Paths.get(path), ".fjs");
 
-        boolean isTest = true;
-        int maxTests = 1;
+        boolean isTest = false;
+        int maxTests = 50;
 
         for (String fileName: fileNames) {
             //worry about saving output later

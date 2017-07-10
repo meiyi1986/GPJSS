@@ -106,8 +106,15 @@ public class ProcessFinishEvent extends AbstractEvent {
         if (time > other.time)
             return 1;
 
-        if (other instanceof ProcessFinishEvent)
-            return 0;
+        if (other instanceof ProcessFinishEvent) {
+            ProcessFinishEvent otherPFE = (ProcessFinishEvent)other;
+
+            if (process.getMachineId() < otherPFE.process.getMachineId())
+                return -1;
+
+            if (process.getMachineId() > otherPFE.process.getMachineId())
+                return 1;
+        }
 
         return 1;
     }

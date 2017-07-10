@@ -65,6 +65,12 @@ public class GridResultCleaner {
         String csvFile = outPath + "/"+ outputFileName;
 
         try (FileWriter writer = new FileWriter(csvFile)) {
+            //add header first
+            List<String> headers = new ArrayList<String>();
+            headers.add("Seed");
+            headers.add("Makespan");
+            writeLine(writer, headers);
+
             for (Integer i: makeSpans.keySet()) {
                 List<String> keyValuePair = new ArrayList<String>();
                 keyValuePair.add(i.toString());
@@ -162,7 +168,7 @@ public class GridResultCleaner {
 
     public static void main(String args[]) {
         GridResultCleaner grc = new GridResultCleaner("/Users/dyska/Desktop/Uni/COMP489/fjss-hardcoded-results",
-                "/Users/dyska/Desktop/Uni/COMP489/GPJSS/out/test");
+                "/Users/dyska/Desktop/Uni/COMP489/GPJSS/out/grid_results");
         grc.cleanResults();
     }
 }

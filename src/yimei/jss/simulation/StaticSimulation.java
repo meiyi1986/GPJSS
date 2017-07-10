@@ -3,11 +3,14 @@ package yimei.jss.simulation;
 import yimei.jss.jobshop.*;
 import yimei.jss.jobshop.Process;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.simulation.event.AbstractEvent;
 import yimei.jss.simulation.event.JobArrivalEvent;
 import yimei.jss.simulation.event.ProcessFinishEvent;
+import yimei.jss.simulation.state.SystemState;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
 
 /**
  * The simulation based on static job shop instance.
@@ -19,13 +22,11 @@ public class StaticSimulation extends Simulation {
     private JSSInstance instance;
     private Shop shop;
     private List<Process> dummyProcesses;
-    private AbstractRule routingRule;
 
     public StaticSimulation(AbstractRule sequencingRule, AbstractRule routingRule, JSSInstance instance) {
         super(sequencingRule, routingRule, instance.getNumWorkCenters(), instance.getNumJobs(), 0);
 
         this.instance = instance;
-        this.routingRule = routingRule;
 
         // Create the shop
         shop = instance.createShop();
@@ -73,6 +74,16 @@ public class StaticSimulation extends Simulation {
         eventQueue.clear();
         instance.resetShop(shop);
 
+        // Create the shop
+        shop = instance.createShop();
+
+        // Create the dummy processes to fill the initial ready time
+        dummyProcesses = new ArrayList<>();
+        for (int i = 0; i < shop.getWorkCenters().size(); i++) {
+            dummyProcesses.add(createDummyProcess(shop.getWorkCenter(i),
+                    instance.getWorkCenterReadyTimes().get(i)));
+        }
+
         setup();
     }
 
@@ -111,5 +122,12 @@ public class StaticSimulation extends Simulation {
         Process process = new Process(workCenter, 0, op.getOperationOption(systemState), 0);
 
         return process;
+    }
+
+    public String toString() {
+        String str = "Shop: \n";
+        str += shop.toString();
+
+        return str;
     }
 }

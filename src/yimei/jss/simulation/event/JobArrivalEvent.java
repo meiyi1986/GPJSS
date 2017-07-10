@@ -55,8 +55,15 @@ public class JobArrivalEvent extends AbstractEvent {
         if (time > other.time)
             return 1;
 
-        if (other instanceof JobArrivalEvent)
-            return 0;
+        if (other instanceof JobArrivalEvent) {
+            JobArrivalEvent otherJAE = (JobArrivalEvent)other;
+
+            if (job.getId() < otherJAE.job.getId())
+                return -1;
+
+            if (job.getId() > otherJAE.job.getId())
+                return 1;
+        }
 
         return -1;
     }

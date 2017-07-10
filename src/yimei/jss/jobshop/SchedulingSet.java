@@ -66,18 +66,12 @@ public class SchedulingSet {
         lowerBoundsFromBenchmarkRule(objectives);
     }
 
-//    public void reset() {
-//        for (DynamicSimulation simulation : simulations) {
-//            simulation.reset();
-//        }
-//    }
-
     private void createObjectiveLowerBoundMatrix(List<Objective> objectives) {
         int rows = objectives.size();
         int cols = 0;
-        for (int rep : replications)
+        for (int rep : replications) {
             cols += rep;
-
+        }
         objectiveLowerBoundMtx = new Array2DRowRealMatrix(rows, cols);
     }
 
@@ -91,7 +85,7 @@ public class SchedulingSet {
                 Simulation simulation = simulations.get(j);
                 simulation.setSequencingRule(benchmarkRule);
                 simulation.run();
-//                System.out.println(simulation.workCenterUtilLevelsToString());
+
                 double value = simulation.objectiveValue(objective);
                 objectiveLowerBoundMtx.setEntry(i, col, value);
                 col ++;

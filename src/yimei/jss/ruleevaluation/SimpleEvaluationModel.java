@@ -34,10 +34,6 @@ public class SimpleEvaluationModel extends AbstractEvaluationModel {
     public final static String P_SIM_NUM_MACHINES = "num-machines";
     public final static String P_SIM_NUM_JOBS = "num-jobs";
     public final static String P_SIM_WARMUP_JOBS = "warmup-jobs";
-    public final static String P_SIM_MIN_NUM_OPS = "min-num-ops";
-    public final static String P_SIM_MAX_NUM_OPS = "max-num-ops";
-    public final static String P_SIM_UTIL_LEVEL = "util-level";
-    public final static String P_SIM_DUE_DATE_FACTOR = "due-date-factor";
     public final static String P_SIM_REPLICATIONS = "replications";
 
     protected SchedulingSet schedulingSet;
@@ -87,19 +83,6 @@ public class SimpleEvaluationModel extends AbstractEvaluationModel {
             int numJobs = state.parameters.getIntWithDefault(p, null, 5000);
             // Number of warmup jobs
             p = b.push(P_SIM_WARMUP_JOBS);
-//            int warmupJobs = state.parameters.getIntWithDefault(p, null, 1000);
-//            // Min number of operations
-//            p = b.push(P_SIM_MIN_NUM_OPS);
-//            int minNumOps = state.parameters.getIntWithDefault(p, null, 2);
-//            // Max number of operations
-//            p = b.push(P_SIM_MAX_NUM_OPS);
-//            int maxNumOps = state.parameters.getIntWithDefault(p, null, numMachines);
-//            // Utilization level
-//            p = b.push(P_SIM_UTIL_LEVEL);
-//            double utilLevel = state.parameters.getDoubleWithDefault(p, null, 0.85);
-//            // Due date factor
-//            p = b.push(P_SIM_DUE_DATE_FACTOR);
-//            double dueDateFactor = state.parameters.getDoubleWithDefault(p, null, 4.0);
             // Number of replications
             p = b.push(P_SIM_REPLICATIONS);
             int rep = state.parameters.getIntWithDefault(p, null, 1);

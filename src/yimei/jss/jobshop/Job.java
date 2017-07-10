@@ -120,7 +120,7 @@ public class Job implements Comparable<Job> {
 
         for (int i = 0; i < operations.size(); i++) {
             Operation operation = operations.get(i);
-            for (OperationOption option: operation.getOperationOptionSet()) {
+            for (OperationOption option: operation.getOperationOptions()) {
                 option.setFlowDueDate(fdd + option.getProcTime());
             }
             //fdd needs to be incremented
@@ -133,7 +133,7 @@ public class Job implements Comparable<Job> {
         int numOpsRemaining = 0;
         for (int i = operations.size()-1; i > -1; i--) {
             Operation operation = operations.get(i);
-            for (OperationOption option: operation.getOperationOptionSet()) {
+            for (OperationOption option: operation.getOperationOptions()) {
 
                 option.setWorkRemaining(workRemaining + option.getProcTime());
 

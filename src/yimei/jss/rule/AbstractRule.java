@@ -8,6 +8,7 @@ import org.apache.commons.math3.linear.RealMatrix;
 import yimei.jss.jobshop.*;
 import yimei.jss.simulation.DecisionSituation;
 import yimei.jss.simulation.Simulation;
+import yimei.jss.simulation.StaticSimulation;
 import yimei.jss.simulation.state.SystemState;
 
 import java.util.List;
@@ -83,11 +84,8 @@ public abstract class AbstractRule {
             simulation.setSequencingRule(this);
 
             simulation.run();
-//            System.out.println(simulation.workCenterUtilLevelsToString());
 
             for (int i = 0; i < objectives.size(); i++) {
-//                double obj = simulation.objectiveValue(objectives.get(i));
-//                double lb = schedulingSet.getObjectiveLowerBound(i, col);
                 double normObjValue = simulation.objectiveValue(objectives.get(i))
                         / schedulingSet.getObjectiveLowerBound(i, col);
                 fitnesses[i] += normObjValue;
@@ -97,11 +95,8 @@ public abstract class AbstractRule {
 
             for (int k = 1; k < schedulingSet.getReplications().get(j); k++) {
                 simulation.rerun();
-//                System.out.println(simulation.workCenterUtilLevelsToString());
 
                 for (int i = 0; i < objectives.size(); i++) {
-//                    System.out.println("obj = " + simulation.objectiveValue(objectives.get(i)));
-//                    System.out.println("lb  = " + schedulingSet.getObjectiveLowerBound(i, col));
                     double normObjValue = simulation.objectiveValue(objectives.get(i))
                             / schedulingSet.getObjectiveLowerBound(i, col);
                     fitnesses[i] += normObjValue;
@@ -116,15 +111,8 @@ public abstract class AbstractRule {
         for (int i = 0; i < fitnesses.length; i++) {
             fitnesses[i] /= col;
         }
-
-//        if (objectives.size() == 1) {
-//            KozaFitness f = (KozaFitness) fitness;
-//            f.setStandardizedFitness(state, fitnesses[0]);
-//        }
-//        else {
         MultiObjectiveFitness f = (MultiObjectiveFitness) fitness;
         f.setObjectives(state, fitnesses);
-//        }
     }
 
     public OperationOption priorOperation(DecisionSituation decisionSituation) {

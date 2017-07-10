@@ -2,7 +2,9 @@ package yimei.jss.jobshop;
 
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.rule.operation.basic.EDD;
+import yimei.jss.rule.operation.basic.FCFS;
 import yimei.jss.rule.operation.basic.FDD;
+import yimei.jss.rule.operation.basic.SPT;
 import yimei.jss.rule.operation.composite.ATC;
 import yimei.jss.rule.operation.composite.TwoPTplusWINQplusNPT;
 import yimei.jss.rule.operation.weighted.WATC;
@@ -56,7 +58,8 @@ public enum Objective {
     public AbstractRule benchmarkRule() {
         switch (this) {
             case MAKESPAN:
-                return new FDD();
+                return new FCFS();
+//                return new FDD();
             case MEAN_FLOWTIME:
                 return new TwoPTplusWINQplusNPT();
             case MEAN_TARDINESS:
