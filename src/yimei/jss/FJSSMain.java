@@ -122,7 +122,7 @@ public class FJSSMain {
         }
 
         output += "Fitness = " + fitness.fitnessToStringForHumans();
-        //System.out.println(output);
+        System.out.println(output);
         return output;
     }
 
@@ -159,7 +159,7 @@ public class FJSSMain {
         }
         path = (new File("")).getAbsolutePath() + "/data/FJSS/" + path;
 
-        boolean doStore = true;
+        boolean doStore = false;
         List<Objective> objectives = new ArrayList<>();
         List<AbstractRule> sequencingRules = new ArrayList();
         List<AbstractRule> routingRules = new ArrayList();
@@ -168,47 +168,43 @@ public class FJSSMain {
 
         //we are evolving sequencing rules, hard-coding routing rules
 
-//        sequencingRules.add(GPRule.readFromLispExpression("(+ (- (+ PT W) (max (max (- TIS NPT)" +
-//                " (/ (/ WKR rFDD) (min PT WKR))) (+ (* (min (max PT NWT) rFDD) (- (- NOR SL)" +
-//                " (- WINQ rDD))) (- NWT NIQ)))) (+ (min (/ (* (/ (min W rFDD) (/ OWT NWT)) " +
-//                "(max (+ WIQ WKR) (+ W TIS))) (- (* NOR WKR) (* SL OWT))) (min (max (+ SL MWT) " +
-//                "(- (- SL NIQ) (max NINQ OWT))) (max (min rFDD rDD) (+ SL MWT)))) (max (* (* (/ NIQ WIQ)" +
-//                " (- SL NIQ)) (min (- NPT WINQ) (- PT (+ SL rDD)))) (* (/ (/ WKR rFDD) (min PT WKR))" +
-//                " (- (max OWT (* WKR rDD)) (* WINQ OWT))))))"));
-//
-//        routingRules.add(new SBT());
+        sequencingRules.add(GPRule.readFromLispExpression(" (min (+ (* (- TIS SL) (+ PT rDD))" +
+                " (* (max (* (/ NWT PT) WIQ) (* PT (- SL NIQ))) (/ (+ NWT NPT) (- WKR NPT))))" +
+                " (+ (/ (+ NWT NPT) (- WKR NPT)) WIQ))"));
 
-        sequencingRules.add(new FDD());
-        sequencingRules.add(new LCFS());
-        sequencingRules.add(new LPT());
-        sequencingRules.add(new LWKR());
-        sequencingRules.add(new MOPNR());
-        sequencingRules.add(new MWKR());
-        sequencingRules.add(new NPT());
-        sequencingRules.add(new PW());
-        sequencingRules.add(new SL());
-        sequencingRules.add(new Slack());
-        sequencingRules.add(new SPT());
-        sequencingRules.add(new ATC());
-        sequencingRules.add(new COVERT());
-        sequencingRules.add(new CRplusPT());
-        sequencingRules.add(new LWKRplusPT());
-        sequencingRules.add(new OPFSLKperPT());
-        sequencingRules.add(new PTplusPW());
-        sequencingRules.add(new PTplusPWplusFDD());
-        sequencingRules.add(new SlackperOPN());
-        sequencingRules.add(new SlackperRPTplusPT());
-        sequencingRules.add(new WATC());
-        sequencingRules.add(new WCOVERT());
-        sequencingRules.add(new WSPT());
-
-        //add work center specific rules, as other rules will always give the same values
-        routingRules.add(new LBT());
-        routingRules.add(new LRT());
-        routingRules.add(new NIQ());
         routingRules.add(new SBT());
-        routingRules.add(new SRT());
-        routingRules.add(new WIQ());
+
+//        sequencingRules.add(new FDD());
+//        sequencingRules.add(new LCFS());
+//        sequencingRules.add(new LPT());
+//        sequencingRules.add(new LWKR());
+//        sequencingRules.add(new MOPNR());
+//        sequencingRules.add(new MWKR());
+//        sequencingRules.add(new NPT());
+//        sequencingRules.add(new PW());
+//        sequencingRules.add(new SL());
+//        sequencingRules.add(new Slack());
+//        sequencingRules.add(new SPT());
+//        sequencingRules.add(new ATC());
+//        sequencingRules.add(new COVERT());
+//        sequencingRules.add(new CRplusPT());
+//        sequencingRules.add(new LWKRplusPT());
+//        sequencingRules.add(new OPFSLKperPT());
+//        sequencingRules.add(new PTplusPW());
+//        sequencingRules.add(new PTplusPWplusFDD());
+//        sequencingRules.add(new SlackperOPN());
+//        sequencingRules.add(new SlackperRPTplusPT());
+//        sequencingRules.add(new WATC());
+//        sequencingRules.add(new WCOVERT());
+//        sequencingRules.add(new WSPT());
+//
+//        //add work center specific rules, as other rules will always give the same values
+//        routingRules.add(new LBT());
+//        routingRules.add(new LRT());
+//        routingRules.add(new NIQ());
+//        routingRules.add(new SBT());
+//        routingRules.add(new SRT());
+//        routingRules.add(new WIQ());
 
         List<String> fileNames = getFileNames(new ArrayList(), Paths.get(path), ".fjs");
         for (int i = 0; i < fileNames.size(); ++i) {
@@ -217,6 +213,6 @@ public class FJSSMain {
             calculateFitness(doStore, fileName, objectives, sequencingRules, routingRules);
         }
 
-        EvaluateOutput("/out/test/", "RR");
+        //EvaluateOutput("/out/test/", "RR");
     }
 }

@@ -27,7 +27,6 @@ public class ProcessFinishEvent extends AbstractEvent {
     @Override
     public void trigger(Simulation simulation) {
         WorkCenter workCenter = process.getWorkCenter();
-        process.getOperation().getJob().addProcessFinishEvent(this);
 
         if (!workCenter.getQueue().isEmpty()) {
             DecisionSituation decisionSituation =
@@ -40,7 +39,6 @@ public class ProcessFinishEvent extends AbstractEvent {
             workCenter.removeFromQueue(dispatchedOp);
 
             //must wait for machine to be ready
-            //TODO: Review this
             double processStartTime = Math.max(workCenter.getReadyTime(), time);
 
             Process nextP = new Process(workCenter, process.getMachineId(),
