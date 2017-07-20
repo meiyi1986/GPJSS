@@ -2,10 +2,12 @@ package yimei.jss.simulation;
 
 import yimei.jss.jobshop.Job;
 import yimei.jss.jobshop.Objective;
+import yimei.jss.jobshop.Process;
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.simulation.event.AbstractEvent;
+import yimei.jss.simulation.event.*;
 import yimei.jss.simulation.state.SystemState;
 
+import java.util.Iterator;
 import java.util.PriorityQueue;
 
 /**
@@ -71,6 +73,20 @@ public abstract class Simulation {
 
     public void addEvent(AbstractEvent event) {
         eventQueue.add(event);
+    }
+
+    public boolean canAddToQueue(Process process) {
+        Iterator<AbstractEvent> e = eventQueue.iterator();
+        if (e.hasNext()) {
+            AbstractEvent a = e.next();
+            if (a instanceof ProcessStartEvent) {
+                if (((ProcessStartEvent) a).getProcess().getWorkCenter().getId() ==
+                        process.getWorkCenter().getId()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void run() {

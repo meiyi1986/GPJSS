@@ -13,6 +13,7 @@ import yimei.jss.simulation.state.SystemState;
 public class SBT extends AbstractRule {
 
     public SBT() {
+
         name = "\"SBT\"";
     }
 

@@ -30,12 +30,30 @@ public class OperationVisitEvent extends AbstractEvent {
 
         WorkCenter workCenter = operation.getWorkCenter();
         Machine earliestMachine = workCenter.earliestReadyMachine();
+        Process p = new Process(workCenter, earliestMachine.getId(), operation, time);
 
-        if (earliestMachine.getReadyTime() > time) {
+        if (earliestMachine.getReadyTime() > time || !simulation.canAddToQueue(p)) {
             workCenter.addToQueue(operation);
         }
         else {
-            Process p = new Process(workCenter, earliestMachine.getId(), operation, time);
+            //we add a process start event here because at this point in time, the workcenter
+            //ready time is less than or equal to the start time of the process
+            //we expect to start this in a minute
+
+            //job 7 - operation 1 - option 0
+            //work center 2 - machine 0 - ready time = 8
+            //time = 8
+
+            //what is happening presumably is that the queue already contains a ProcessStartEvent at this
+            //exact time for the same work center
+            //the problem with this is that by the time this process is pulled off the queue, the
+            //work center ready time will have gone up, and this process will reset it, which is
+            //leading to impossibly low makespans
+
+            //this is going to be a problem whenever there are multiple process start events for the
+            //same work center in the queue
+            //we can either be very careful about which events we add to the queue, or update all events
+            //in the queue relating to a certain workcenter once a ProcessFinishEvent has occurred
             simulation.addEvent(new ProcessStartEvent(p));
         }
     }

@@ -55,14 +55,11 @@ public class StaticSimulation extends Simulation {
         for (Job job : shop.getJobs()) {
             systemState.addJobToSystem(job);
 
-            if (job.getArrivalTime() >
-                    job.getOperation(0).getOperationOption(systemState).getWorkCenter().getReadyTime()) {
-                eventQueue.add(new JobArrivalEvent(job));
-            }
-            else {
-                job.getOperation(0).getOperationOption(systemState).getWorkCenter().addToQueue(
-                        job.getOperation(0).getOperationOption(systemState));
-            }
+            //this first operation option will always be the same
+            OperationOption firstOption = job.getOperation(0).getOperationOption(systemState);
+
+            //this is a static simulation, no jobs are arriving after t = 0
+            firstOption.getWorkCenter().addToQueue(firstOption);
         }
 
         throughput = 0;

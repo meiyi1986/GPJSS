@@ -42,6 +42,7 @@ public class FJSSMain {
             MultiObjectiveFitness fitness = new MultiObjectiveFitness();
             fitness.objectives = new double[1];
             fitness.maxObjective = new double[1];
+            fitness.maxObjective[0] = 1.0;
             fitness.minObjective = new double[1];
             fitness.maximize = new boolean[1];
 
@@ -50,15 +51,14 @@ public class FJSSMain {
             List<Integer> replications = new ArrayList<>();
             replications.add(1);
 
-            //use first rule in sequencing rules to build simulation
-            Simulation simulation = new StaticSimulation(sequencingRules.get(0), routingRule, instance);
             List<Simulation> simulations = new ArrayList<>();
-            simulations.add(simulation);
+            //use first rule in sequencing rules to build simulation
+            simulations.add(new StaticSimulation(sequencingRules.get(0), routingRule, instance));
 
             SchedulingSet set = new SchedulingSet(simulations, replications, objectives);
 
             for (AbstractRule sequencingRule: sequencingRules) {
-                String fitnessResult = calcFitness(sequencingRule, fitness, set, objectives);
+                String fitnessResult = calcFitness(doStore, sequencingRule, fitness, set, objectives);
 
                 //store fitness result with sequencing rule and routing rule
                 if (doStore) {
@@ -109,20 +109,20 @@ public class FJSSMain {
         return rule.getName();
     }
 
-    private static String calcFitness(AbstractRule rule, MultiObjectiveFitness fitness,
+    private static String calcFitness(boolean doStore, AbstractRule rule, MultiObjectiveFitness fitness,
                                     SchedulingSet set, List<Objective> objectives) {
         String output = "";
-        long start = System.currentTimeMillis();
 
         rule.calcFitness(fitness, null, set, objectives);
-        output = "Fitness = " + fitness.fitnessToStringForHumans();
-        System.out.println(output);
+        if (!doStore) {
+            double benchmarkMakeSpan = set.getObjectiveLowerBound(0,0);
+            output += "Benchmark makespan: "+benchmarkMakeSpan+"\n";
+            double ruleMakespan = fitness.fitness()*benchmarkMakeSpan;
+            output += "Rule makespan: "+ruleMakespan+"\n";
+        }
 
-        long finish = System.currentTimeMillis();
-
-        long duration = finish - start;
-
-        System.out.println("Duration = " + duration + " ms.");
+        output += "Fitness = " + fitness.fitnessToStringForHumans();
+        //System.out.println(output);
         return output;
     }
 
@@ -151,7 +151,7 @@ public class FJSSMain {
 
     public static void main(String[] args) {
         //path may be a directory path or a file path
-        //example file path: Hurink_Data/Text/sdata/la10.fjs
+        //example file path: Brandimarte_Data/Text/Mk01.fjs
         String path = "";
         if (args.length > 0) {
             //allow more specific folder or file paths to be used
@@ -166,73 +166,49 @@ public class FJSSMain {
 
         objectives.add(Objective.MAKESPAN);
 
-//        sequencingRules.add(new AVPRO());
-//        sequencingRules.add(new CR());
-//        sequencingRules.add(new EDD());
-        sequencingRules.add(new FCFS());
-//        sequencingRules.add(new FDD());
-//        sequencingRules.add(new LCFS());
-//        sequencingRules.add(new LPT());
-//        sequencingRules.add(new LWKR());
-//        sequencingRules.add(new MOPNR());
-//        sequencingRules.add(new MWKR());
-//        sequencingRules.add(new NPT());
-//        sequencingRules.add(new PW());
-//        sequencingRules.add(new SL());
-//        sequencingRules.add(new Slack());
-//        sequencingRules.add(new SPT());
-//        sequencingRules.add(new ATC());
-//        sequencingRules.add(new COVERT());
-//        sequencingRules.add(new CRplusPT());
-//        sequencingRules.add(new LWKRplusPT());
-//        sequencingRules.add(new OPFSLKperPT());
-//        sequencingRules.add(new PTplusPW());
-//        sequencingRules.add(new PTplusPWplusFDD());
-//        sequencingRules.add(new SlackperOPN());
-//        sequencingRules.add(new SlackperRPTplusPT());
-//        sequencingRules.add(new WATC());
-//        sequencingRules.add(new WCOVERT());
-//        sequencingRules.add(new WSPT());
+        //we are evolving sequencing rules, hard-coding routing rules
 
-//        routingRules.add(new AVPRO());
-//        routingRules.add(new CR());
-//        routingRules.add(new EDD());
-//        routingRules.add(new FCFS());
-//        routingRules.add(new FDD());
-//        routingRules.add(new LCFS());
-//        routingRules.add(new LPT());
-//        routingRules.add(new LWKR());
-//        routingRules.add(new MOPNR());
-//        routingRules.add(new MWKR());
-//        routingRules.add(new NPT());
-//        routingRules.add(new PW());
-//        routingRules.add(new SL());
-//        routingRules.add(new Slack());
-//        routingRules.add(new SPT());
-//        routingRules.add(new ATC());
-//        routingRules.add(new COVERT());
-//        routingRules.add(new CRplusPT());
-//        routingRules.add(new LWKRplusPT());
-//        routingRules.add(new OPFSLKperPT());
-//        routingRules.add(new PTplusPW());
-//        routingRules.add(new PTplusPWplusFDD());
-//        routingRules.add(new SlackperOPN());
-//        routingRules.add(new SlackperRPTplusPT());
-//        routingRules.add(new WATC());
-//        routingRules.add(new WCOVERT());
-//        routingRules.add(new WSPT());
+//        sequencingRules.add(GPRule.readFromLispExpression("(+ (- (+ PT W) (max (max (- TIS NPT)" +
+//                " (/ (/ WKR rFDD) (min PT WKR))) (+ (* (min (max PT NWT) rFDD) (- (- NOR SL)" +
+//                " (- WINQ rDD))) (- NWT NIQ)))) (+ (min (/ (* (/ (min W rFDD) (/ OWT NWT)) " +
+//                "(max (+ WIQ WKR) (+ W TIS))) (- (* NOR WKR) (* SL OWT))) (min (max (+ SL MWT) " +
+//                "(- (- SL NIQ) (max NINQ OWT))) (max (min rFDD rDD) (+ SL MWT)))) (max (* (* (/ NIQ WIQ)" +
+//                " (- SL NIQ)) (min (- NPT WINQ) (- PT (+ SL rDD)))) (* (/ (/ WKR rFDD) (min PT WKR))" +
+//                " (- (max OWT (* WKR rDD)) (* WINQ OWT))))))"));
 //
-//        //also add work center specific rules
-//        routingRules.add(new LBT());
-//        routingRules.add(new LRT());
-//        routingRules.add(new NIQ());
 //        routingRules.add(new SBT());
-//        routingRules.add(new SRT());
-//        routingRules.add(new WIQ());
 
-        //There is some randomness component - seed should be set
-        //We get same result every time we run the whole thing, but if the same instance
-        //is run multiple times it changes
+        sequencingRules.add(new FDD());
+        sequencingRules.add(new LCFS());
+        sequencingRules.add(new LPT());
+        sequencingRules.add(new LWKR());
+        sequencingRules.add(new MOPNR());
+        sequencingRules.add(new MWKR());
+        sequencingRules.add(new NPT());
+        sequencingRules.add(new PW());
+        sequencingRules.add(new SL());
+        sequencingRules.add(new Slack());
+        sequencingRules.add(new SPT());
+        sequencingRules.add(new ATC());
+        sequencingRules.add(new COVERT());
+        sequencingRules.add(new CRplusPT());
+        sequencingRules.add(new LWKRplusPT());
+        sequencingRules.add(new OPFSLKperPT());
+        sequencingRules.add(new PTplusPW());
+        sequencingRules.add(new PTplusPWplusFDD());
+        sequencingRules.add(new SlackperOPN());
+        sequencingRules.add(new SlackperRPTplusPT());
+        sequencingRules.add(new WATC());
+        sequencingRules.add(new WCOVERT());
+        sequencingRules.add(new WSPT());
+
+        //add work center specific rules, as other rules will always give the same values
+        routingRules.add(new LBT());
+        routingRules.add(new LRT());
+        routingRules.add(new NIQ());
+        routingRules.add(new SBT());
+        routingRules.add(new SRT());
+        routingRules.add(new WIQ());
 
         List<String> fileNames = getFileNames(new ArrayList(), Paths.get(path), ".fjs");
         for (int i = 0; i < fileNames.size(); ++i) {

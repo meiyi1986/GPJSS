@@ -45,8 +45,9 @@ public class Process implements Comparable<Process> {
 
     @Override
     public String toString() {
-        return String.format("([W%d,M%d], [J%d,O%d]: %.1f --> %.1f.\n",
-                workCenter.getId(), machineId, operation.getJob().getId(), operation.getOptionId(), startTime, finishTime);
+        return String.format("([W%d,M%d], [J%d,O%d,O%d]: %.1f --> %.1f.\n",
+                workCenter.getId(), machineId, operation.getJob().getId(),
+                operation.getOperation().getId(), operation.getOptionId(), startTime, finishTime);
     }
 
     @Override

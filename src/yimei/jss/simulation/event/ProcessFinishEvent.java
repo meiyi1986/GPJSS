@@ -27,6 +27,7 @@ public class ProcessFinishEvent extends AbstractEvent {
     @Override
     public void trigger(Simulation simulation) {
         WorkCenter workCenter = process.getWorkCenter();
+        process.getOperation().getJob().addProcessFinishEvent(this);
 
         if (!workCenter.getQueue().isEmpty()) {
             DecisionSituation decisionSituation =
@@ -37,8 +38,13 @@ public class ProcessFinishEvent extends AbstractEvent {
                     simulation.getSequencingRule().priorOperation(decisionSituation);
 
             workCenter.removeFromQueue(dispatchedOp);
+
+            //must wait for machine to be ready
+            //TODO: Review this
+            double processStartTime = Math.max(workCenter.getReadyTime(), time);
+
             Process nextP = new Process(workCenter, process.getMachineId(),
-                    dispatchedOp, time);
+                    dispatchedOp, processStartTime);
             simulation.addEvent(new ProcessStartEvent(nextP));
         }
 
@@ -109,13 +115,17 @@ public class ProcessFinishEvent extends AbstractEvent {
         if (other instanceof ProcessFinishEvent) {
             ProcessFinishEvent otherPFE = (ProcessFinishEvent)other;
 
-            if (process.getMachineId() < otherPFE.process.getMachineId())
+            if (process.getWorkCenter().getId() < otherPFE.process.getWorkCenter().getId())
                 return -1;
 
-            if (process.getMachineId() > otherPFE.process.getMachineId())
-                return 1;
+            if (process.getWorkCenter().getId() > otherPFE.process.getWorkCenter().getId())
+            return 1;
         }
 
         return 1;
+    }
+
+    public Process getProcess() {
+        return process;
     }
 }

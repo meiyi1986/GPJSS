@@ -116,7 +116,7 @@ public class OperationOption implements Comparable<OperationOption> {
         if (Double.compare(priority, other.priority) > 0)
             return false;
 
-        return operation.getId() < other.operation.getId();
+        return operation.getJob().getId() < other.operation.getJob().getId();
     }
 
     @Override

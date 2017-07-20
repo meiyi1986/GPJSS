@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * To calcualte the makespan that a given dispatching rule will yield,
+ * To calculate the makespan that a given dispatching rule will yield,
  * can multiply that rule's fitness with the benchmark rule's makespan.
  * This class should calculate the makespan of the benchmark rule for all
  * files.

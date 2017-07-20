@@ -1,5 +1,8 @@
 package yimei.jss.jobshop;
 
+import yimei.jss.simulation.event.ProcessFinishEvent;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,6 +14,7 @@ public class Job implements Comparable<Job> {
 
     private final int id;
     private List<Operation> operations;
+    private List<ProcessFinishEvent> processFinishEvents;
     private final double arrivalTime;
     private final double releaseTime;
     private double dueDate;
@@ -33,6 +37,7 @@ public class Job implements Comparable<Job> {
         this.releaseTime = releaseTime;
         this.dueDate = dueDate;
         this.weight = weight;
+        this.processFinishEvents = new ArrayList<ProcessFinishEvent>();
     }
 
     public Job(int id, List<Operation> operations) {
@@ -47,6 +52,10 @@ public class Job implements Comparable<Job> {
     public List<Operation> getOperations() {
         return operations;
     }
+
+    public List<ProcessFinishEvent> getProcessFinishEvents() { return processFinishEvents; }
+
+    public void addProcessFinishEvent(ProcessFinishEvent processFinishEvent) { processFinishEvents.add(processFinishEvent); }
 
     public Operation getOperation(int idx) {
         return operations.get(idx);
@@ -116,18 +125,15 @@ public class Job implements Comparable<Job> {
         Operation next = null;
         double nextProcTime = 0.0;
 
-        double fdd = releaseTime;
+        //double fdd = releaseTime;
 
-        for (int i = 0; i < operations.size(); i++) {
-            Operation operation = operations.get(i);
-            for (OperationOption option: operation.getOperationOptions()) {
-                option.setFlowDueDate(fdd + option.getProcTime());
-            }
-            //fdd needs to be incremented
-            //don't know which option to go with yet - will choose highest time for now
-            //TODO: Talk to Yi about this
-            fdd += operation.getOperationOption().getProcTime();
-        }
+//        for (int i = 0; i < operations.size(); i++) {
+//            Operation operation = operations.get(i);
+//            for (OperationOption option: operation.getOperationOptions()) {
+//                option.setFlowDueDate(fdd + option.getProcTime());
+//            }
+//            fdd += operation.getOperationOption().getProcTime();
+//        }
 
         double workRemaining = 0.0;
         int numOpsRemaining = 0;
@@ -150,9 +156,6 @@ public class Job implements Comparable<Job> {
 
             next = operation;
             nextProcTime = worstOption.getProcTime(); //pessimistic guess
-
-            //TODO: Same assumption as above
-
         }
         totalProcTime = workRemaining;
         avgProcTime = totalProcTime / operations.size();
