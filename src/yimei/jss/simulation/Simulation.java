@@ -39,7 +39,7 @@ public abstract class Simulation {
         this.numJobsRecorded = numJobsRecorded;
         this.warmupJobs = warmupJobs;
 
-        systemState = new SystemState();
+        systemState = new SystemState(routingRule);
         eventQueue = new PriorityQueue<>();
     }
 

@@ -198,7 +198,7 @@ public class DynamicSimulation extends Simulation {
             double procTime = procTimeSampler.next(randomDataGenerator);
             totalProcTime += procTime;
 
-            Operation o = new Operation(job, i, procTime, systemState.getWorkCenter(route[i]), routingRule);
+            Operation o = new Operation(job, i, procTime, systemState.getWorkCenter(route[i]));
 
             job.addOperation(o);
         }

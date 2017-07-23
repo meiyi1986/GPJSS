@@ -115,7 +115,7 @@ public class StaticSimulation extends Simulation {
 
     public Process createDummyProcess(WorkCenter workCenter, double readyTime) {
         Job job = new Job(-1-workCenter.getId(), new ArrayList<>());
-        Operation op = new Operation(job, 0, readyTime, workCenter, routingRule);
+        Operation op = new Operation(job, 0, readyTime, workCenter);
         Process process = new Process(workCenter, 0, op.getOperationOption(systemState), 0);
 
         return process;

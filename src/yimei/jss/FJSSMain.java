@@ -46,7 +46,7 @@ public class FJSSMain {
             fitness.minObjective = new double[1];
             fitness.maximize = new boolean[1];
 
-            FlexibleStaticInstance instance = FlexibleStaticInstance.readFromAbsPath(fileName, routingRule);
+            FlexibleStaticInstance instance = FlexibleStaticInstance.readFromAbsPath(fileName);
 
             List<Integer> replications = new ArrayList<>();
             replications.add(1);

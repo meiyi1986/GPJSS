@@ -27,13 +27,11 @@ public class FlexibleStaticInstance implements JSSInstance {
     public final int numJobs;
     private List<JobInformation> jobInformations;
     private List<Double> workCenterReadyTimes;
-    private AbstractRule routingRule;
     private String filePath;
 
-    public FlexibleStaticInstance(int numWorkCenters, int numJobs, String filePath, AbstractRule routingRule) {
+    public FlexibleStaticInstance(int numWorkCenters, int numJobs, String filePath) {
         this.numWorkCenters = numWorkCenters;
         this.numJobs = numJobs;
-        this.routingRule = routingRule;
         this.jobInformations = new ArrayList<>();
         this.filePath = filePath;
         this.workCenterReadyTimes = new ArrayList<>(
@@ -48,19 +46,19 @@ public class FlexibleStaticInstance implements JSSInstance {
         this.workCenterReadyTimes = workCenterReadyTimes;
     }
 
-    public static FlexibleStaticInstance readFromAbsPath(String filePath, AbstractRule routingRule) {
+    public static FlexibleStaticInstance readFromAbsPath(String filePath) {
         File datafile = new File(filePath);
-        return readFromFile(datafile, routingRule);
+        return readFromFile(datafile);
     }
 
-    public static FlexibleStaticInstance readFromPath(String filePath, AbstractRule routingRule) {
+    public static FlexibleStaticInstance readFromPath(String filePath) {
         String projPath = (new File("")).getAbsolutePath();
         File datafile = new File(projPath + "/data/" + filePath);
 
-        return readFromFile(datafile, routingRule);
+        return readFromFile(datafile);
     }
 
-    public static FlexibleStaticInstance readFromFile(File file, AbstractRule routingRule) {
+    public static FlexibleStaticInstance readFromFile(File file) {
         FlexibleStaticInstance instance = null;
 
         String line;
@@ -73,7 +71,7 @@ public class FlexibleStaticInstance implements JSSInstance {
             int numJobs = Integer.valueOf(segments[0]);
             int numWorkCenters = Integer.valueOf(segments[1]); //work centers = machines
 
-            instance = new FlexibleStaticInstance(numWorkCenters,numJobs,file.getPath(),routingRule);
+            instance = new FlexibleStaticInstance(numWorkCenters,numJobs,file.getPath());
 
             int numOperations;
             //Read in the jobs
@@ -169,7 +167,7 @@ public class FlexibleStaticInstance implements JSSInstance {
 
             for (int k = 0; k < jobInfo.getNumOps(); ++k) {
                 OperationInformation operationInfo = jobInfo.getOperations().get(k);
-                Operation operation = new Operation(job, k, routingRule);
+                Operation operation = new Operation(job, k);
 
                 for (int l = 0; l < operationInfo.getOperationOptions().size(); ++l) {
                     OperationOptionInformation operationOptionInformation = operationInfo.getOperationOptions().get(l);
@@ -308,8 +306,7 @@ public class FlexibleStaticInstance implements JSSInstance {
 
     public static void main(String[] args) {
         FlexibleStaticInstance instance = FlexibleStaticInstance.readFromPath(
-                "FJSS/Brandimarte_Data/Text/Mk01.fjs", new SBT()
-        );
+                "FJSS/Brandimarte_Data/Text/Mk01.fjs");
         //System.out.println(instance.toString());
         Shop shop = instance.createShop();
         System.out.println(shop.toString());

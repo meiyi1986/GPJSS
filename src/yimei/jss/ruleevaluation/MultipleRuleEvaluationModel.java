@@ -89,7 +89,7 @@ public class MultipleRuleEvaluationModel extends AbstractEvaluationModel{
             int rep = state.parameters.getIntWithDefault(p, null, 1);
 
             String filePath = state.parameters.getString(new Parameter("filePath"), null);
-            FlexibleStaticInstance instance = FlexibleStaticInstance.readFromAbsPath(filePath, null);
+            FlexibleStaticInstance instance = FlexibleStaticInstance.readFromAbsPath(filePath);
 
             Simulation simulation = new StaticSimulation(null, null, instance);
 

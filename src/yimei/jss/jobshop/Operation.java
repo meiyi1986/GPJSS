@@ -16,21 +16,18 @@ public class Operation {
     private final Job job;
     private final int id;
     private List<OperationOption> operationOptions;
-    private AbstractRule routingRule;
     private Operation next;
 
-    public Operation(Job job, int id, AbstractRule routingRule) {
+    public Operation(Job job, int id) {
         this.job = job;
         this.id = id;
-        this.routingRule = routingRule;
         this.operationOptions = new ArrayList<>();
     }
 
-    public Operation(Job job, int id, double procTime, WorkCenter workCenter, AbstractRule routingRule) {
+    public Operation(Job job, int id, double procTime, WorkCenter workCenter) {
         this.job = job;
         this.id = id;
         this.operationOptions = new ArrayList<>();
-        this.routingRule = routingRule;
         this.next = null;
         operationOptions.add(new OperationOption(this,
                 operationOptions.size()+1,procTime,workCenter));
@@ -91,15 +88,14 @@ public class Operation {
             return operationOptions.iterator().next();
         }
 
-        AbstractRule routingRule = this.routingRule;
-        if (routingRule == null) {
-            routingRule = new SBT();
+        if (systemState.getRoutingRule() == null) {
+            systemState.setRoutingRule(new SBT());
         }
 
         double lowestPriority = Double.POSITIVE_INFINITY;
         OperationOption best = null;
         for (OperationOption option: operationOptions) {
-            double priority = routingRule.priority(option, option.getWorkCenter(), systemState);
+            double priority = systemState.getRoutingRule().priority(option, option.getWorkCenter(), systemState);
             if (priority < lowestPriority || lowestPriority == Double.POSITIVE_INFINITY) {
                 lowestPriority = priority;
                 best = option;

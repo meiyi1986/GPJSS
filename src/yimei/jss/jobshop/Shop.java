@@ -101,7 +101,7 @@ public class Shop {
                     double procTime = Double.valueOf(segments[2 * i + 2]);
                     totalProcTime += procTime;
 
-                    Operation o = new Operation(job, i, procTime, shop.getWorkCenter(wcid), null);
+                    Operation o = new Operation(job, i, procTime, shop.getWorkCenter(wcid));
 
                     job.addOperation(o);
                 }

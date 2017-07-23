@@ -206,7 +206,7 @@ public class StaticInstance implements JSSInstance {
                     jobInfo.arrivalTime, jobInfo.dueDate, jobInfo.weight);
             for (int k = 0; k < jobInfo.numOps; k++) {
                 Operation op = new Operation(job, k, jobInfo.procTimes.get(k),
-                        shop.getWorkCenter(jobInfo.route.get(k)), new SBT());
+                        shop.getWorkCenter(jobInfo.route.get(k)));
 
                 job.addOperation(op);
             }
