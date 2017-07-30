@@ -19,6 +19,8 @@ eval.num-current=                       0
 eval.num-elites =                       0
 eval.num-prev =                         0
 eval.select-current =                   ec.select.RandomSelection
+eval.subpop.0.select-current =          ec.select.RandomSelection
+eval.subpop.1.select-current =          ec.select.RandomSelection
 eval.select-prev =                      ec.select.RandomSelection
 
 generations=                            1000
@@ -34,7 +36,7 @@ pop.subpop.0.species.crossover-type =   one
 pop.subpop.0.species.genome-size =      10
 pop.subpop.0.species.fitness =          ec.multiobjective.MultiObjectiveFitness
 pop.subpop.0.species.fitness.num-objectives = 1
-pop.subpop.0.species.fitness.maximize = false
+pop.subpop.0.species.fitness.maximize = true
 pop.subpop.0.species.ind =              ec.gp.GPIndividual
 pop.subpop.0.species.ind.numtrees =     1
 pop.subpop.0.species.ind.tree.0 =       ec.gp.GPTree

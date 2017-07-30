@@ -31,9 +31,17 @@ public class ProcessStartEvent extends AbstractEvent {
     @Override
     public void trigger(Simulation simulation) {
         WorkCenter workCenter = process.getWorkCenter();
-//        if (workCenter.getReadyTime() > process.getStartTime()) {
-//            int a = 0;
-//        }
+        if (workCenter.getReadyTime() > process.getStartTime()) {
+            int a = 0;
+
+
+            //well it is good to know the work center ready time is somewhat reliable,
+            //or at the least, being updated
+            //but it is not being checked!
+            //where would it be checked?
+            //well we want to set the start time of a process to occur at least when the machine is
+            //ready right? Is that it?
+        }
         workCenter.setMachineReadyTime(
                 process.getMachineId(), process.getFinishTime());
         workCenter.incrementBusyTime(process.getDuration());

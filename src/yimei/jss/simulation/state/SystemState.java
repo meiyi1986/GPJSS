@@ -1,7 +1,9 @@
 package yimei.jss.simulation.state;
 
 import yimei.jss.jobshop.*;
+import yimei.jss.jobshop.Process;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.simulation.event.ProcessFinishEvent;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -71,7 +73,9 @@ public class SystemState {
         this.jobsInSystem = jobsInSystem;
     }
 
-    public void setRoutingRule(AbstractRule routingRule) {this.routingRule = routingRule; }
+    public void setRoutingRule(AbstractRule routingRule) {
+        this.routingRule = routingRule;
+    }
 
     public void setJobsCompleted(List<Job> jobsCompleted) {
         this.jobsCompleted = jobsCompleted;
@@ -87,6 +91,11 @@ public class SystemState {
 
     public void removeJobFromSystem(Job job) {
         jobsInSystem.remove(job);
+        if (jobsInSystem.size() == 0) {
+            if (!verifyRestrictionsMet(jobsCompleted)) {
+                //System.out.println("Still problems with machine allocation");
+            }
+        }
     }
 
     public void addCompletedJob(Job job) {
@@ -94,38 +103,38 @@ public class SystemState {
     }
 
     private boolean verifyRestrictionsMet(List<Job> jobsCompleted) {
-//        //as a basic start, let's go through the work centers and create an array with clocktime empty slots for each
-//        //then we can fill in each array with the operation that was being worked on, and check none used the
-//        //same work center at the same time
-//        int numWorkCenters = workCenters.size();
-//        int clockTime = (int) getClockTime();
-//
-//        int[][] workCenterAllocations = new int[numWorkCenters][clockTime];
-//        for (int i = 0; i < numWorkCenters; ++i) {
-//            for (int j = 0; j < clockTime; ++j) {
-//                //ensure all have the same default value
-//                workCenterAllocations[i][j] = -1;
-//            }
-//        }
-//
-//        int numJobs = 0;
-//        int numProcess = 0;
-//        for (Job job: jobsCompleted) {
-//            for (ProcessFinishEvent processFinishEvent: job.getProcessFinishEvents()) {
-//                Process p = processFinishEvent.getProcess();
-//                int[] workCenterSchedule = workCenterAllocations[p.getWorkCenter().getId()];
-//                for (int i = (int) p.getStartTime(); i < (int) p.getFinishTime(); ++i) {
-//                    if (workCenterSchedule[i] == -1) {
-//                        workCenterSchedule[i] = job.getId();
-//                    } else {
-//                        //System.out.println("Doubled up on the schedule");
-//                        return false;
-//                    }
-//                }
-//                numProcess++;
-//            }
-//            numJobs++;
-//        }
+        //as a basic start, let's go through the work centers and create an array with clocktime empty slots for each
+        //then we can fill in each array with the operation that was being worked on, and check none used the
+        //same work center at the same time
+        int numWorkCenters = workCenters.size();
+        int clockTime = (int) getClockTime();
+
+        int[][] workCenterAllocations = new int[numWorkCenters][clockTime];
+        for (int i = 0; i < numWorkCenters; ++i) {
+            for (int j = 0; j < clockTime; ++j) {
+                //ensure all have the same default value
+                workCenterAllocations[i][j] = -1;
+            }
+        }
+
+        int numJobs = 0;
+        int numProcess = 0;
+        for (Job job: jobsCompleted) {
+            for (ProcessFinishEvent processFinishEvent: job.getProcessFinishEvents()) {
+                Process p = processFinishEvent.getProcess();
+                int[] workCenterSchedule = workCenterAllocations[p.getWorkCenter().getId()];
+                for (int i = (int) p.getStartTime(); i < (int) p.getFinishTime(); ++i) {
+                    if (workCenterSchedule[i] == -1) {
+                        workCenterSchedule[i] = job.getId();
+                    } else {
+                        System.out.println("Doubled up on the schedule");
+                        return false;
+                    }
+                }
+                numProcess++;
+            }
+            numJobs++;
+        }
         return true;
     }
 
@@ -181,4 +190,5 @@ public class SystemState {
         return new SystemState(clockTime, clonedWCs,
                 new LinkedList<>(), new ArrayList<>(), routingRule);
     }
+
 }

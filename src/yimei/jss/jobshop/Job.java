@@ -14,6 +14,7 @@ public class Job implements Comparable<Job> {
 
     private final int id;
     private List<Operation> operations;
+    private List<ProcessFinishEvent> processFinishEvents;
     private final double arrivalTime;
     private final double releaseTime;
     private double dueDate;
@@ -36,6 +37,7 @@ public class Job implements Comparable<Job> {
         this.releaseTime = releaseTime;
         this.dueDate = dueDate;
         this.weight = weight;
+        this.processFinishEvents = new ArrayList<ProcessFinishEvent>();
     }
 
     public Job(int id, List<Operation> operations) {
@@ -50,6 +52,10 @@ public class Job implements Comparable<Job> {
     public List<Operation> getOperations() {
         return operations;
     }
+
+    public List<ProcessFinishEvent> getProcessFinishEvents() { return processFinishEvents; }
+
+    public void addProcessFinishEvent(ProcessFinishEvent processFinishEvent) { processFinishEvents.add(processFinishEvent); }
 
     public Operation getOperation(int idx) {
         return operations.get(idx);
@@ -129,6 +135,8 @@ public class Job implements Comparable<Job> {
 //            fdd += operation.getOperationOption().getProcTime();
 //        }
 
+
+        //TODO: Ask Yi and Meng
         double workRemaining = 0.0;
         int numOpsRemaining = 0;
         for (int i = operations.size()-1; i > -1; i--) {

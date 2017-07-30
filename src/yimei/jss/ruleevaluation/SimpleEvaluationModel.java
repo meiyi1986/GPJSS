@@ -114,9 +114,12 @@ public class SimpleEvaluationModel extends AbstractEvaluationModel {
                 e.printStackTrace();
             }
         }
-        AbstractRule rule = rules.get(0);
+        AbstractRule rule = rules.get(0); //sequencing rule
         Fitness fitness = fitnesses.get(0);
-        rule.calcFitness(fitness, state, schedulingSet, objectives);
+        //can get the other rule from the simulation
+        AbstractRule routingRule = schedulingSet.getSimulations().get(0).getRoutingRule();
+
+        rule.calcFitness(fitness, state, schedulingSet, routingRule, objectives);
     }
 
     @Override

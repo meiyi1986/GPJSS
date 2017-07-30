@@ -125,8 +125,6 @@ public class MultipleRuleEvaluationModel extends AbstractEvaluationModel{
         for (int j = 0; j < simulations.size(); j++) {
             Simulation simulation = simulations.get(j);
             simulation.setSequencingRule(sequencingRule);
-
-            //TODO: Does this work?
             simulation.setRoutingRule(routingRule);
 
             simulation.run();

@@ -5,6 +5,7 @@ import yimei.jss.jobshop.Objective;
 import yimei.jss.jobshop.SchedulingSet;
 import yimei.jss.jobshop.StaticInstance;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.RuleType;
 import yimei.jss.rule.operation.basic.EDD;
 import yimei.jss.rule.operation.basic.FDD;
 import yimei.jss.rule.operation.basic.SPT;
@@ -39,10 +40,10 @@ public class JSSMain {
 //        objectives.add(Objective.MEAN_FLOWTIME);
         objectives.add(Objective.MEAN_FLOWTIME);
 
-        GPRule rule1 = GPRule.readFromLispExpression("(* (max (- (* (* (/ SL WKR) (+ W WIQ)) NIQ) (+ TIS (- PT W))) (+ (- WKR NPT) PT)) (* PT (+ (+ (/ (min (+ OWT WINQ) (+ W WIQ)) W) (- PT W)) (- PT W))))");
-        AbstractRule rule2 = new FDD();
-        AbstractRule rule3 = new EDD();
-        AbstractRule routingRule = new SPT();
+        GPRule rule1 = GPRule.readFromLispExpression(RuleType.SEQUENCING, "(* (max (- (* (* (/ SL WKR) (+ W WIQ)) NIQ) (+ TIS (- PT W))) (+ (- WKR NPT) PT)) (* PT (+ (+ (/ (min (+ OWT WINQ) (+ W WIQ)) W) (- PT W)) (- PT W))))");
+        AbstractRule rule2 = new FDD(RuleType.SEQUENCING);
+        AbstractRule rule3 = new EDD(RuleType.SEQUENCING);
+        AbstractRule routingRule = new SPT(RuleType.ROUTING);
 
 //        DynamicSimulation simulation =
 //                DynamicSimulation.standardMissing(seed,
@@ -79,7 +80,7 @@ public class JSSMain {
 //        RealMatrix matrix = rule1.objectiveValueMatrix(schedulingSet, objectives);
 //        System.out.println(matrix);
 
-        rule1.calcFitness(fitness, null, set, objectives);
+        rule1.calcFitness(fitness, null, set, routingRule, objectives);
         System.out.println("Fitness = " + fitness.fitnessToStringForHumans());
 
         finish = System.currentTimeMillis();
@@ -93,7 +94,7 @@ public class JSSMain {
 //        matrix = rule2.objectiveValueMatrix(schedulingSet, objectives);
 //        System.out.println(matrix);
 
-        rule2.calcFitness(fitness, null, set, objectives);
+        rule2.calcFitness(fitness, null, set, routingRule, objectives);
         System.out.println("Fitness = " + fitness.fitnessToStringForHumans());
 
         finish = System.currentTimeMillis();
@@ -107,7 +108,7 @@ public class JSSMain {
 //        matrix = rule3.objectiveValueMatrix(schedulingSet, objectives);
 //        System.out.println(matrix);
 
-        rule3.calcFitness(fitness, null, set, objectives);
+        rule3.calcFitness(fitness, null, set, routingRule, objectives);
         System.out.println("Fitness = " + fitness.fitnessToStringForHumans());
 
         finish = System.currentTimeMillis();

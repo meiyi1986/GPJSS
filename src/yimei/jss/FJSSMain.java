@@ -3,6 +3,7 @@ package yimei.jss;
 import ec.multiobjective.MultiObjectiveFitness;
 import yimei.jss.jobshop.*;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.RuleType;
 import yimei.jss.rule.operation.basic.*;
 import yimei.jss.rule.operation.composite.*;
 import yimei.jss.rule.operation.evolved.GPRule;
@@ -58,7 +59,7 @@ public class FJSSMain {
             SchedulingSet set = new SchedulingSet(simulations, replications, objectives);
 
             for (AbstractRule sequencingRule: sequencingRules) {
-                String fitnessResult = calcFitness(doStore, sequencingRule, fitness, set, objectives);
+                String fitnessResult = calcFitness(doStore, sequencingRule, routingRule, fitness, set, objectives);
 
                 //store fitness result with sequencing rule and routing rule
                 if (doStore) {
@@ -109,11 +110,15 @@ public class FJSSMain {
         return rule.getName();
     }
 
-    private static String calcFitness(boolean doStore, AbstractRule rule, MultiObjectiveFitness fitness,
-                                    SchedulingSet set, List<Objective> objectives) {
+    private static String calcFitness(boolean doStore, AbstractRule sequencingRule,
+                                      AbstractRule routingRule,
+                                      MultiObjectiveFitness fitness,
+                                      SchedulingSet set,
+                                      List<Objective> objectives) {
         String output = "";
 
-        rule.calcFitness(fitness, null, set, objectives);
+        sequencingRule.calcFitness(fitness, null, set, routingRule, objectives);
+
         if (!doStore) {
             double benchmarkMakeSpan = set.getObjectiveLowerBound(0,0);
             output += "Benchmark makespan: "+benchmarkMakeSpan+"\n";
@@ -151,7 +156,7 @@ public class FJSSMain {
 
     public static void main(String[] args) {
         //path may be a directory path or a file path
-        //example file path: Brandimarte_Data/Text/Mk01.fjs
+        //example file path: Brandimarte_Data/Text/Mk02.fjs
         String path = "";
         if (args.length > 0) {
             //allow more specific folder or file paths to be used
@@ -168,11 +173,12 @@ public class FJSSMain {
 
         //we are evolving sequencing rules, hard-coding routing rules
 
-        sequencingRules.add(GPRule.readFromLispExpression(" (min (+ (* (- TIS SL) (+ PT rDD))" +
-                " (* (max (* (/ NWT PT) WIQ) (* PT (- SL NIQ))) (/ (+ NWT NPT) (- WKR NPT))))" +
-                " (+ (/ (+ NWT NPT) (- WKR NPT)) WIQ))"));
+        sequencingRules.add(GPRule.readFromLispExpression(RuleType.SEQUENCING," (+ (max (min MWT rDD)" +
+                " (/ OWT TIS)) (- (max NIQ NINQ) (/ NWT NPT)))\n"));
 
-        routingRules.add(new SBT());
+        routingRules.add(new SBT(RuleType.ROUTING));
+//        routingRules.add(GPRule.readFromLispExpression(RuleType.ROUTING," (max (max NINQ PT) (max (- (/ (min t NINQ)" +
+//                " (max AT W)) (min (max NOR FDD) (* MRT (- SL W)))) AT))"));
 
 //        sequencingRules.add(new FDD());
 //        sequencingRules.add(new LCFS());

@@ -21,10 +21,11 @@ import java.util.List;
 public abstract class AbstractRule {
 
     protected String name;
-
+    protected RuleType type;
     public String getName() {
         return name;
     }
+    public RuleType getType() { return type; }
 
     @Override
     public String toString() {
@@ -73,7 +74,22 @@ public abstract class AbstractRule {
     }
 
     public void calcFitness(Fitness fitness, EvolutionState state,
-                            SchedulingSet schedulingSet, List<Objective> objectives) {
+                            SchedulingSet schedulingSet, AbstractRule rule, List<Objective> objectives) {
+        //whenever fitness is calculated, need a routing rule and a sequecing rule
+        if (this.type == rule.type) {
+            System.out.println("We need one routing rule and one sequencing rule, not 2"+rule.getType()+" rules.");
+            return;
+        }
+        AbstractRule routingRule;
+        AbstractRule sequencingRule;
+        if (this.type == RuleType.ROUTING) {
+            routingRule = this;
+            sequencingRule = rule;
+        } else {
+            routingRule = rule;
+            sequencingRule = this;
+        }
+
         double[] fitnesses = new double[objectives.size()];
 
         List<Simulation> simulations = schedulingSet.getSimulations();
@@ -81,8 +97,8 @@ public abstract class AbstractRule {
 
         for (int j = 0; j < simulations.size(); j++) {
             Simulation simulation = simulations.get(j);
-            simulation.setSequencingRule(this);
-
+            simulation.setSequencingRule(sequencingRule);
+            simulation.setRoutingRule(routingRule);
             simulation.run();
 
             for (int i = 0; i < objectives.size(); i++) {

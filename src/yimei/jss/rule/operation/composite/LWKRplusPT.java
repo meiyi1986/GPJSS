@@ -3,6 +3,7 @@ package yimei.jss.rule.operation.composite;
 import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.RuleType;
 import yimei.jss.simulation.state.SystemState;
 
 /**
@@ -10,8 +11,9 @@ import yimei.jss.simulation.state.SystemState;
  */
 public class LWKRplusPT extends AbstractRule {
 
-    public LWKRplusPT() {
+    public LWKRplusPT(RuleType t) {
         name = "\"LWKR+SPT\"";
+        this.type = t;
     }
 
     @Override

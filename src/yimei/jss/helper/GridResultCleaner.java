@@ -45,7 +45,7 @@ public class GridResultCleaner {
     private static final char DEFAULT_SEPARATOR = ',';
     private String dataPath;
     private String outPath;
-    private HashMap<String, Double> benchmarkMakespans;
+    private HashMap<String, Integer> benchmarkMakespans;
     private boolean doIncludeGenerations;
 
     public GridResultCleaner(String dataPath, String outPath, boolean doIncludeGenerations) {
@@ -55,7 +55,7 @@ public class GridResultCleaner {
         benchmarkMakespans = InitBenchmarkMakespans();
     }
 
-    private HashMap<String, Double> InitBenchmarkMakespans() {
+    private HashMap<String, Integer> InitBenchmarkMakespans() {
         String homePath = "/Users/dyska/Desktop/Uni/COMP489/GPJSS/";
         String dataPath = homePath + "data/FJSS/";
         List<Objective> objectives = new ArrayList<Objective>();
@@ -64,7 +64,7 @@ public class GridResultCleaner {
         replications.add(new Integer(1));
 
         List<String> fileNames = FJSSMain.getFileNames(new ArrayList(), Paths.get(dataPath), ".fjs");
-        HashMap<String, Double> makeSpans = new HashMap<String, Double>();
+        HashMap<String, Integer> makeSpans = new HashMap<String, Integer>();
 
         for (String fileName: fileNames) {
             List<Simulation> simulations = new ArrayList<Simulation>();
@@ -73,7 +73,7 @@ public class GridResultCleaner {
             simulations.add(simulation);
             SchedulingSet schedulingSet = new SchedulingSet(simulations, replications, objectives);
 
-            double makeSpan = schedulingSet.getObjectiveLowerBoundMtx().getData()[0][0];
+            int makeSpan = roundMakespan(schedulingSet.getObjectiveLowerBoundMtx().getData()[0][0]);
             fileName = fileName.substring(dataPath.length());
             makeSpans.put(fileName, makeSpan);
         }
@@ -85,9 +85,12 @@ public class GridResultCleaner {
             for (Path path: stream) {
                 if (path.toFile().isDirectory()) {
                     if (path.toString().startsWith(dataPath+"/data-")) {
-                        System.out.println(path.toString().substring(dataPath.length()+1));
-                        HashMap<Integer, Double[]> makespans = parseMakespans(path.toString());
-                        createResultFile(path.toString(), makespans);
+                        HashMap<Integer, Integer[]> makespans = parseMakespans(path.toString());
+                        if (makespans != null) {
+                            System.out.println("Creating results file for: "+
+                                    path.toString().substring(dataPath.length()+1));
+                            createResultFile(path.toString(), makespans);
+                        }
                     }
                 }
             }
@@ -96,12 +99,16 @@ public class GridResultCleaner {
         }
     }
 
-    public HashMap<Integer, Double[]> parseMakespans(String directoryPath) {
+    public HashMap<Integer, Integer[]> parseMakespans(String directoryPath) {
         List<String> fileNames = FJSSMain.getFileNames(new ArrayList(), Paths.get(directoryPath), ".stat");
-        HashMap<Integer, Double[]> makespans = new HashMap<Integer, Double[]>();
+        if (fileNames.isEmpty()) {
+            //must not be a diretory for this file
+            return null;
+        }
+        HashMap<Integer, Integer[]> makespans = new HashMap<Integer, Integer[]>();
         //we have a file, and the fitness of all rules evolved from this file is the makespan of that
         //rule divided by the benchmark makespan (which is constant)
-        double benchmarkMakespan = getBenchmarkMakeSpan(directoryPath);
+        int benchmarkMakespan = roundMakespan(getBenchmarkMakeSpan(directoryPath));
 
         //iterating through the output from each different seed value
         for (String fileName: fileNames) {
@@ -110,14 +117,25 @@ public class GridResultCleaner {
             String fileNumber = fileName.substring(fileName.indexOf("job")+"job.".length());
             int fileNum = Integer.parseInt(fileNumber.substring(0,fileNumber.indexOf(".out.stat")));
 
-//            Double[] fileMakespans = new Double[fitnesses.length];
-//            for (int i = 0; i < fitnesses.length; ++i) {
-//                fileMakespans[i] = benchmarkMakespan * fitnesses[i];
-//            }
-            //makespans.put(fileNum, fileMakespans);
-            makespans.put(fileNum, fitnesses);
+            Integer[] fileMakespans = new Integer[fitnesses.length];
+            for (int i = 0; i < fitnesses.length; ++i) {
+                fileMakespans[i] = roundMakespan(benchmarkMakespan * fitnesses[i]);
+            }
+            makespans.put(fileNum, fileMakespans);
         }
         return makespans;
+    }
+
+    public int roundMakespan(double makespan) {
+        //makespans are being calculated by multiplying benchmark by fitness
+        //should be extremely close to an integer value
+        int makespanInt = (int) Math.round(makespan);
+        if (Math.abs(makespanInt - makespan) > 0.0000001) {
+            //arbitrary value, but should be very very close
+            System.out.println("Why is the value not an integer?");
+            return -1;
+        }
+        return makespanInt;
     }
 
     public double getBenchmarkMakeSpan(String directoryPath) {
@@ -125,7 +143,7 @@ public class GridResultCleaner {
         fileName = fileName.replace('-','/');
         fileName = fileName + ".fjs";
 
-        return benchmarkMakespans.getOrDefault(fileName, -1.0);
+        return benchmarkMakespans.getOrDefault(fileName, -1);
     }
 
     public static Double[] GetFitnesses(String fileName) {
@@ -150,27 +168,30 @@ public class GridResultCleaner {
         return fitnesses.toArray(new Double[0]);
     }
 
-    public void createResultFile(String directoryPath, HashMap<Integer, Double[]> makespanMap) {
+    public void createResultFile(String directoryPath, HashMap<Integer, Integer[]> makespanMap) {
         String outputFileName = directoryPath.substring(dataPath.length()+1+"data-".length())+".csv";
         String csvFile = outPath + "/"+ outputFileName;
 
         try (FileWriter writer = new FileWriter(csvFile)) {
             //add header first
             List<String> headers = new ArrayList<String>();
-            headers.add("Seed");
-            headers.add("Makespan");
+            //expecting the same number of generations for all seeds, so just get any value
+            Integer[] entry = makespanMap.get(makespanMap.keySet().iterator().next());
+            for (int i = 0; i < entry.length-1; ++i) {
+                headers.add("Gen"+i);
+            }
+            headers.add("Best");
             writeLine(writer, headers);
 
             for (Integer i: makespanMap.keySet()) {
-                List<String> keyValuePair = new ArrayList<String>();
-                keyValuePair.add(i.toString());
+                List<String> makespanCSV = new ArrayList<String>();
                 String makeSpansString = "";
-                Double[] makespans = makespanMap.get(i);
-                for (Double makespan: makespans) {
+                Integer[] makespans = makespanMap.get(i);
+                for (Integer makespan: makespans) {
                     makeSpansString += makespan.toString() +",";
                 }
-                keyValuePair.add(makeSpansString.substring(0, makeSpansString.length()-1));
-                writeLine(writer, keyValuePair);
+                makespanCSV.add(makeSpansString.substring(0, makeSpansString.length()-1));
+                writeLine(writer, makespanCSV);
             }
             writer.flush();
             writer.close();
@@ -226,8 +247,8 @@ public class GridResultCleaner {
     }
 
     public static void main(String args[]) {
-        GridResultCleaner grc = new GridResultCleaner("/Users/dyska/Desktop/Uni/COMP489/fjss-hardcoded-results",
-                "/Users/dyska/Desktop/Uni/COMP489/GPJSS/out/grid_results", true);
+        GridResultCleaner grc = new GridResultCleaner("/Users/dyska/Desktop/Uni/COMP489/GPJSS/grid_results/raw",
+                "/Users/dyska/Desktop/Uni/COMP489/GPJSS/grid_results/cleaned/fixed_makespans_single", true);
         grc.cleanResults();
     }
 }

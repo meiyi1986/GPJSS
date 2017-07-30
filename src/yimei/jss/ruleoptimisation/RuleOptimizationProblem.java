@@ -6,6 +6,7 @@ import ec.gp.GPIndividual;
 import ec.gp.GPProblem;
 import ec.simple.SimpleProblemForm;
 import ec.util.Parameter;
+import yimei.jss.rule.RuleType;
 import yimei.jss.ruleevaluation.AbstractEvaluationModel;
 import yimei.jss.jobshop.Objective;
 import yimei.jss.rule.operation.evolved.GPRule;
@@ -56,7 +57,7 @@ public class RuleOptimizationProblem extends GPProblem implements SimpleProblemF
                          Individual indi,
                          int subpopulation,
                          int threadnum) {
-        GPRule rule = new GPRule(((GPIndividual)indi).trees[0]);
+        GPRule rule = new GPRule(RuleType.SEQUENCING,((GPIndividual)indi).trees[0]);
 
         if (getObjectives().size() > 1) {
             System.err.println("ERROR:");

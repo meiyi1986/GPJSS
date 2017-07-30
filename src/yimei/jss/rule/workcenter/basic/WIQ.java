@@ -3,6 +3,7 @@ package yimei.jss.rule.workcenter.basic;
 import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.RuleType;
 import yimei.jss.simulation.state.SystemState;
 
 /**
@@ -11,9 +12,11 @@ import yimei.jss.simulation.state.SystemState;
  * The priority of this method should be the amount of work in the queue.
  */
 public class WIQ extends AbstractRule {
+    private RuleType type;
 
-    public WIQ() {
+    public WIQ(RuleType t) {
         name = "\"WIQ\"";
+        this.type = t;
     }
 
     @Override

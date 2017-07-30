@@ -3,6 +3,7 @@ package yimei.jss.rule.workcenter.basic;
 import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.RuleType;
 import yimei.jss.simulation.state.SystemState;
 
 /**
@@ -12,9 +13,11 @@ import yimei.jss.simulation.state.SystemState;
  * all machines in the workCenter.
  */
 public class SRT extends AbstractRule {
+    private RuleType type;
 
-    public SRT() {
+    public SRT(RuleType t) {
         name = "\"SRT\"";
+        this.type = t;
     }
 
 

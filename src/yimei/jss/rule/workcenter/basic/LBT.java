@@ -3,6 +3,7 @@ package yimei.jss.rule.workcenter.basic;
 import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.RuleType;
 import yimei.jss.simulation.state.SystemState;
 
 /**
@@ -12,9 +13,11 @@ import yimei.jss.simulation.state.SystemState;
  * Should always be a non-negative quantity before taking its negative.
  */
 public class LBT extends AbstractRule {
+    private RuleType type;
 
-    public LBT() {
+    public LBT(RuleType type) {
         name = "\"LBT\"";
+        this.type = type;
     }
 
     @Override

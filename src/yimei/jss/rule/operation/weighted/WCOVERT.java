@@ -1,26 +1,27 @@
 package yimei.jss.rule.operation.weighted;
 
+import ec.rule.Rule;
 import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.RuleType;
 import yimei.jss.simulation.state.SystemState;
 
 /**
  * Created by YiMei on 28/09/16.
  */
 public class WCOVERT extends AbstractRule {
-
     private double k;
     private double b;
 
-    public WCOVERT(double k, double b) {
+    public WCOVERT(RuleType type, double k, double b) {
         name = "WCOVERT";
         setK(k);
         setB(b);
     }
 
-    public WCOVERT() {
-        this(2, 2);
+    public WCOVERT(RuleType type) {
+        this(type, 2, 2);
     }
 
     @Override

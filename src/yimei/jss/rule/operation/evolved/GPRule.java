@@ -2,6 +2,7 @@ package yimei.jss.rule.operation.evolved;
 
 import ec.gp.GPNode;
 import ec.gp.GPTree;
+import ec.rule.Rule;
 import yimei.jss.feature.ignore.Ignorer;
 import yimei.jss.gp.CalcPriorityProblem;
 import yimei.jss.gp.data.DoubleData;
@@ -9,6 +10,7 @@ import yimei.jss.gp.GPNodeComparator;
 import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.RuleType;
 import yimei.jss.simulation.state.SystemState;
 import yimei.util.lisp.LispParser;
 
@@ -22,15 +24,17 @@ public class GPRule extends AbstractRule {
     private GPTree gpTree;
     private String lispString;
 
-    public GPRule(GPTree gpTree) {
+    public GPRule(RuleType t, GPTree gpTree) {
         name = "\"GPRule\"";
         this.gpTree = gpTree;
+        type = t;
     }
 
-    public GPRule(GPTree gpTree, String expression) {
+    public GPRule(RuleType t, GPTree gpTree, String expression) {
         name = "\"GPRule\"";
         this.lispString = expression;
         this.gpTree = gpTree;
+        this.type = t;
     }
 
     public GPTree getGPTree() {
@@ -45,10 +49,10 @@ public class GPRule extends AbstractRule {
         return lispString;
     }
 
-    public static GPRule readFromLispExpression(String expression) {
+    public static GPRule readFromLispExpression(RuleType type, String expression) {
         GPTree tree = LispParser.parseJobShopRule(expression);
 
-        return new GPRule(tree, expression);
+        return new GPRule(type, tree, expression);
     }
 
     public void ignore(GPNode tree, GPNode feature, Ignorer ignorer) {

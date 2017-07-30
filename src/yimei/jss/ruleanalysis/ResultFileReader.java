@@ -43,7 +43,7 @@ public class ResultFileReader {
 
                     expression = LispSimplifier.simplifyExpression(expression);
 
-                    rule = GPRule.readFromLispExpression(expression);
+                    rule = GPRule.readFromLispExpression(yimei.jss.rule.RuleType.SEQUENCING,expression);
                     result.addGenerationalRule(rule);
                     result.addGenerationalTrainFitness(fitness);
                     result.addGenerationalValidationFitnesses((Fitness)fitness.clone());

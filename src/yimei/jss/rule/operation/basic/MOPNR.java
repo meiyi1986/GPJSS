@@ -3,6 +3,7 @@ package yimei.jss.rule.operation.basic;
 import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.RuleType;
 import yimei.jss.simulation.state.SystemState;
 
 /**
@@ -10,8 +11,9 @@ import yimei.jss.simulation.state.SystemState;
  */
 public class MOPNR extends AbstractRule {
 
-    public MOPNR() {
+    public MOPNR(RuleType type) {
         name = "\"MOPNR\"";
+        this.type = type;
     }
 
     @Override

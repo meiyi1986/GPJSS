@@ -3,6 +3,7 @@ package yimei.jss.rule.operation.composite;
 import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.RuleType;
 import yimei.jss.simulation.state.SystemState;
 
 /**
@@ -10,8 +11,9 @@ import yimei.jss.simulation.state.SystemState;
  */
 public class CRplusPT extends AbstractRule {
 
-    public CRplusPT() {
+    public CRplusPT(RuleType t) {
         name = "\"CR+PT\"";
+        this.type = t;
     }
 
     @Override

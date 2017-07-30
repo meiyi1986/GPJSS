@@ -212,7 +212,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
             preAssessFitness[i] = postAssessFitness[i] || (state.generation == 0);  // always prepare (set up trials) on generation 0
             }
 
-                
+
         // do evaluation
         beforeCoevolutionaryEvaluation( state, state.population, (GroupedProblemForm)p_problem );
 
@@ -313,8 +313,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
                 
         // handle shuffled always
                 
-        if (numShuffled > 0)
-            {
+        if (numShuffled > 0) {
             int[/*numShuffled*/][/*subpop*/][/*shuffledIndividualIndexes*/] ordering = null;
             // build shuffled orderings
             ordering = new int[numShuffled][state.population.subpops.length][state.population.subpops[0].individuals.length];
@@ -328,40 +327,47 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
                     }
                                 
             // for each individual
-            for(int i = 0; i < state.population.subpops[0].individuals.length; i++)
-                for(int k = 0; k < numShuffled; k++)
-                    {
-                    for(int ind = 0; ind < inds.length; ind++)
-                        { inds[ind] = state.population.subpops[ind].individuals[ordering[k][ind][i]]; updates[ind] = true; }
-                    prob.evaluate(state,inds,updates, false, subpops, 0);
-                    evaluations++;
+            for (int i = 0; i < state.population.subpops[0].individuals.length; i++) {
+                for (int k = 0; k < numShuffled; k++) {
+                    for (int ind = 0; ind < inds.length; ind++) {
+                        inds[ind] = state.population.subpops[ind].individuals[ordering[k][ind][i]];
+                        updates[ind] = true;
                     }
+                    prob.evaluate(state, inds, updates, false, subpops, 0);
+                    evaluations++;
+                    System.out.println("Evaluation:"+evaluations);
+                }
             }
+        }
 
                         
         // for each subpopulation
-        for(int j = 0; j < state.population.subpops.length; j++)
+        for (int j = 0; j < state.population.subpops.length; j++)
             {
             // now do elites and randoms
                 
             if (!shouldEvaluateSubpop(state, j, 0)) continue;  // don't evaluate this subpopulation
 
             // for each individual
-            for(int i = 0; i < state.population.subpops[j].individuals.length; i++)
+            for (int i = 0; i < state.population.subpops[j].individuals.length; i++)
                 {
                 Individual individual = state.population.subpops[j].individuals[i];
                                 
                 // Test against all the elites
-                for(int k = 0; k < eliteIndividuals[j].length; k++)
-                    {
-                    for(int ind = 0; ind < inds.length; ind++)
-                        {
-                        if (ind == j) { inds[ind] = individual; updates[ind] = true; }
-                        else  { inds[ind] = eliteIndividuals[ind][k]; updates[ind] = false; }
+                for (int k = 0; k < eliteIndividuals[j].length; k++) {
+                    for (int ind = 0; ind < inds.length; ind++) {
+                        if (ind == j) {
+                            inds[ind] = individual;
+                            updates[ind] = true;
                         }
+                        else {
+                            inds[ind] = eliteIndividuals[ind][k];
+                            updates[ind] = false;
+                        }
+                    }
                     prob.evaluate(state,inds,updates, false, subpops, 0);
                     evaluations++;
-                    }
+                }
                                         
                 // test against random selected individuals of the current population
                 for(int k = 0; k < numCurrent; k++)

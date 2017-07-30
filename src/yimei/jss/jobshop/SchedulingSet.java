@@ -78,12 +78,15 @@ public class SchedulingSet {
     private void lowerBoundsFromBenchmarkRule(List<Objective> objectives) {
         for (int i = 0; i < objectives.size(); i++) {
             Objective objective = objectives.get(i);
-            AbstractRule benchmarkRule = objective.benchmarkRule();
+            AbstractRule benchmarkSeqRule = objective.benchmarkSequencingRule();
+            AbstractRule benchmarkRoutingRule = objective.benchmarkRoutingRule();
 
             int col = 0;
             for (int j = 0; j < simulations.size(); j++) {
                 Simulation simulation = simulations.get(j);
-                simulation.setSequencingRule(benchmarkRule);
+                simulation.setSequencingRule(benchmarkSeqRule);
+                simulation.setRoutingRule(benchmarkRoutingRule);
+
                 simulation.run();
 
                 double value = simulation.objectiveValue(objective);

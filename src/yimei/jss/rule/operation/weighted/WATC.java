@@ -2,6 +2,7 @@ package yimei.jss.rule.operation.weighted;
 
 import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
+import yimei.jss.rule.RuleType;
 import yimei.jss.rule.operation.composite.ATC;
 import yimei.jss.simulation.state.SystemState;
 
@@ -13,14 +14,15 @@ public class WATC extends ATC {
     private double k;
     private double b;
 
-    public WATC(double k, double b) {
+    public WATC(RuleType t, double k, double b) {
+        super(t, k, b);
         name = "WATC";
         setK(k);
         setB(b);
     }
 
-    public WATC() {
-        this(3, 2);
+    public WATC(RuleType t) {
+        this(t, 3, 2);
     }
 
     @Override

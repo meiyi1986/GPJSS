@@ -102,8 +102,8 @@ public class RuleTest {
 //            result.validate(objectives);
 
             for (int j = 0; j < result.getGenerationalRules().size(); j++) {
-                result.getGenerationalRule(j).calcFitness(
-                        result.getGenerationalTestFitness(j), null, testSet, objectives);
+                //result.getGenerationalRule(j).calcFitness(
+                        //result.getGenerationalTestFitness(j), null, testSet, objectives);
 
                 System.out.println("Generation " + j + ": test fitness = " +
                         result.getGenerationalTestFitness(j).fitness());

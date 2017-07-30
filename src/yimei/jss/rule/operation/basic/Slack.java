@@ -1,8 +1,10 @@
 package yimei.jss.rule.operation.basic;
 
+import ec.rule.Rule;
 import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.RuleType;
 import yimei.jss.simulation.state.SystemState;
 
 /**
@@ -10,8 +12,9 @@ import yimei.jss.simulation.state.SystemState;
  */
 public class Slack extends AbstractRule {
 
-    public Slack() {
+    public Slack(RuleType type) {
         name = "\"Slack\"";
+        this.type = type;
     }
 
     @Override

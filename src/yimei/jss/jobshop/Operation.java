@@ -1,6 +1,7 @@
 package yimei.jss.jobshop;
 
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.RuleType;
 import yimei.jss.rule.workcenter.basic.SBT;
 import yimei.jss.simulation.state.SystemState;
 
@@ -89,7 +90,7 @@ public class Operation {
         }
 
         if (systemState.getRoutingRule() == null) {
-            systemState.setRoutingRule(new SBT());
+            systemState.setRoutingRule(new SBT(RuleType.ROUTING));
         }
 
         double lowestPriority = Double.POSITIVE_INFINITY;

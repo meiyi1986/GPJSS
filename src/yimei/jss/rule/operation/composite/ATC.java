@@ -3,6 +3,7 @@ package yimei.jss.rule.operation.composite;
 import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.RuleType;
 import yimei.jss.simulation.state.SystemState;
 
 import java.util.List;
@@ -11,18 +12,18 @@ import java.util.List;
  * Created by YiMei on 28/09/16.
  */
 public class ATC extends AbstractRule {
-
     private double k;
     private double b;
 
-    public ATC(double k, double b) {
+    public ATC(RuleType type,double k, double b) {
         name = "ATC";
+        this.type = type;
         setK(k);
         setB(b);
     }
 
-    public ATC() {
-        this(3, 2);
+    public ATC(RuleType type) {
+        this(type,3, 2);
     }
 
     @Override

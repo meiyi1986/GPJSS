@@ -88,14 +88,14 @@ public class RuleTestFeatureContribution extends RuleTest {
 
             long start = System.currentTimeMillis();
 
-            GPRule bestRule = (GPRule)result.getBestRule();
+            GPRule bestRule = (GPRule) result.getBestRule();
 
             MultiObjectiveFitness allFeaturesFit = new MultiObjectiveFitness();
             allFeaturesFit.objectives = new double[1];
             allFeaturesFit.maxObjective = new double[1];
             allFeaturesFit.minObjective = new double[1];
             allFeaturesFit.maximize = new boolean[1];
-            bestRule.calcFitness(allFeaturesFit, null, testSet, objectives);
+            //bestRule.calcFitness(allFeaturesFit, null, testSet, objectives);
 
             for (int j = 0; j < features.size(); j++) {
                 GPNode feature = features.get(j);
@@ -105,10 +105,10 @@ public class RuleTestFeatureContribution extends RuleTest {
                 fit.minObjective = new double[1];
                 fit.maximize = new boolean[1];
 
-                GPRule tmpRule = new GPRule((GPTree)(bestRule.getGPTree().clone()));
+                GPRule tmpRule = new GPRule(yimei.jss.rule.RuleType.SEQUENCING, (GPTree)(bestRule.getGPTree().clone()));
 
                 tmpRule.ignore(feature, ignorer);
-                tmpRule.calcFitness(fit, null, testSet, objectives);
+                //tmpRule.calcFitness(fit, null, testSet, objectives);
 
                 System.out.format("Run %d, %s: %.2f\n", i, feature.toString(),
                         fit.fitness() - allFeaturesFit.fitness());

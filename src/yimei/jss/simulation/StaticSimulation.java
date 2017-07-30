@@ -82,6 +82,7 @@ public class StaticSimulation extends Simulation {
         }
 
         setup();
+        System.out.println("Done");
     }
 
     @Override

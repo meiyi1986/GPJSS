@@ -44,7 +44,8 @@ fabric.properties
 .metadata/
 GPJSS.iml
 out.stat
-data/
+data/FJSS
+data/JSS_Data
 outtabular.stat
 fjss_optimums/
 grid_results/

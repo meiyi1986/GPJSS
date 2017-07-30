@@ -65,6 +65,9 @@ public abstract class Simulation {
 
     public void setRoutingRule(AbstractRule routingRule) {
         this.routingRule = routingRule;
+        this.systemState.setRoutingRule(routingRule);
+        //also need to update system state, as this is linked to routing rule
+        this.systemState = systemState.clone();
     }
 
     public double getClockTime() {

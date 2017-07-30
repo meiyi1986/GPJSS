@@ -161,13 +161,13 @@ public class TestResult {
 
 		bestRule = generationalRules.get(0);
 
-		bestRule.calcFitness(bestValidationFitness, null, validationSet, objectives);
+		//bestRule.calcFitness(bestValidationFitness, null, validationSet, objectives);
 		generationalValidationFitnesses.add(bestValidationFitness);
 
 //		System.out.println("Generation 0: validation fitness = " + bestValidationFitness.fitness());
 
 		for (int i = 1; i < generationalRules.size(); i++) {
-			generationalRules.get(i).calcFitness(validationFitness, null, validationSet, objectives);
+			//generationalRules.get(i).calcFitness(validationFitness, null, validationSet, objectives);
 			generationalValidationFitnesses.add(validationFitness);
 
 
