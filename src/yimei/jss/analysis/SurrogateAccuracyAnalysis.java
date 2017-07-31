@@ -49,8 +49,8 @@ public class SurrogateAccuracyAnalysis {
         rules.add(new PTplusPWplusFDD(RuleType.SEQUENCING));
         rules.add(new SlackperOPN(RuleType.SEQUENCING));
         rules.add(new SlackperRPT(RuleType.SEQUENCING));
-        rules.add(new PTplusWINQ(RuleType.SEQUENCING));
-        rules.add(new TwoPTplusWINQplusNPT(RuleType.SEQUENCING));
+//        rules.add(new PTplusWINQ(RuleType.SEQUENCING));
+//        rules.add(new TwoPTplusWINQplusNPT(RuleType.SEQUENCING));
     }
 
     public static void main(String[] args) {

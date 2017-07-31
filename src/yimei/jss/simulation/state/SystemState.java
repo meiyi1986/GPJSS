@@ -20,30 +20,26 @@ public class SystemState {
     private List<WorkCenter> workCenters;
     private List<Job> jobsInSystem;
     private List<Job> jobsCompleted;
-    private AbstractRule routingRule;
 
     public SystemState(double clockTime, List<WorkCenter> workCenters,
-                       List<Job> jobsInSystem, List<Job> jobsCompleted, AbstractRule routingRule) {
+                       List<Job> jobsInSystem, List<Job> jobsCompleted) {
         this.clockTime = clockTime;
         this.workCenters = workCenters;
         this.jobsInSystem = jobsInSystem;
         this.jobsCompleted = jobsCompleted;
-        this.routingRule = routingRule;
     }
 
-    public SystemState(double clockTime, AbstractRule routingRule) {
-        this(clockTime, new ArrayList<>(), new LinkedList<>(), new ArrayList<>(), routingRule);
+    public SystemState(double clockTime) {
+        this(clockTime, new ArrayList<>(), new LinkedList<>(), new ArrayList<>());
     }
 
-    public SystemState(AbstractRule routingRule) {
-        this(0.0, routingRule);
+    public SystemState() {
+        this(0.0);
     }
 
     public double getClockTime() {
         return clockTime;
     }
-
-    public AbstractRule getRoutingRule() { return routingRule; }
 
     public List<WorkCenter> getWorkCenters() {
         return workCenters;
@@ -71,10 +67,6 @@ public class SystemState {
 
     public void setJobsInSystem(List<Job> jobsInSystem) {
         this.jobsInSystem = jobsInSystem;
-    }
-
-    public void setRoutingRule(AbstractRule routingRule) {
-        this.routingRule = routingRule;
     }
 
     public void setJobsCompleted(List<Job> jobsCompleted) {
@@ -152,32 +144,32 @@ public class SystemState {
                 - getClockTime() - operation.getWorkRemaining();
     }
 
-    public double workInNextQueue(OperationOption operation) {
-        OperationOption nextOp = operation.getNext(this);
-        if (nextOp == null) {
-            return 0;
-        }
-
-        return nextOp.getWorkCenter().getWorkInQueue();
-    }
-
-    public double numOpsInNextQueue(OperationOption operation) {
-        OperationOption nextOp = operation.getNext(this);
-        if (nextOp == null) {
-            return 0;
-        }
-
-        return nextOp.getWorkCenter().getQueue().size();
-    }
-
-    public double nextReadyTime(OperationOption operation) {
-        OperationOption nextOp = operation.getNext(this);
-        if (nextOp == null) {
-            return 0;
-        }
-
-        return nextOp.getWorkCenter().getReadyTime();
-    }
+//    public double workInNextQueue(OperationOption operation) {
+//        OperationOption nextOp = operation.getNext(this);
+//        if (nextOp == null) {
+//            return 0;
+//        }
+//
+//        return nextOp.getWorkCenter().getWorkInQueue();
+//    }
+//
+//    public double numOpsInNextQueue(OperationOption operation) {
+//        OperationOption nextOp = operation.getNext(this);
+//        if (nextOp == null) {
+//            return 0;
+//        }
+//
+//        return nextOp.getWorkCenter().getQueue().size();
+//    }
+//
+//    public double nextReadyTime(OperationOption operation) {
+//        OperationOption nextOp = operation.getNext(this);
+//        if (nextOp == null) {
+//            return 0;
+//        }
+//
+//        return nextOp.getWorkCenter().getReadyTime();
+//    }
 
     @Override
     public SystemState clone() {
@@ -188,7 +180,41 @@ public class SystemState {
 
         //rules do not maintain state
         return new SystemState(clockTime, clonedWCs,
-                new LinkedList<>(), new ArrayList<>(), routingRule);
+                new LinkedList<>(), new ArrayList<>());
     }
 
+    @Override
+    public String toString() {
+        return "SystemState{" +
+                "clockTime=" + clockTime +
+                ", workCenters=" + workCenters +
+                ", jobsInSystem=" + jobsInSystem +
+                ", jobsCompleted=" + jobsCompleted +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SystemState that = (SystemState) o;
+
+        if (Double.compare(that.clockTime, clockTime) != 0) return false;
+        if (workCenters != null ? !workCenters.equals(that.workCenters) : that.workCenters != null) return false;
+        if (jobsInSystem != null ? !jobsInSystem.equals(that.jobsInSystem) : that.jobsInSystem != null) return false;
+        return jobsCompleted != null ? jobsCompleted.equals(that.jobsCompleted) : that.jobsCompleted == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        temp = Double.doubleToLongBits(clockTime);
+        result = (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (workCenters != null ? workCenters.hashCode() : 0);
+        result = 31 * result + (jobsInSystem != null ? jobsInSystem.hashCode() : 0);
+        result = 31 * result + (jobsCompleted != null ? jobsCompleted.hashCode() : 0);
+        return result;
+    }
 }

@@ -16,6 +16,20 @@ import java.util.PriorityQueue;
  * Created by yimei on 21/11/16.
  */
 public abstract class Simulation {
+    @Override
+    public String toString() {
+        return "Simulation{" +
+                "sequencingRule=" + sequencingRule +
+                ", routingRule=" + routingRule +
+                ", systemState=" + systemState +
+                ", eventQueue=" + eventQueue +
+                ", numWorkCenters=" + numWorkCenters +
+                ", numJobsRecorded=" + numJobsRecorded +
+                ", warmupJobs=" + warmupJobs +
+                ", numJobsArrived=" + numJobsArrived +
+                ", throughput=" + throughput +
+                '}';
+    }
 
     protected AbstractRule sequencingRule;
     protected AbstractRule routingRule;
@@ -39,7 +53,7 @@ public abstract class Simulation {
         this.numJobsRecorded = numJobsRecorded;
         this.warmupJobs = warmupJobs;
 
-        systemState = new SystemState(routingRule);
+        systemState = new SystemState();
         eventQueue = new PriorityQueue<>();
     }
 
@@ -65,9 +79,10 @@ public abstract class Simulation {
 
     public void setRoutingRule(AbstractRule routingRule) {
         this.routingRule = routingRule;
-        this.systemState.setRoutingRule(routingRule);
-        //also need to update system state, as this is linked to routing rule
-        this.systemState = systemState.clone();
+        //need to reset state as well, as the operationoptions associated
+        //with workcenters are chosen using this routing rule, so current
+        //values are outdated
+        resetState();
     }
 
     public double getClockTime() {
@@ -262,12 +277,46 @@ public abstract class Simulation {
     }
 
     public abstract void setup();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Simulation that = (Simulation) o;
+
+        if (numWorkCenters != that.numWorkCenters) return false;
+        if (numJobsRecorded != that.numJobsRecorded) return false;
+        if (warmupJobs != that.warmupJobs) return false;
+        if (numJobsArrived != that.numJobsArrived) return false;
+        if (throughput != that.throughput) return false;
+        if (sequencingRule != null ? !sequencingRule.equals(that.sequencingRule) : that.sequencingRule != null)
+            return false;
+        if (routingRule != null ? !routingRule.equals(that.routingRule) : that.routingRule != null) return false;
+        if (systemState != null ? !systemState.equals(that.systemState) : that.systemState != null) return false;
+        return eventQueue != null ? eventQueue.equals(that.eventQueue) : that.eventQueue == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = sequencingRule != null ? sequencingRule.hashCode() : 0;
+        result = 31 * result + (routingRule != null ? routingRule.hashCode() : 0);
+        result = 31 * result + (systemState != null ? systemState.hashCode() : 0);
+        result = 31 * result + (eventQueue != null ? eventQueue.hashCode() : 0);
+        result = 31 * result + numWorkCenters;
+        result = 31 * result + numJobsRecorded;
+        result = 31 * result + warmupJobs;
+        result = 31 * result + numJobsArrived;
+        result = 31 * result + throughput;
+        return result;
+    }
+
     public abstract void resetState();
     public abstract void reset();
     public abstract void rotateSeed();
     public abstract void generateJob();
     public abstract Simulation surrogate(int numWorkCenters, int numJobsRecorded,
-                                int warmupJobs);
-    public abstract Simulation surrogateBusy(int numWorkCenters, int numJobsRecorded,
                                          int warmupJobs);
+    public abstract Simulation surrogateBusy(int numWorkCenters, int numJobsRecorded,
+                                             int warmupJobs);
 }

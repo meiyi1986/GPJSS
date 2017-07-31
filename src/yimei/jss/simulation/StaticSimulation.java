@@ -3,14 +3,10 @@ package yimei.jss.simulation;
 import yimei.jss.jobshop.*;
 import yimei.jss.jobshop.Process;
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.simulation.event.AbstractEvent;
-import yimei.jss.simulation.event.JobArrivalEvent;
 import yimei.jss.simulation.event.ProcessFinishEvent;
-import yimei.jss.simulation.state.SystemState;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PriorityQueue;
 
 /**
  * The simulation based on static job shop instance.
@@ -56,7 +52,7 @@ public class StaticSimulation extends Simulation {
             systemState.addJobToSystem(job);
 
             //this first operation option will always be the same
-            OperationOption firstOption = job.getOperation(0).getOperationOption(systemState);
+            OperationOption firstOption = job.getOperation(0).getOperationOption(systemState, routingRule);
 
             //this is a static simulation, no jobs are arriving after t = 0
             firstOption.getWorkCenter().addToQueue(firstOption);
@@ -82,7 +78,6 @@ public class StaticSimulation extends Simulation {
         }
 
         setup();
-        System.out.println("Done");
     }
 
     @Override
@@ -117,15 +112,30 @@ public class StaticSimulation extends Simulation {
     public Process createDummyProcess(WorkCenter workCenter, double readyTime) {
         Job job = new Job(-1-workCenter.getId(), new ArrayList<>());
         Operation op = new Operation(job, 0, readyTime, workCenter);
-        Process process = new Process(workCenter, 0, op.getOperationOption(systemState), 0);
+        Process process = new Process(workCenter, 0, op.getOperationOption(systemState,routingRule), 0);
 
         return process;
     }
 
+    @Override
     public String toString() {
-        String str = "Shop: \n";
-        str += shop.toString();
+        return "StaticSimulation{" +
+                "instance=" + instance.toString() +
+                ", shop=" + shop.toString() +
+                ", dummyProcesses=" + dummyProcesses.toString() +
+                ", sequencingRule=" + sequencingRule.toString() +
+                ", routingRule=" + routingRule.toString() +
+                ", systemState=" + systemState.toString() +
+                ", eventQueue=" + eventQueue.toString() +
+                ", numWorkCenters=" + numWorkCenters +
+                ", numJobsRecorded=" + numJobsRecorded +
+                ", warmupJobs=" + warmupJobs +
+                ", numJobsArrived=" + numJobsArrived +
+                ", throughput=" + throughput +
+                '}';
+    }
 
-        return str;
+    public JSSInstance getInstance() {
+        return instance;
     }
 }

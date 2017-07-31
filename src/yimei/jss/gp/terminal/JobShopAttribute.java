@@ -29,11 +29,11 @@ public enum JobShopAttribute {
     PROC_TIME("PT"), // the processing time of the operation
     NEXT_PROC_TIME("NPT"), // the processing time of the next operation
     OP_READY_TIME("ORT"), // the ready time of the operation
-    NEXT_READY_TIME("NRT"), // the ready time of the next machine
+    //NEXT_READY_TIME("NRT"), // the ready time of the next machine
     WORK_REMAINING("WKR"), // the work remaining
     NUM_OPS_REMAINING("NOR"), // the number of operations remaining
-    WORK_IN_NEXT_QUEUE("WINQ"), // the work in the next queue
-    NUM_OPS_IN_NEXT_QUEUE("NINQ"), // number of operations in the next queue
+    //WORK_IN_NEXT_QUEUE("WINQ"), // the work in the next queue
+    //NUM_OPS_IN_NEXT_QUEUE("NINQ"), // number of operations in the next queue
     FLOW_DUE_DATE("FDD"), // the flow due date
     DUE_DATE("DD"), // the due date
     WEIGHT("W"), // the job weight
@@ -42,7 +42,7 @@ public enum JobShopAttribute {
     // Relative version of the absolute time attributes
     MACHINE_WAITING_TIME("MWT"), // the waiting time of the machine = t - MRT
     OP_WAITING_TIME("OWT"), // the waiting time of the operation = t - ORT
-    NEXT_WAITING_TIME("NWT"), // the waiting time for the next machine to be ready = NRT - t
+    //NEXT_WAITING_TIME("NWT"), // the waiting time for the next machine to be ready = NRT - t
     RELATIVE_FLOW_DUE_DATE("rFDD"), // the relative flow due date = FDD - t
     RELATIVE_DUE_DATE("rDD"), // the relative due date = DD - t
 
@@ -104,24 +104,24 @@ public enum JobShopAttribute {
             case OP_WAITING_TIME:
                 value = systemState.getClockTime() - op.getReadyTime();
                 break;
-            case NEXT_READY_TIME:
-                value = systemState.nextReadyTime(op);
-                break;
-            case NEXT_WAITING_TIME:
-                value = systemState.nextReadyTime(op) - systemState.getClockTime();
-                break;
+//            case NEXT_READY_TIME:
+//                value = systemState.nextReadyTime(op);
+//                break;
+//            case NEXT_WAITING_TIME:
+//                value = systemState.nextReadyTime(op) - systemState.getClockTime();
+//                break;
             case WORK_REMAINING:
                 value = op.getWorkRemaining();
                 break;
             case NUM_OPS_REMAINING:
                 value = op.getNumOpsRemaining();
                 break;
-            case WORK_IN_NEXT_QUEUE:
-                value = systemState.workInNextQueue(op);
-                break;
-            case NUM_OPS_IN_NEXT_QUEUE:
-                value = systemState.numOpsInNextQueue(op);
-                break;
+//            case WORK_IN_NEXT_QUEUE:
+//                value = systemState.workInNextQueue(op);
+//                break;
+//            case NUM_OPS_IN_NEXT_QUEUE:
+//                value = systemState.numOpsInNextQueue(op);
+//                break;
             case FLOW_DUE_DATE:
                 value = op.getFlowDueDate();
                 break;
@@ -187,11 +187,11 @@ public enum JobShopAttribute {
                 JobShopAttribute.PROC_TIME,
                 JobShopAttribute.NEXT_PROC_TIME,
                 JobShopAttribute.OP_READY_TIME,
-                JobShopAttribute.NEXT_READY_TIME,
+                //JobShopAttribute.NEXT_READY_TIME,
                 JobShopAttribute.WORK_REMAINING,
                 JobShopAttribute.NUM_OPS_REMAINING,
-                JobShopAttribute.WORK_IN_NEXT_QUEUE,
-                JobShopAttribute.NUM_OPS_IN_NEXT_QUEUE,
+                //JobShopAttribute.WORK_IN_NEXT_QUEUE,
+                //JobShopAttribute.NUM_OPS_IN_NEXT_QUEUE,
                 JobShopAttribute.FLOW_DUE_DATE,
                 JobShopAttribute.DUE_DATE,
                 JobShopAttribute.WEIGHT,
@@ -213,11 +213,11 @@ public enum JobShopAttribute {
                 JobShopAttribute.PROC_TIME,
                 JobShopAttribute.NEXT_PROC_TIME,
                 JobShopAttribute.OP_WAITING_TIME,
-                JobShopAttribute.NEXT_WAITING_TIME,
+                //JobShopAttribute.NEXT_WAITING_TIME,
                 JobShopAttribute.WORK_REMAINING,
                 JobShopAttribute.NUM_OPS_REMAINING,
-                JobShopAttribute.WORK_IN_NEXT_QUEUE,
-                JobShopAttribute.NUM_OPS_IN_NEXT_QUEUE,
+                //JobShopAttribute.WORK_IN_NEXT_QUEUE,
+                //JobShopAttribute.NUM_OPS_IN_NEXT_QUEUE,
                 JobShopAttribute.RELATIVE_FLOW_DUE_DATE,
                 JobShopAttribute.RELATIVE_DUE_DATE,
                 JobShopAttribute.WEIGHT,
@@ -242,7 +242,7 @@ public enum JobShopAttribute {
                 JobShopAttribute.SLACK,
                 JobShopAttribute.WEIGHT,
                 JobShopAttribute.NEXT_PROC_TIME,
-                JobShopAttribute.WORK_IN_NEXT_QUEUE
+                //JobShopAttribute.WORK_IN_NEXT_QUEUE
         };
     }
 
@@ -250,7 +250,7 @@ public enum JobShopAttribute {
         return new JobShopAttribute[] {
                 JobShopAttribute.NUM_OPS_IN_QUEUE,
                 JobShopAttribute.NUM_OPS_REMAINING,
-                JobShopAttribute.NUM_OPS_IN_NEXT_QUEUE
+                //JobShopAttribute.NUM_OPS_IN_NEXT_QUEUE
         };
     }
 
@@ -264,7 +264,7 @@ public enum JobShopAttribute {
         return new JobShopAttribute[] {
                 JobShopAttribute.MACHINE_WAITING_TIME,
                 JobShopAttribute.OP_WAITING_TIME,
-                JobShopAttribute.NEXT_READY_TIME,
+                //JobShopAttribute.NEXT_READY_TIME,
                 JobShopAttribute.FLOW_DUE_DATE,
                 JobShopAttribute.DUE_DATE,
 
@@ -272,7 +272,7 @@ public enum JobShopAttribute {
                 JobShopAttribute.PROC_TIME,
                 JobShopAttribute.NEXT_PROC_TIME,
                 JobShopAttribute.WORK_REMAINING,
-                JobShopAttribute.WORK_IN_NEXT_QUEUE,
+                //JobShopAttribute.WORK_IN_NEXT_QUEUE,
 
                 JobShopAttribute.TIME_IN_SYSTEM,
                 JobShopAttribute.SLACK

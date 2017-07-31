@@ -5,7 +5,7 @@ import yimei.jss.rule.RuleType;
 import yimei.jss.rule.operation.basic.EDD;
 import yimei.jss.rule.operation.basic.FCFS;
 import yimei.jss.rule.operation.composite.ATC;
-import yimei.jss.rule.operation.composite.TwoPTplusWINQplusNPT;
+//import yimei.jss.rule.operation.composite.TwoPTplusWINQplusNPT;
 import yimei.jss.rule.operation.weighted.WATC;
 import yimei.jss.rule.workcenter.basic.SBT;
 
@@ -59,8 +59,8 @@ public enum Objective {
         switch (this) {
             case MAKESPAN:
                 return new FCFS(RuleType.SEQUENCING);
-            case MEAN_FLOWTIME:
-                return new TwoPTplusWINQplusNPT(RuleType.SEQUENCING);
+//            case MEAN_FLOWTIME:
+//                return new TwoPTplusWINQplusNPT(RuleType.SEQUENCING);
             case MEAN_TARDINESS:
                 return new ATC(RuleType.SEQUENCING);
             case MEAN_WEIGHTED_TARDINESS:

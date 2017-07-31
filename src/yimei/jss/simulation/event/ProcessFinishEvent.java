@@ -15,6 +15,21 @@ public class ProcessFinishEvent extends AbstractEvent {
 
     private Process process;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ProcessFinishEvent that = (ProcessFinishEvent) o;
+
+        return process != null ? process.equals(that.process) : that.process == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return process != null ? process.hashCode() : 0;
+    }
+
     public ProcessFinishEvent(double time, Process process) {
         super(time);
         this.process = process;
@@ -47,7 +62,7 @@ public class ProcessFinishEvent extends AbstractEvent {
             simulation.addEvent(new ProcessStartEvent(nextP));
         }
 
-        OperationOption nextOp = process.getOperation().getNext(simulation.getSystemState());
+        OperationOption nextOp = process.getOperation().getNext(simulation.getSystemState(),simulation.getRoutingRule());
 
         if (nextOp == null) {
             Job job = process.getOperation().getJob();
@@ -83,7 +98,7 @@ public class ProcessFinishEvent extends AbstractEvent {
             simulation.addEvent(new ProcessStartEvent(nextP));
         }
 
-        OperationOption nextOp = process.getOperation().getNext(simulation.getSystemState());
+        OperationOption nextOp = process.getOperation().getNext(simulation.getSystemState(),simulation.getRoutingRule());
         if (nextOp == null) {
             Job job = process.getOperation().getJob();
             job.setCompletionTime(process.getFinishTime());

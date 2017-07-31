@@ -25,11 +25,11 @@ public class JobArrivalEvent extends AbstractEvent {
 
     @Override
     public void trigger(Simulation simulation) {
-        job.getOperation(0).getOperationOption(simulation.getSystemState()).setReadyTime(job.getReleaseTime());
+        job.getOperation(0).getOperationOption(simulation.getSystemState(),simulation.getRoutingRule()).setReadyTime(job.getReleaseTime());
 
         simulation.addEvent(
                 new OperationVisitEvent(job.getReleaseTime(), job.getOperation(0).getOperationOption(
-                        simulation.getSystemState()))
+                        simulation.getSystemState(),simulation.getRoutingRule()))
         );
 
         simulation.generateJob();
