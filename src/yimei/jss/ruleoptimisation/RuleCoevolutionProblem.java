@@ -83,20 +83,9 @@ public class RuleCoevolutionProblem extends RuleOptimizationProblem implements G
                 for (int j = 0; j < pop.subpops[i].individuals.length; j++) {
                     MultiObjectiveFitness fit = ((MultiObjectiveFitness) (pop.subpops[i].individuals[j].fitness));
 
-                    // we take the max over the trials
-                    double max = Double.NEGATIVE_INFINITY;
-                    int len = fit.trials.size();
-
-                    for (int l = 0; l < len; l++) {
-                        max = Math.max(((Double) (fit.trials.get(l))).doubleValue(), max);
-                    }
-                    if (max == Double.NEGATIVE_INFINITY && len > 0) {
-                        //getting error messages when len == 0
-                        //why would there be no trials?
-                        System.out.println("What's going on here?");
-                    }
                     double[] objectiveFitness = new double[1];
-                    objectiveFitness[0] = max;
+                    //can use fitness from first trial, as this will always be least
+                    objectiveFitness[0] = ((Double) (fit.trials.get(0))).doubleValue();
                     fit.setObjectives(state, objectiveFitness);
                     pop.subpops[i].individuals[j].evaluated = true;
                 }
@@ -131,11 +120,6 @@ public class RuleCoevolutionProblem extends RuleOptimizationProblem implements G
         evaluationModel.evaluate(fitnesses, rules, state);
 
         //okay, we have run a trial for the above individuals/rules - now we add a trial for each
-
-        //TODO: It seems like individuals are only being used once, since they always
-        //TODO: have no trials before this point - is that right?
-        //TODO: Shouldn't the best routing rule be used against all sequencing rules and vise versa?
-
         // update individuals to reflect the trial
         for (int i = 0; i < ind.length; i++) {
             GPIndividual coind = (GPIndividual) (ind[i]);
@@ -152,7 +136,7 @@ public class RuleCoevolutionProblem extends RuleOptimizationProblem implements G
                     }
                     coind.fitness.trials.add(trialValue);
                 }
-                else if (((Double)(coind.fitness.trials.get(0))).doubleValue() < trialValue)  // best trial is presently #0
+                else if (((Double)(coind.fitness.trials.get(0))).doubleValue() > trialValue)  // best trial is presently #0
                 {
                     if (shouldSetContext) {
                         //this is the new best trial, update context
@@ -167,7 +151,6 @@ public class RuleCoevolutionProblem extends RuleOptimizationProblem implements G
                 // finally set the fitness for good measure
                 double[] objectiveFitness = new double[1];
                 objectiveFitness[0] = trialValue;
-                //TODO: Verify the correct objective fitness is set
                 ((MultiObjectiveFitness) coind.fitness).setObjectives(state, objectiveFitness);
 
             }

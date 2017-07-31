@@ -62,4 +62,31 @@ public class Process implements Comparable<Process> {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Process process = (Process) o;
+
+        if (machineId != process.machineId) return false;
+        if (Double.compare(process.startTime, startTime) != 0) return false;
+        if (Double.compare(process.finishTime, finishTime) != 0) return false;
+        if (workCenter != null ? !workCenter.equals(process.workCenter) : process.workCenter != null) return false;
+        return operation != null ? operation.equals(process.operation) : process.operation == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = workCenter != null ? workCenter.hashCode() : 0;
+        result = 31 * result + machineId;
+        result = 31 * result + (operation != null ? operation.hashCode() : 0);
+        temp = Double.doubleToLongBits(startTime);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(finishTime);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
 }

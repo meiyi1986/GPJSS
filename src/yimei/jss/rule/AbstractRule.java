@@ -74,19 +74,20 @@ public abstract class AbstractRule {
     }
 
     public void calcFitness(Fitness fitness, EvolutionState state,
-                            SchedulingSet schedulingSet, AbstractRule rule, List<Objective> objectives) {
-        //whenever fitness is calculated, need a routing rule and a sequecing rule
-        if (this.type == rule.type) {
-            System.out.println("We need one routing rule and one sequencing rule, not 2"+rule.getType()+" rules.");
+                            SchedulingSet schedulingSet, AbstractRule otherRule,
+                            List<Objective> objectives) {
+        //whenever fitness is calculated, need a routing rule and a sequencing rule
+        if (this.type == otherRule.type) {
+            System.out.println("We need one routing rule and one sequencing rule, not 2 "+otherRule.getType()+" rules.");
             return;
         }
         AbstractRule routingRule;
         AbstractRule sequencingRule;
         if (this.type == RuleType.ROUTING) {
             routingRule = this;
-            sequencingRule = rule;
+            sequencingRule = otherRule;
         } else {
-            routingRule = rule;
+            routingRule = otherRule;
             sequencingRule = this;
         }
 

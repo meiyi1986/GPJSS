@@ -188,4 +188,47 @@ public class Job implements Comparable<Job> {
 
         return 0;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Job job = (Job) o;
+
+        if (id != job.id) return false;
+        if (Double.compare(job.arrivalTime, arrivalTime) != 0) return false;
+        if (Double.compare(job.releaseTime, releaseTime) != 0) return false;
+        if (Double.compare(job.dueDate, dueDate) != 0) return false;
+        if (Double.compare(job.weight, weight) != 0) return false;
+        if (Double.compare(job.totalProcTime, totalProcTime) != 0) return false;
+        if (Double.compare(job.avgProcTime, avgProcTime) != 0) return false;
+        if (Double.compare(job.completionTime, completionTime) != 0) return false;
+        if (operations != null ? !operations.equals(job.operations) : job.operations != null) return false;
+        return processFinishEvents != null ? processFinishEvents.equals(job.processFinishEvents) : job.processFinishEvents == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = id;
+        result = 31 * result + (operations != null ? operations.hashCode() : 0);
+        result = 31 * result + (processFinishEvents != null ? processFinishEvents.hashCode() : 0);
+        temp = Double.doubleToLongBits(arrivalTime);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(releaseTime);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(dueDate);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(weight);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(totalProcTime);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(avgProcTime);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(completionTime);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
 }

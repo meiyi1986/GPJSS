@@ -11,6 +11,7 @@ import yimei.jss.rule.operation.weighted.*;
 import yimei.jss.rule.workcenter.basic.*;
 import yimei.jss.simulation.Simulation;
 import yimei.jss.simulation.StaticSimulation;
+import yimei.jss.simulation.event.AbstractEvent;
 
 import java.io.*;
 import java.nio.file.*;
@@ -29,11 +30,12 @@ public class FJSSMain {
                                         List<Objective> objectives,
                                         List<AbstractRule> sequencingRules,
                                         List<AbstractRule> routingRules) {
-        BufferedWriter writer = null;
-
-        if (sequencingRules.size() == 0 || routingRules.size() == 0 || objectives.size() == 0) {
+        if (sequencingRules.isEmpty() ||
+                routingRules.isEmpty() ||
+                objectives.isEmpty()) {
             return;
         }
+        BufferedWriter writer = null;
 
         if (doStore) {
             writer = createFileWriter(fileName);
@@ -52,13 +54,10 @@ public class FJSSMain {
             List<Integer> replications = new ArrayList<>();
             replications.add(1);
 
-            List<Simulation> simulations = new ArrayList<>();
-            //use first rule in sequencing rules to build simulation
-            simulations.add(new StaticSimulation(sequencingRules.get(0), routingRule, instance));
-
-            SchedulingSet set = new SchedulingSet(simulations, replications, objectives);
-
             for (AbstractRule sequencingRule: sequencingRules) {
+                List<Simulation> simulations = new ArrayList<>();
+                simulations.add(new StaticSimulation(sequencingRule, routingRule, instance));
+                SchedulingSet set = new SchedulingSet(simulations, replications, objectives);
                 String fitnessResult = calcFitness(doStore, sequencingRule, routingRule, fitness, set, objectives);
 
                 //store fitness result with sequencing rule and routing rule
@@ -171,12 +170,10 @@ public class FJSSMain {
 
         objectives.add(Objective.MAKESPAN);
 
-        //we are evolving sequencing rules, hard-coding routing rules
-
-        sequencingRules.add(GPRule.readFromLispExpression(RuleType.SEQUENCING," (+ (max (min MWT rDD)" +
-                " (/ OWT TIS)) (- (max NIQ NINQ) (/ NWT NPT)))\n"));
+        //routingRules.add(GPRule.readFromLispExpression(RuleType.ROUTING,"         (- (+ (- (* NOR DD) (- NIQ WIQ)) (max (- MRT SL) (- (* PT DD) (+ NOR DD)))) (min (max (/ t FDD) (max W NPT)) (- (min PT MRT) (+ PT WIQ))))\n"));
 
         routingRules.add(new SBT(RuleType.ROUTING));
+        sequencingRules.add(GPRule.readFromLispExpression(RuleType.SEQUENCING,"(+ (* SL t) (+ t WKR))"));
 //        routingRules.add(GPRule.readFromLispExpression(RuleType.ROUTING," (max (max NINQ PT) (max (- (/ (min t NINQ)" +
 //                " (max AT W)) (min (max NOR FDD) (* MRT (- SL W)))) AT))"));
 

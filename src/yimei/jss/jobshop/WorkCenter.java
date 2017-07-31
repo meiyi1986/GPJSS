@@ -11,6 +11,37 @@ import java.util.List;
 public class WorkCenter {
 
     private final int id;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        WorkCenter that = (WorkCenter) o;
+
+        if (id != that.id) return false;
+        if (numMachines != that.numMachines) return false;
+        if (Double.compare(that.workInQueue, workInQueue) != 0) return false;
+        if (Double.compare(that.busyTime, busyTime) != 0) return false;
+        if (queue != null ? !queue.equals(that.queue) : that.queue != null) return false;
+        return machineReadyTimes != null ? machineReadyTimes.equals(that.machineReadyTimes) : that.machineReadyTimes == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = id;
+        result = 31 * result + numMachines;
+        result = 31 * result + (queue != null ? queue.hashCode() : 0);
+        result = 31 * result + (machineReadyTimes != null ? machineReadyTimes.hashCode() : 0);
+        temp = Double.doubleToLongBits(workInQueue);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(busyTime);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
     private int numMachines;
 
     // Attributes for simulation.

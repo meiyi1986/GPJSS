@@ -8,6 +8,7 @@
 package ec.coevolve;
 
 import ec.*;
+import ec.gp.GPIndividual;
 import ec.simple.*;
 import ec.util.*;
 
@@ -283,36 +284,33 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
 
     public void performCoevolutionaryEvaluation( final EvolutionState state,
         final Population population,
-        final GroupedProblemForm prob )
-        {
+        final GroupedProblemForm prob ) {
         int evaluations = 0;
-                
+
         inds = new Individual[population.subpops.length];
         updates = new boolean[population.subpops.length];
 
         // we start by warming up the selection methods
-        if (numCurrent > 0)
-            for( int i = 0 ; i < selectionMethodCurrent.length; i++)
-                selectionMethodCurrent[i].prepareToProduce( state, i, 0 );
-
-        if (numPrev > 0)
-            for( int i = 0 ; i < selectionMethodPrev.length ; i++ )
-                {
+        if (numCurrent > 0) {
+            for (int i = 0; i < selectionMethodCurrent.length; i++) {
+                selectionMethodCurrent[i].prepareToProduce(state, i, 0);
+            }
+        }
+        if (numPrev > 0) {
+            for (int i = 0; i < selectionMethodPrev.length; i++) {
                 // do a hack here
                 Population currentPopulation = state.population;
                 state.population = previousPopulation;
-                selectionMethodPrev[i].prepareToProduce( state, i, 0 );
+                selectionMethodPrev[i].prepareToProduce(state, i, 0);
                 state.population = currentPopulation;
-                }
-
+            }
+        }
         // build subpopulation array to pass in each time
         int[] subpops = new int[state.population.subpops.length];
-        for(int j = 0; j < subpops.length; j++)
+        for(int j = 0; j < subpops.length; j++) {
             subpops[j] = j;
-                
-                
-        // handle shuffled always
-                
+        }
+
         if (numShuffled > 0) {
             int[/*numShuffled*/][/*subpop*/][/*shuffledIndividualIndexes*/] ordering = null;
             // build shuffled orderings
@@ -335,7 +333,6 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
                     }
                     prob.evaluate(state, inds, updates, false, subpops, 0);
                     evaluations++;
-                    System.out.println("Evaluation:"+evaluations);
                 }
             }
         }
@@ -365,6 +362,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
                             updates[ind] = false;
                         }
                     }
+
                     prob.evaluate(state,inds,updates, false, subpops, 0);
                     evaluations++;
                 }
