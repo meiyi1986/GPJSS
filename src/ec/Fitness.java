@@ -7,6 +7,8 @@
 
 package ec;
 import java.io.*;
+
+import ec.gp.GPIndividual;
 import ec.util.*;
 import java.util.*;
 
@@ -193,7 +195,11 @@ public abstract class Fitness implements Prototype, Comparable
                     // to avoid loops
                     Individual[] c = context[i].fitness.context;
                     context[i].fitness.context = null;
-                    s += context[i].genotypeToStringForHumans();
+                    if (context[i] instanceof GPIndividual) {
+                        ((GPIndividual) context[i]).trees[0].printTree(state,log);
+                    } else {
+                        s += context[i].genotypeToStringForHumans();
+                    }
                     // relink
                     context[i].fitness.context = c;
                     }
