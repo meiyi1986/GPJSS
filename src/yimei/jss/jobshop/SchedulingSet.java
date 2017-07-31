@@ -86,8 +86,7 @@ public class SchedulingSet {
                 Simulation simulation = simulations.get(j);
                 simulation.setSequencingRule(benchmarkSeqRule);
                 simulation.setRoutingRule(benchmarkRoutingRule);
-
-                simulation.run();
+                simulation.rerun(); //this will make sure benchmark rules affect everything
 
                 double value = simulation.objectiveValue(objective);
                 objectiveLowerBoundMtx.setEntry(i, col, value);
@@ -100,9 +99,9 @@ public class SchedulingSet {
                     objectiveLowerBoundMtx.setEntry(i, col, value);
                     col ++;
                 }
-
                 simulation.reset();
             }
+
         }
     }
 
@@ -191,5 +190,25 @@ public class SchedulingSet {
         else {
             return null;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SchedulingSet that = (SchedulingSet) o;
+
+        if (!simulations.equals(that.simulations)) return false;
+        if (!replications.equals(that.replications)) return false;
+        return objectiveLowerBoundMtx.equals(that.objectiveLowerBoundMtx);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = simulations.hashCode();
+        result = 31 * result + replications.hashCode();
+        result = 31 * result + objectiveLowerBoundMtx.hashCode();
+        return result;
     }
 }

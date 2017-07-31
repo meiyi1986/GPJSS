@@ -14,16 +14,16 @@ eval.problem.eval-model.objectives =    1
 eval.problem.eval-model.objectives.0 =  makespan
 eval.problem.eval-model.sim-models =    1
 eval.problem.eval-model.sim-models.0.util-level = 0.85
-eval.num-shuffled=			            1
+eval.num-shuffled=			            0
 eval.num-current=                       0
-eval.num-elites =                       0
+eval.num-elites =                       1
 eval.num-prev =                         0
 eval.select-current =                   ec.select.RandomSelection
 eval.subpop.0.select-current =          ec.select.RandomSelection
 eval.subpop.1.select-current =          ec.select.RandomSelection
 eval.select-prev =                      ec.select.RandomSelection
 
-generations=                            1000
+generations=                            250
 select.tournament.size =                2
 pop.subpops =                           2
 pop.default-subpop =			        0
@@ -36,7 +36,7 @@ pop.subpop.0.species.crossover-type =   one
 pop.subpop.0.species.genome-size =      10
 pop.subpop.0.species.fitness =          ec.multiobjective.MultiObjectiveFitness
 pop.subpop.0.species.fitness.num-objectives = 1
-pop.subpop.0.species.fitness.maximize = true
+pop.subpop.0.species.fitness.maximize = false
 pop.subpop.0.species.ind =              ec.gp.GPIndividual
 pop.subpop.0.species.ind.numtrees =     1
 pop.subpop.0.species.ind.tree.0 =       ec.gp.GPTree
@@ -72,6 +72,8 @@ pop.subpop.0.species.pipe.source.2.prob = 0.05
 
 # Selection for reproduction
 breed.reproduce.source.0 =              ec.select.TournamentSelection
+breed.elite.0 =                         1
+breed.elite.1 =                         1
 
 # Koza crossover parameters
 gp.koza.xover.source.0 =                ec.select.TournamentSelection
