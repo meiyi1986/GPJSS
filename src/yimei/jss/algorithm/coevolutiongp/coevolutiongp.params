@@ -23,7 +23,7 @@ eval.subpop.0.select-current =          ec.select.RandomSelection
 eval.subpop.1.select-current =          ec.select.RandomSelection
 eval.select-prev =                      ec.select.RandomSelection
 
-generations=                            250
+generations=                            100
 select.tournament.size =                2
 pop.subpops =                           2
 pop.default-subpop =			        0

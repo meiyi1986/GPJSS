@@ -9,6 +9,7 @@ package ec.gp;
 import ec.*;
 import ec.util.*;
 import java.io.*;
+import java.util.Arrays;
 
 /* 
  * GPIndividual.java
@@ -100,32 +101,7 @@ public class GPIndividual extends Individual
         return GPDefaults.base().push(P_INDIVIDUAL);
         }
 
-    public boolean equals(Object ind)
-        {
-        if (ind == null) return false;
-        if (!(this.getClass().equals(ind.getClass()))) return false;  // GPIndividuals are special.
-        GPIndividual i = (GPIndividual)ind;
-        if (trees.length != i.trees.length) return false;
-        // this default version works fine for most GPIndividuals.
-        for(int x=0;x<trees.length;x++)
-            if (!(trees[x].treeEquals(i.trees[x]))) return false;
-        return true;
-        }
-    
-    public int hashCode()
-        {
-        // stolen from GPNode.  It's a decent algorithm.
-        int hash = this.getClass().hashCode();
-        
-        for(int x=0;x<trees.length;x++)
-            hash =
-                // Rotate hash and XOR
-                (hash << 1 | hash >>> 31 ) ^
-                trees[x].treeHashCode();
-        return hash;
-        }
-
-    /** Sets up a prototypical GPIndividual with those features which it
+        /** Sets up a prototypical GPIndividual with those features which it
         shares with other GPIndividuals in its species, and nothing more. */
 
     public void setup(final EvolutionState state, final Parameter base)
@@ -271,7 +247,7 @@ public class GPIndividual extends Individual
     public Object clone()
         {
         // a deep clone
-                
+
         GPIndividual myobj = (GPIndividual)(super.clone());
 
         // copy the tree array
@@ -310,4 +286,19 @@ public class GPIndividual extends Individual
         return size;
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            GPIndividual that = (GPIndividual) o;
+
+            // Probably incorrect - comparing Object[] arrays with Arrays.equals
+            return Arrays.equals(trees, that.trees);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(trees);
+        }
     }

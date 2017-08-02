@@ -337,7 +337,43 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
             }
         }
 
-                        
+//        if (state.generation > 0) {
+//            //want to find out whether elite individuals and or their collaborators are being included
+//            //in the next generation
+//            boolean[][] found = new boolean[2][2]; //should all be false
+//
+//            for (int subpop = 0; subpop < state.population.subpops.length; subpop++)
+//            {
+//                GPIndividual eliteInd = (GPIndividual) eliteIndividuals[subpop][0]; //one for each subpop
+//                int otherSubpop = (subpop+1)%2;
+//                GPIndividual otherEliteCollab = (GPIndividual) eliteIndividuals[otherSubpop][0].fitness.context[0];
+//                //checking each individual
+//                for (int i = state.population.subpops[subpop].individuals.length-2;
+//                     i < state.population.subpops[subpop].individuals.length; i++)
+//                {
+//                    GPIndividual ind = (GPIndividual) state.population.subpops[subpop].individuals[i];
+//                    if (ind.equals(eliteInd) || ind == eliteInd) {
+//                        found[subpop][0] = true;
+//                    }
+//                    if (ind.equals(otherEliteCollab) || ind == otherEliteCollab) {
+//                        found[otherSubpop][1] = true;
+//                    }
+//                }
+//            }
+//            for (int i = 0; i < 2; ++i) {
+//                for (int j = 0; j < 2; ++j) {
+//                    if (!found[i][j]) {
+//                        if (j == 0) {
+//                            System.out.println("Elite missing: "+i+" "+j);
+//                        } else {
+//                            System.out.println("Collab missing: "+i+" "+j);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+
+
         // for each subpopulation
         for (int j = 0; j < state.population.subpops.length; j++)
             {
@@ -468,19 +504,24 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         }
 
 
-    void loadElites( final EvolutionState state, int whichSubpop )
-        {
+    void loadElites(final EvolutionState state, int whichSubpop) {
         Subpopulation subpop = state.population.subpops[whichSubpop];
                 
-        if (numElite==1)
-            {
+        if (numElite == 1) {
             int best = 0;
             Individual[] oldinds = subpop.individuals;
-            for(int x=1;x<oldinds.length;x++)
-                if (oldinds[x].fitness.betterThan(oldinds[best].fitness))
+            for (int x = 1; x < oldinds.length; x++) {
+                if (oldinds[x].fitness.betterThan(oldinds[best].fitness)) {
                     best = x;
-            eliteIndividuals[whichSubpop][0] = (Individual)(state.population.subpops[whichSubpop].individuals[best].clone());
+                    //only want to update eliteIndividual if it is better than current eliteIndividual
+                }
             }
+            if (state.population.subpops[whichSubpop].individuals[best].fitness.betterThan(
+                    eliteIndividuals[whichSubpop][0].fitness)) {
+                eliteIndividuals[whichSubpop][0] =
+                        (Individual)(state.population.subpops[whichSubpop].individuals[best].clone());
+            }
+        }
         else if (numElite > 0)  // we'll need to sort
             {
             int[] orderedPop = new int[subpop.individuals.length];

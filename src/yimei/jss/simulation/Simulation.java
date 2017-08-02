@@ -6,7 +6,6 @@ import yimei.jss.jobshop.Process;
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.simulation.event.*;
 import yimei.jss.simulation.state.SystemState;
-
 import java.util.Iterator;
 import java.util.PriorityQueue;
 
