@@ -43,14 +43,17 @@ import java.util.List;
  */
 public class GridResultCleaner {
     private static final char DEFAULT_SEPARATOR = ',';
+    private static final String GRID_PATH = "/Users/dyska/Desktop/Uni/COMP489/GPJSS/grid_results";
     private String dataPath;
     private String outPath;
     private HashMap<String, Integer> benchmarkMakespans;
     private boolean doIncludeGenerations;
+    private int numPops;
 
-    public GridResultCleaner(String dataPath, String outPath, boolean doIncludeGenerations) {
-        this.dataPath = dataPath;
-        this.outPath = outPath;
+    public GridResultCleaner(String dirName, int numPops, boolean doIncludeGenerations) {
+        this.dataPath = GRID_PATH + "/raw/" + dirName;
+        this.numPops = numPops;
+        this.outPath = GRID_PATH + "/cleaned/" + dirName;
         this.doIncludeGenerations = doIncludeGenerations;
         benchmarkMakespans = InitBenchmarkMakespans();
     }
@@ -73,9 +76,9 @@ public class GridResultCleaner {
             simulations.add(simulation);
             SchedulingSet schedulingSet = new SchedulingSet(simulations, replications, objectives);
 
-            int makeSpan = roundMakespan(schedulingSet.getObjectiveLowerBoundMtx().getData()[0][0]);
+            int benchmarkMakespan = roundMakespan(schedulingSet.getObjectiveLowerBoundMtx().getData()[0][0]);
             fileName = fileName.substring(dataPath.length());
-            makeSpans.put(fileName, makeSpan);
+            makeSpans.put(fileName, benchmarkMakespan);
         }
         return makeSpans;
     }
@@ -146,18 +149,39 @@ public class GridResultCleaner {
         return benchmarkMakespans.getOrDefault(fileName, -1);
     }
 
-    public static Double[] GetFitnesses(String fileName) {
+    public Double[] GetFitnesses(String fileName) {
         BufferedReader br = null;
-        List<Double> fitnesses = new ArrayList<Double>();
+        List<Double> bestFitnesses = new ArrayList<Double>();
         try {
             br = new BufferedReader(new FileReader(fileName));
             String sCurrentLine;
-            boolean lastFitness = false;
+            //may be multiple fitnesses per generation if numpops > 1
+            Double[] fitnesses = new Double[numPops]; //should be reset every generation
+            int numFound = 0;
             while ((sCurrentLine = br.readLine()) != null) {
-                if (sCurrentLine.startsWith("Fitness")) {
+                if ((sCurrentLine.startsWith("Generation") ||
+                        sCurrentLine.startsWith("Best Individual "))
+                        && numFound > 0) { //check numFound so won't enter after init
+                    //quickly sort the fitnesses - only want lower one (best)
+                    Double best = fitnesses[0];
+                    if (fitnesses.length == 2) {
+                        if (fitnesses[1] < best) {
+                            best = fitnesses[1];
+                        }
+                    }
+                    bestFitnesses.add(best);
+                    //reset
+                    fitnesses = new Double[numPops];
+                    numFound = 0;
+                }
+                else if (sCurrentLine.startsWith("Fitness")) {
                     //line should be in format "Fitness: [0.8386540120793787]"
                     sCurrentLine = sCurrentLine.substring(sCurrentLine.indexOf("[")+1, sCurrentLine.length()-1);
-                    fitnesses.add(Double.parseDouble(sCurrentLine));
+                    if (numFound > 1) {
+                        System.out.println("");
+                    }
+                    fitnesses[numFound] = Double.parseDouble(sCurrentLine);
+                    numFound++;
                 }
             }
         } catch (FileNotFoundException e) {
@@ -165,7 +189,7 @@ public class GridResultCleaner {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return fitnesses.toArray(new Double[0]);
+        return bestFitnesses.toArray(new Double[0]);
     }
 
     public void createResultFile(String directoryPath, HashMap<Integer, Integer[]> makespanMap) {
@@ -247,8 +271,7 @@ public class GridResultCleaner {
     }
 
     public static void main(String args[]) {
-        GridResultCleaner grc = new GridResultCleaner("/Users/dyska/Desktop/Uni/COMP489/GPJSS/grid_results/raw",
-                "/Users/dyska/Desktop/Uni/COMP489/GPJSS/grid_results/cleaned/fixed_makespans_single", true);
+        GridResultCleaner grc = new GridResultCleaner("fjss_hardcoded_results_updated", 1, true );
         grc.cleanResults();
     }
 }
