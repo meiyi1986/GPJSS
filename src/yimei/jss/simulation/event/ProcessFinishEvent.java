@@ -15,21 +15,6 @@ public class ProcessFinishEvent extends AbstractEvent {
 
     private Process process;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ProcessFinishEvent that = (ProcessFinishEvent) o;
-
-        return process != null ? process.equals(that.process) : that.process == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return process != null ? process.hashCode() : 0;
-    }
-
     public ProcessFinishEvent(double time, Process process) {
         super(time);
         this.process = process;
@@ -42,7 +27,17 @@ public class ProcessFinishEvent extends AbstractEvent {
     @Override
     public void trigger(Simulation simulation) {
         WorkCenter workCenter = process.getWorkCenter();
-        process.getOperation().getJob().addProcessFinishEvent(this);
+//        process.getOperationOption().getJob().addProcessFinishEvent(this);
+//        if (process.getOperationOption().getJob().getId() >= 0) {
+//            int[] jobStates = simulation.getJobStates();
+//            int jobState = jobStates[process.getOperationOption().getJob().getId()];
+//            if (process.getOperationOption().getOperation().getId() != (jobState+1)) {
+//                //shouldn't happen
+//                System.out.println("Hmmm");
+//            }
+//            jobStates[process.getOperationOption().getJob().getId()] = process.getOperationOption().getOperation().getId();
+//            simulation.setJobStates(jobStates);
+//        }
 
         if (!workCenter.getQueue().isEmpty()) {
             DecisionSituation decisionSituation =
@@ -62,10 +57,10 @@ public class ProcessFinishEvent extends AbstractEvent {
             simulation.addEvent(new ProcessStartEvent(nextP));
         }
 
-        OperationOption nextOp = process.getOperation().getNext(simulation.getSystemState(),simulation.getRoutingRule());
+        OperationOption nextOp = process.getOperationOption().getNext(simulation.getSystemState(),simulation.getRoutingRule());
 
         if (nextOp == null) {
-            Job job = process.getOperation().getJob();
+            Job job = process.getOperationOption().getJob();
             job.setCompletionTime(process.getFinishTime());
             simulation.completeJob(job);
         }
@@ -98,9 +93,9 @@ public class ProcessFinishEvent extends AbstractEvent {
             simulation.addEvent(new ProcessStartEvent(nextP));
         }
 
-        OperationOption nextOp = process.getOperation().getNext(simulation.getSystemState(),simulation.getRoutingRule());
+        OperationOption nextOp = process.getOperationOption().getNext(simulation.getSystemState(),simulation.getRoutingRule());
         if (nextOp == null) {
-            Job job = process.getOperation().getJob();
+            Job job = process.getOperationOption().getJob();
             job.setCompletionTime(process.getFinishTime());
             simulation.completeJob(job);
         }
@@ -113,8 +108,8 @@ public class ProcessFinishEvent extends AbstractEvent {
     public String toString() {
         return String.format("%.1f: job %d op %d finished on work center %d.\n",
                 time,
-                process.getOperation().getJob().getId(),
-                process.getOperation().getOperation().getId(),
+                process.getOperationOption().getJob().getId(),
+                process.getOperationOption().getOperation().getId(),
                 process.getWorkCenter().getId());
     }
 
@@ -138,6 +133,22 @@ public class ProcessFinishEvent extends AbstractEvent {
 
         return 1;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ProcessFinishEvent that = (ProcessFinishEvent) o;
+
+        return process != null ? process.equals(that.process) : that.process == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return process != null ? process.hashCode() : 0;
+    }
+
 
     public Process getProcess() {
         return process;

@@ -8,6 +8,8 @@ import yimei.jss.simulation.event.ProcessFinishEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Arrays.fill;
+
 /**
  * The simulation based on static job shop instance.
  *
@@ -65,6 +67,9 @@ public class StaticSimulation extends Simulation {
     public void resetState() {
         systemState.reset();
         eventQueue.clear();
+//        int[] jobStates = new int[numJobsRecorded];
+//        fill(jobStates, -1);
+//        this.jobStates = jobStates;
         instance.resetShop(shop);
 
         // Create the shop

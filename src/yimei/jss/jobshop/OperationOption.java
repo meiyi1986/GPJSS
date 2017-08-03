@@ -124,8 +124,8 @@ public class OperationOption implements Comparable<OperationOption> {
 
     @Override
     public String toString() {
-        return String.format("[O%d-%d, W%d, T%.1f]",
-                operation.getId(), optionId, workCenter.getId(), procTime);
+        return String.format("[J%d O%d-%d, W%d, T%.1f]",
+                getJob().getId(), operation.getId(), optionId, workCenter.getId(), procTime);
     }
 
     public boolean equals(OperationOption other) {
@@ -149,7 +149,7 @@ public class OperationOption implements Comparable<OperationOption> {
         if (o == null || getClass() != o.getClass()) return false;
 
         OperationOption option = (OperationOption) o;
-
+        if (operation != option.operation) return false;
         if (optionId != option.optionId) return false;
         if (Double.compare(option.procTime, procTime) != 0) return false;
         if (Double.compare(option.readyTime, readyTime) != 0) return false;

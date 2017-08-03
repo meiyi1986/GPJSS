@@ -13,11 +13,11 @@ import java.util.List;
  */
 public class OperationVisitEvent extends AbstractEvent {
 
-    private OperationOption operation;
+    private OperationOption operationOption;
 
-    public OperationVisitEvent(double time, OperationOption operation) {
+    public OperationVisitEvent(double time, OperationOption operationOption) {
         super(time);
-        this.operation = operation;
+        this.operationOption = operationOption;
     }
 
     public OperationVisitEvent(OperationOption operation) {
@@ -26,14 +26,14 @@ public class OperationVisitEvent extends AbstractEvent {
 
     @Override
     public void trigger(Simulation simulation) {
-        operation.setReadyTime(time);
+        operationOption.setReadyTime(time);
 
-        WorkCenter workCenter = operation.getWorkCenter();
+        WorkCenter workCenter = operationOption.getWorkCenter();
         Machine earliestMachine = workCenter.earliestReadyMachine();
-        Process p = new Process(workCenter, earliestMachine.getId(), operation, time);
+        Process p = new Process(workCenter, earliestMachine.getId(), operationOption, time);
 
         if (earliestMachine.getReadyTime() > time || !simulation.canAddToQueue(p)) {
-            workCenter.addToQueue(operation);
+            workCenter.addToQueue(operationOption);
         }
         else {
             simulation.addEvent(new ProcessStartEvent(p));
@@ -50,7 +50,7 @@ public class OperationVisitEvent extends AbstractEvent {
     @Override
     public String toString() {
         return String.format("%.1f: job %d op %d visits.\n",
-                time, operation.getJob().getId(), operation.getOperation().getId());
+                time, operationOption.getJob().getId(), operationOption.getOperation().getId());
     }
 
     @Override
@@ -69,4 +69,6 @@ public class OperationVisitEvent extends AbstractEvent {
 
         return -1;
     }
+
+    public OperationOption getOperationOption() {return operationOption; }
 }

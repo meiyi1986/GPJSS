@@ -2,12 +2,15 @@ package yimei.jss.simulation;
 
 import yimei.jss.jobshop.Job;
 import yimei.jss.jobshop.Objective;
+import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.Process;
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.simulation.event.*;
 import yimei.jss.simulation.state.SystemState;
 import java.util.Iterator;
 import java.util.PriorityQueue;
+
+import static java.util.Arrays.fill;
 
 /**
  * The abstract simulation class for evaluating rules.
@@ -40,6 +43,7 @@ public abstract class Simulation {
     protected int warmupJobs;
     protected int numJobsArrived;
     protected int throughput;
+    //protected int[] jobStates;
 
     public Simulation(AbstractRule sequencingRule,
                       AbstractRule routingRule,
@@ -54,11 +58,16 @@ public abstract class Simulation {
 
         systemState = new SystemState();
         eventQueue = new PriorityQueue<>();
+//        int[] jobStates = new int[numJobsRecorded];
+//        fill(jobStates, -1);
+//        this.jobStates = jobStates;
     }
 
     public AbstractRule getSequencingRule() {
         return sequencingRule;
     }
+
+//    public int[] getJobStates() { return jobStates; }
 
     public AbstractRule getRoutingRule() {
         return routingRule;
@@ -75,6 +84,8 @@ public abstract class Simulation {
     public void setSequencingRule(AbstractRule sequencingRule) {
         this.sequencingRule = sequencingRule;
     }
+
+//    public void setJobStates(int[] jobStates) { this.jobStates = jobStates; }
 
     public void setRoutingRule(AbstractRule routingRule) {
         this.routingRule = routingRule;
@@ -109,11 +120,44 @@ public abstract class Simulation {
     public void run() {
         while (!eventQueue.isEmpty() && throughput < numJobsRecorded) {
             AbstractEvent nextEvent = eventQueue.poll();
-
+//            OperationOption o = null;
+//            if (nextEvent instanceof ProcessFinishEvent) {
+//                o = ((ProcessFinishEvent) nextEvent).getProcess().getOperationOption();
+//            } else if (nextEvent instanceof  OperationVisitEvent) {
+//                o = ((OperationVisitEvent) nextEvent).getOperationOption();
+//            } else if (nextEvent instanceof ProcessStartEvent) {
+//                o = ((ProcessStartEvent) nextEvent).getProcess().getOperationOption();
+//            }
+            //if (!eventIsDuplicate(nextEvent)) {
             systemState.setClockTime(nextEvent.getTime());
             nextEvent.trigger(this);
+            //}
         }
+        if (!systemState.getJobsInSystem().isEmpty()) {
+            System.out.println("Event queue is empty but simulation is not complete.");
+            System.out.println("Makespan is garbage - cannot continue.");
+            System.exit(0);
+        }
+
     }
+
+//    private boolean eventIsDuplicate(AbstractEvent event) {
+//        if (event instanceof ProcessFinishEvent) {
+//            Process p = ((ProcessFinishEvent) event).getProcess();
+//            //want to check whether this operation has already been performed
+//            int jobId = p.getOperationOption().getJob().getId();
+//            if (jobId >= 0) {
+//                int jobState = jobStates[jobId];
+//                int opNum = p.getOperationOption().getOperation().getId();
+//                if ((jobState+1) != opNum) {
+//                    //upcoming event should only be the next job in the sequence,
+//                    //not a job we've already done, or one ahead of the next one
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
     public void rerun() {
         resetState();

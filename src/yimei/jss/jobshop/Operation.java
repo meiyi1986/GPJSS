@@ -37,8 +37,8 @@ public class Operation {
     public String toString() {
         String msg = "";
         for (OperationOption option: operationOptions) {
-            msg += String.format("[O%d-%d, W%d, T%.1f], ",
-                    id, option.getOptionId(), option.getWorkCenter().getId(), option.getProcTime());
+            msg += String.format("[J%d O%d-%d, W%d, T%.1f], ",
+                    job.getId(), id, option.getOptionId(), option.getWorkCenter().getId(), option.getProcTime());
         }
         msg = msg.substring(0, msg.length()-2);
         msg += "\n";
