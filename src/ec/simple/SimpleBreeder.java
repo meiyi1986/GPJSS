@@ -212,7 +212,12 @@ public class SimpleBreeder extends Breeder
         {
         if (!shouldBreedSubpop(state, subpopulation, threadnum))
             return newpop.subpops[subpopulation].individuals.length;  // we're not breeding the population, just copy over the whole thing
-        return newpop.subpops[subpopulation].individuals.length - (2*numElites(state, subpopulation)); // we're breeding population, so elitism may have happened
+            if (state.population.subpops.length == 1) {
+                return newpop.subpops[subpopulation].individuals.length - (numElites(state, subpopulation)); // we're breeding population, so elitism may have happened
+            } else {
+                //storing collaborators also
+                return newpop.subpops[subpopulation].individuals.length - (2*numElites(state, subpopulation)); // we're breeding population, so elitism may have happened
+            }
         }
 
     /** A simple breeder that doesn't attempt to do any cross-
