@@ -54,7 +54,7 @@ public class SchedulingSet {
 
     public void setRule(AbstractRule rule) {
         for (Simulation simulation : simulations) {
-            simulation.setRule(rule);
+            simulation.setSequencingRule(rule);
         }
     }
 
@@ -66,32 +66,28 @@ public class SchedulingSet {
         lowerBoundsFromBenchmarkRule(objectives);
     }
 
-//    public void reset() {
-//        for (DynamicSimulation simulation : simulations) {
-//            simulation.reset();
-//        }
-//    }
-
     private void createObjectiveLowerBoundMatrix(List<Objective> objectives) {
         int rows = objectives.size();
         int cols = 0;
-        for (int rep : replications)
+        for (int rep : replications) {
             cols += rep;
-
+        }
         objectiveLowerBoundMtx = new Array2DRowRealMatrix(rows, cols);
     }
 
     private void lowerBoundsFromBenchmarkRule(List<Objective> objectives) {
         for (int i = 0; i < objectives.size(); i++) {
             Objective objective = objectives.get(i);
-            AbstractRule benchmarkRule = objective.benchmarkRule();
+            AbstractRule benchmarkSeqRule = objective.benchmarkSequencingRule();
+            AbstractRule benchmarkRoutingRule = objective.benchmarkRoutingRule();
 
             int col = 0;
             for (int j = 0; j < simulations.size(); j++) {
                 Simulation simulation = simulations.get(j);
-                simulation.setRule(benchmarkRule);
-                simulation.run();
-//                System.out.println(simulation.workCenterUtilLevelsToString());
+                simulation.setSequencingRule(benchmarkSeqRule);
+                simulation.setRoutingRule(benchmarkRoutingRule);
+                simulation.rerun(); //this will make sure benchmark rules affect everything
+
                 double value = simulation.objectiveValue(objective);
                 objectiveLowerBoundMtx.setEntry(i, col, value);
                 col ++;
@@ -103,9 +99,9 @@ public class SchedulingSet {
                     objectiveLowerBoundMtx.setEntry(i, col, value);
                     col ++;
                 }
-
                 simulation.reset();
             }
+
         }
     }
 
@@ -148,7 +144,7 @@ public class SchedulingSet {
                                                int reps) {
         List<Simulation> simulations = new ArrayList<>();
         simulations.add(
-                DynamicSimulation.standardFull(simSeed, null, 10, 4000, 1000,
+                DynamicSimulation.standardFull(simSeed, null, null, 10, 4000, 1000,
                         utilLevel, dueDateFactor));
         List<Integer> replications = new ArrayList<>();
         replications.add(reps);
@@ -163,7 +159,7 @@ public class SchedulingSet {
                                                   int reps) {
         List<Simulation> simulations = new ArrayList<>();
         simulations.add(
-                DynamicSimulation.standardMissing(simSeed, null, 10, 4000, 1000,
+                DynamicSimulation.standardMissing(simSeed, null, null, 10, 4000, 1000,
                         utilLevel, dueDateFactor));
         List<Integer> replications = new ArrayList<>();
         replications.add(reps);
@@ -194,5 +190,25 @@ public class SchedulingSet {
         else {
             return null;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SchedulingSet that = (SchedulingSet) o;
+
+        if (!simulations.equals(that.simulations)) return false;
+        if (!replications.equals(that.replications)) return false;
+        return objectiveLowerBoundMtx.equals(that.objectiveLowerBoundMtx);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = simulations.hashCode();
+        result = 31 * result + replications.hashCode();
+        result = 31 * result + objectiveLowerBoundMtx.hashCode();
+        return result;
     }
 }

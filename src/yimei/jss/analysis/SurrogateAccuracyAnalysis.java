@@ -4,8 +4,9 @@ import ec.multiobjective.MultiObjectiveFitness;
 import yimei.jss.jobshop.Objective;
 import yimei.jss.jobshop.SchedulingSet;
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.rule.basic.*;
-import yimei.jss.rule.composite.*;
+import yimei.jss.rule.RuleType;
+import yimei.jss.rule.operation.basic.*;
+import yimei.jss.rule.operation.composite.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,32 +25,32 @@ public class SurrogateAccuracyAnalysis {
     private static final List<AbstractRule> rules = new ArrayList<>();
 
     static {
-        rules.add(new SPT());
-        rules.add(new EDD());
-        rules.add(new FCFS());
-        rules.add(new LWKR());
-        rules.add(new CR());
-        rules.add(new SL());
-        rules.add(new PW());
-        rules.add(new ATC());
-        rules.add(new LPT());
-        rules.add(new FDD());
-        rules.add(new LCFS());
-        rules.add(new MWKR());
-        rules.add(new AVPRO());
-        rules.add(new MOPNR());
-        rules.add(new Slack());
-        rules.add(new COVERT());
+        rules.add(new SPT(RuleType.SEQUENCING));
+        rules.add(new EDD(RuleType.SEQUENCING));
+        rules.add(new FCFS(RuleType.SEQUENCING));
+        rules.add(new LWKR(RuleType.SEQUENCING));
+        rules.add(new CR(RuleType.SEQUENCING));
+        rules.add(new SL(RuleType.SEQUENCING));
+        rules.add(new PW(RuleType.SEQUENCING));
+        rules.add(new ATC(RuleType.SEQUENCING));
+        rules.add(new LPT(RuleType.SEQUENCING));
+        rules.add(new FDD(RuleType.SEQUENCING));
+        rules.add(new LCFS(RuleType.SEQUENCING));
+        rules.add(new MWKR(RuleType.SEQUENCING));
+        rules.add(new AVPRO(RuleType.SEQUENCING));
+        rules.add(new MOPNR(RuleType.SEQUENCING));
+        rules.add(new Slack(RuleType.SEQUENCING));
+        rules.add(new COVERT(RuleType.SEQUENCING));
 
-        rules.add(new OPFSLKperPT());
-        rules.add(new LWKRplusPT());
-        rules.add(new CRplusPT());
-        rules.add(new PTplusPW());
-        rules.add(new PTplusPWplusFDD());
-        rules.add(new SlackperOPN());
-        rules.add(new SlackperRPT());
-        rules.add(new PTplusWINQ());
-        rules.add(new TwoPTplusWINQplusNPT());
+        rules.add(new OPFSLKperPT(RuleType.SEQUENCING));
+        rules.add(new LWKRplusPT(RuleType.SEQUENCING));
+        rules.add(new CRplusPT(RuleType.SEQUENCING));
+        rules.add(new PTplusPW(RuleType.SEQUENCING));
+        rules.add(new PTplusPWplusFDD(RuleType.SEQUENCING));
+        rules.add(new SlackperOPN(RuleType.SEQUENCING));
+        rules.add(new SlackperRPT(RuleType.SEQUENCING));
+//        rules.add(new PTplusWINQ(RuleType.SEQUENCING));
+//        rules.add(new TwoPTplusWINQplusNPT(RuleType.SEQUENCING));
     }
 
     public static void main(String[] args) {
@@ -81,9 +82,9 @@ public class SurrogateAccuracyAnalysis {
         fitness.maximize = new boolean[1];
 
         for (AbstractRule rule : rules) {
-            rule.calcFitness(fitness, null, surrogateSet, objectives);
+            //rule.calcFitness(fitness, null, surrogateSet, objectives);
             double surrogateFit = fitness.fitness();
-            rule.calcFitness(fitness, null, set, objectives);
+            //rule.calcFitness(fitness, null, set, objectives);
             double fit = fitness.fitness();
 
             System.out.println(rule.getName() + "\t " + surrogateFit + "\t " + fit);

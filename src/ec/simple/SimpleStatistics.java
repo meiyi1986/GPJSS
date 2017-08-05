@@ -160,7 +160,21 @@ public class SimpleStatistics extends Statistics implements SteadyStateStatistic
             if (best_of_run[x]==null || best_i[x].fitness.betterThan(best_of_run[x].fitness))
                 best_of_run[x] = (Individual)(best_i[x].clone());
             }
-        
+
+//        //Only care about overall best fitness
+//        //Collab and elite individuals will switch roles each generation, so which subpop is better is not
+//        //important
+//        Individual best = best_i[0];
+//        for (int i = 1; i < state.population.subpops.length; ++i) {
+//            if (best_i[i].fitness.betterThan(best.fitness)) {
+//                best = best_i[i];
+//            }
+//        }
+//        //easier just to copy than change code below
+//        for (int i = 0; i < state.population.subpops.length; ++i) {
+//            best_i[i] = best;
+//        }
+
         // print the best-of-generation individual
         if (doGeneration) state.output.println("\nGeneration: " + state.generation,statisticslog);
         if (doGeneration) state.output.println("Best Individual:",statisticslog);

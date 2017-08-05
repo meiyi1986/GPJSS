@@ -6,10 +6,12 @@ import ec.gp.GPIndividual;
 import ec.gp.GPProblem;
 import ec.simple.SimpleProblemForm;
 import ec.util.Parameter;
+import yimei.jss.rule.RuleType;
 import yimei.jss.ruleevaluation.AbstractEvaluationModel;
 import yimei.jss.jobshop.Objective;
-import yimei.jss.rule.evolved.GPRule;
+import yimei.jss.rule.operation.evolved.GPRule;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,7 +57,7 @@ public class RuleOptimizationProblem extends GPProblem implements SimpleProblemF
                          Individual indi,
                          int subpopulation,
                          int threadnum) {
-        GPRule rule = new GPRule(((GPIndividual)indi).trees[0]);
+        GPRule rule = new GPRule(RuleType.SEQUENCING,((GPIndividual)indi).trees[0]);
 
         if (getObjectives().size() > 1) {
             System.err.println("ERROR:");
@@ -63,9 +65,13 @@ public class RuleOptimizationProblem extends GPProblem implements SimpleProblemF
             System.exit(1);
         }
 
-        evaluationModel.evaluate(indi.fitness, rule, state);
+        List rules = new ArrayList();
+        List fitnesses = new ArrayList();
+        rules.add(rule);
+        fitnesses.add(indi.fitness);
+        evaluationModel.evaluate(fitnesses, rules, state);
 
-//        rule.calcFitness(indi.fitness, state, trainSet, objectives);
+//        sequencingRule.calcFitness(indi.fitness, state, trainSet, objectives);
 
         indi.evaluated = true;
     }

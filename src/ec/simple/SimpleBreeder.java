@@ -6,12 +6,8 @@
 
 
 package ec.simple;
-import ec.Initializer;
-import ec.Individual;
-import ec.BreedingPipeline;
-import ec.Breeder;
-import ec.EvolutionState;
-import ec.Population;
+import ec.*;
+import ec.multiobjective.MultiObjectiveFitness;
 import ec.util.Parameter;
 import ec.util.*;
 
@@ -216,7 +212,12 @@ public class SimpleBreeder extends Breeder
         {
         if (!shouldBreedSubpop(state, subpopulation, threadnum))
             return newpop.subpops[subpopulation].individuals.length;  // we're not breeding the population, just copy over the whole thing
-        return newpop.subpops[subpopulation].individuals.length - numElites(state, subpopulation); // we're breeding population, so elitism may have happened 
+            if (state.population.subpops.length == 1) {
+                return newpop.subpops[subpopulation].individuals.length - (numElites(state, subpopulation)); // we're breeding population, so elitism may have happened
+            } else {
+                //storing collaborators also
+                return newpop.subpops[subpopulation].individuals.length - (2*numElites(state, subpopulation)); // we're breeding population, so elitism may have happened
+            }
         }
 
     /** A simple breeder that doesn't attempt to do any cross-
@@ -254,7 +255,6 @@ public class SimpleBreeder extends Breeder
         
         // load elites into top of newpop
         loadElites(state, newpop);
-
 
         // how many threads do we really need?  No more than the maximum number of individuals in any subpopulation
         int numThreads = 0;
@@ -476,6 +476,18 @@ public class SimpleBreeder extends Breeder
 
         // we assume that we're only grabbing a small number (say <10%), so
         // it's not being done multithreaded
+        int[] bestIndex = new int[state.population.subpops.length];
+        for (int sub = 0; sub < state.population.subpops.length; sub++) {
+            int best = 0;
+            Individual[] oldinds = state.population.subpops[sub].individuals;
+            for (int x = 1; x < oldinds.length; x++) {
+                if (oldinds[x].fitness.betterThan(oldinds[best].fitness)) {
+                    best = x;
+                }
+            }
+            bestIndex[sub] = best;
+        }
+
         for(int sub=0;sub<state.population.subpops.length;sub++) 
             {
             if (!shouldBreedSubpop(state, sub, 0))  // don't load the elites for this one, we're not doing breeding of it
@@ -484,16 +496,17 @@ public class SimpleBreeder extends Breeder
                 }
                         
             // if the number of elites is 1, then we handle this by just finding the best one.
-            if (numElites(state, sub)==1)
-                {
-                int best = 0;
+            if (numElites(state, sub) == 1) {
                 Individual[] oldinds = state.population.subpops[sub].individuals;
-                for(int x=1;x<oldinds.length;x++)
-                    if (oldinds[x].fitness.betterThan(oldinds[best].fitness))
-                        best = x;
                 Individual[] inds = newpop.subpops[sub].individuals;
-                inds[inds.length-1] = (Individual)(oldinds[best].clone());
-                }
+                int otherSubPop = (sub+1)%2;
+                Individual[] oldindsOtherSubpop = state.population.subpops[otherSubPop].individuals;
+                //want to also insert context of best individual
+                Individual otherCollab = (Individual) oldindsOtherSubpop[bestIndex[otherSubPop]].fitness.getContext()[sub].clone();
+                inds[inds.length-2] = otherCollab;
+                Individual elite = (Individual)(oldinds[bestIndex[sub]].clone());
+                inds[inds.length-1] = elite;
+            }
             else if (numElites(state, sub)>0)  // we'll need to sort
                 {
                 int[] orderedPop = new int[state.population.subpops[sub].individuals.length];

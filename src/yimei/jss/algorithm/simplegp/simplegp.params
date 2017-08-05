@@ -21,9 +21,10 @@ breed =	ec.simple.SimpleBreeder
 eval = ec.simple.SimpleEvaluator
 stat = ec.simple.SimpleStatistics
 stat.file = $out.stat
-stat.num-children = 1
-stat.child.0 = ec.gp.koza.KozaShortStatistics
-stat.child.0.file = $outtabular.stat
+#stat.num-children = 1
+#stat.child.0 = ec.gp.koza.KozaShortStatistics
+stat.do-generation = true
+stat.do-message = true
 
 generations = 51
 quit-on-run-complete = true
@@ -34,7 +35,6 @@ pop.subpop.0 = ec.Subpopulation
 pop.subpop.0.size =	1024
 
 breed.elite.0 = 10
-
 
 # ==============================
 # GP general parameters
@@ -47,7 +47,6 @@ pop.subpop.0.species.ind.numtrees = 1
 pop.subpop.0.species.ind.tree.0 = ec.gp.GPTree
 pop.subpop.0.species.ind.tree.0.tc = tc0
 
-#pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
 pop.subpop.0.species.fitness = ec.multiobjective.MultiObjectiveFitness
 pop.subpop.0.species.fitness.num-objectives = 1
 pop.subpop.0.species.fitness.maximize = false
@@ -218,9 +217,9 @@ eval.problem = yimei.jss.ruleoptimisation.RuleOptimizationProblem
 eval.problem.data = yimei.jss.gp.data.DoubleData
 eval.problem.eval-model = yimei.jss.ruleevaluation.SimpleEvaluationModel
 eval.problem.eval-model.objectives = 1
-eval.problem.eval-model.objectives.0 = max-tardiness
+eval.problem.eval-model.objectives.0 = makespan
 eval.problem.eval-model.sim-models = 1
 eval.problem.eval-model.sim-models.0.util-level = 0.85
-eval.problem.eval-model.rotate-sim-seed = true
+eval.problem.eval-model.rotate-sim-seed = false
 
 terminals-from = relative

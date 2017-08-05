@@ -3,10 +3,12 @@ package yimei.jss.ruleevaluation;
 import ec.EvolutionState;
 import ec.Fitness;
 import ec.util.Parameter;
+import org.apache.commons.math3.analysis.function.Abs;
+import yimei.jss.jobshop.FlexibleStaticInstance;
 import yimei.jss.jobshop.SchedulingSet;
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.simulation.DynamicSimulation;
 import yimei.jss.simulation.Simulation;
+import yimei.jss.simulation.StaticSimulation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +34,6 @@ public class SimpleEvaluationModel extends AbstractEvaluationModel {
     public final static String P_SIM_NUM_MACHINES = "num-machines";
     public final static String P_SIM_NUM_JOBS = "num-jobs";
     public final static String P_SIM_WARMUP_JOBS = "warmup-jobs";
-    public final static String P_SIM_MIN_NUM_OPS = "min-num-ops";
-    public final static String P_SIM_MAX_NUM_OPS = "max-num-ops";
-    public final static String P_SIM_UTIL_LEVEL = "util-level";
-    public final static String P_SIM_DUE_DATE_FACTOR = "due-date-factor";
     public final static String P_SIM_REPLICATIONS = "replications";
 
     protected SchedulingSet schedulingSet;
@@ -85,26 +83,14 @@ public class SimpleEvaluationModel extends AbstractEvaluationModel {
             int numJobs = state.parameters.getIntWithDefault(p, null, 5000);
             // Number of warmup jobs
             p = b.push(P_SIM_WARMUP_JOBS);
-            int warmupJobs = state.parameters.getIntWithDefault(p, null, 1000);
-            // Min number of operations
-            p = b.push(P_SIM_MIN_NUM_OPS);
-            int minNumOps = state.parameters.getIntWithDefault(p, null, 2);
-            // Max number of operations
-            p = b.push(P_SIM_MAX_NUM_OPS);
-            int maxNumOps = state.parameters.getIntWithDefault(p, null, numMachines);
-            // Utilization level
-            p = b.push(P_SIM_UTIL_LEVEL);
-            double utilLevel = state.parameters.getDoubleWithDefault(p, null, 0.85);
-            // Due date factor
-            p = b.push(P_SIM_DUE_DATE_FACTOR);
-            double dueDateFactor = state.parameters.getDoubleWithDefault(p, null, 4.0);
             // Number of replications
             p = b.push(P_SIM_REPLICATIONS);
             int rep = state.parameters.getIntWithDefault(p, null, 1);
 
-            Simulation simulation = new DynamicSimulation(simSeed,
-                    null, numMachines, numJobs, warmupJobs,
-                    minNumOps, maxNumOps, utilLevel, dueDateFactor, false);
+            String filePath = state.parameters.getString(new Parameter("filePath"), null);
+            FlexibleStaticInstance instance = FlexibleStaticInstance.readFromAbsPath(filePath);
+
+            Simulation simulation = new StaticSimulation(null, null, instance);
 
             trainSimulations.add(simulation);
             replications.add(new Integer(rep));
@@ -117,10 +103,23 @@ public class SimpleEvaluationModel extends AbstractEvaluationModel {
     }
 
     @Override
-    public void evaluate(Fitness fitness,
-                         AbstractRule rule,
+    public void evaluate(List<Fitness> fitnesses,
+                         List<AbstractRule> rules,
                          EvolutionState state) {
-        rule.calcFitness(fitness, state, schedulingSet, objectives);
+        //only expecting one rule here
+        if (rules.size() > 1 || rules.size() == 0) {
+            try {
+                throw new Exception(rules.size()+" - unexpected number of rules.");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        AbstractRule rule = rules.get(0); //sequencing rule
+        Fitness fitness = fitnesses.get(0);
+        //can get the other rule from the simulation
+        AbstractRule routingRule = schedulingSet.getSimulations().get(0).getRoutingRule();
+
+        rule.calcFitness(fitness, state, schedulingSet, routingRule, objectives);
     }
 
     @Override

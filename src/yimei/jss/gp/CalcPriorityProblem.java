@@ -5,6 +5,7 @@ import ec.Individual;
 import ec.Problem;
 import ec.simple.SimpleProblemForm;
 import yimei.jss.jobshop.Operation;
+import yimei.jss.jobshop.OperationOption;
 import yimei.jss.jobshop.WorkCenter;
 import yimei.jss.simulation.state.SystemState;
 
@@ -13,11 +14,11 @@ import yimei.jss.simulation.state.SystemState;
  */
 public class CalcPriorityProblem extends Problem implements SimpleProblemForm {
 
-    private Operation operation;
+    private OperationOption operation;
     private WorkCenter workCenter;
     private SystemState systemState;
 
-    public CalcPriorityProblem(Operation operation,
+    public CalcPriorityProblem(OperationOption operation,
                                WorkCenter workCenter,
                                SystemState systemState) {
         this.operation = operation;
@@ -25,7 +26,7 @@ public class CalcPriorityProblem extends Problem implements SimpleProblemForm {
         this.systemState = systemState;
     }
 
-    public Operation getOperation() {
+    public OperationOption getOperation() {
         return operation;
     }
 

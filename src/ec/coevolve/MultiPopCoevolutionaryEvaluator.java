@@ -8,6 +8,7 @@
 package ec.coevolve;
 
 import ec.*;
+import ec.gp.GPIndividual;
 import ec.simple.*;
 import ec.util.*;
 
@@ -212,7 +213,7 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
             preAssessFitness[i] = postAssessFitness[i] || (state.generation == 0);  // always prepare (set up trials) on generation 0
             }
 
-                
+
         // do evaluation
         beforeCoevolutionaryEvaluation( state, state.population, (GroupedProblemForm)p_problem );
 
@@ -283,38 +284,34 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
 
     public void performCoevolutionaryEvaluation( final EvolutionState state,
         final Population population,
-        final GroupedProblemForm prob )
-        {
+        final GroupedProblemForm prob ) {
         int evaluations = 0;
-                
+
         inds = new Individual[population.subpops.length];
         updates = new boolean[population.subpops.length];
 
         // we start by warming up the selection methods
-        if (numCurrent > 0)
-            for( int i = 0 ; i < selectionMethodCurrent.length; i++)
-                selectionMethodCurrent[i].prepareToProduce( state, i, 0 );
-
-        if (numPrev > 0)
-            for( int i = 0 ; i < selectionMethodPrev.length ; i++ )
-                {
+        if (numCurrent > 0) {
+            for (int i = 0; i < selectionMethodCurrent.length; i++) {
+                selectionMethodCurrent[i].prepareToProduce(state, i, 0);
+            }
+        }
+        if (numPrev > 0) {
+            for (int i = 0; i < selectionMethodPrev.length; i++) {
                 // do a hack here
                 Population currentPopulation = state.population;
                 state.population = previousPopulation;
-                selectionMethodPrev[i].prepareToProduce( state, i, 0 );
+                selectionMethodPrev[i].prepareToProduce(state, i, 0);
                 state.population = currentPopulation;
-                }
-
+            }
+        }
         // build subpopulation array to pass in each time
         int[] subpops = new int[state.population.subpops.length];
-        for(int j = 0; j < subpops.length; j++)
+        for(int j = 0; j < subpops.length; j++) {
             subpops[j] = j;
-                
-                
-        // handle shuffled always
-                
-        if (numShuffled > 0)
-            {
+        }
+
+        if (numShuffled > 0) {
             int[/*numShuffled*/][/*subpop*/][/*shuffledIndividualIndexes*/] ordering = null;
             // build shuffled orderings
             ordering = new int[numShuffled][state.population.subpops.length][state.population.subpops[0].individuals.length];
@@ -328,40 +325,83 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
                     }
                                 
             // for each individual
-            for(int i = 0; i < state.population.subpops[0].individuals.length; i++)
-                for(int k = 0; k < numShuffled; k++)
-                    {
-                    for(int ind = 0; ind < inds.length; ind++)
-                        { inds[ind] = state.population.subpops[ind].individuals[ordering[k][ind][i]]; updates[ind] = true; }
-                    prob.evaluate(state,inds,updates, false, subpops, 0);
-                    evaluations++;
+            for (int i = 0; i < state.population.subpops[0].individuals.length; i++) {
+                for (int k = 0; k < numShuffled; k++) {
+                    for (int ind = 0; ind < inds.length; ind++) {
+                        inds[ind] = state.population.subpops[ind].individuals[ordering[k][ind][i]];
+                        updates[ind] = true;
                     }
+                    prob.evaluate(state, inds, updates, false, subpops, 0);
+                    evaluations++;
+                }
             }
+        }
 
-                        
+//        if (state.generation > 0) {
+//            //want to find out whether elite individuals and or their collaborators are being included
+//            //in the next generation
+//            boolean[][] found = new boolean[2][2]; //should all be false
+//
+//            for (int subpop = 0; subpop < state.population.subpops.length; subpop++)
+//            {
+//                GPIndividual eliteInd = (GPIndividual) eliteIndividuals[subpop][0]; //one for each subpop
+//                int otherSubpop = (subpop+1)%2;
+//                GPIndividual otherEliteCollab = (GPIndividual) eliteIndividuals[otherSubpop][0].fitness.context[0];
+//                //checking each individual
+//                for (int i = state.population.subpops[subpop].individuals.length-2;
+//                     i < state.population.subpops[subpop].individuals.length; i++)
+//                {
+//                    GPIndividual ind = (GPIndividual) state.population.subpops[subpop].individuals[i];
+//                    if (ind.equals(eliteInd) || ind == eliteInd) {
+//                        found[subpop][0] = true;
+//                    }
+//                    if (ind.equals(otherEliteCollab) || ind == otherEliteCollab) {
+//                        found[otherSubpop][1] = true;
+//                    }
+//                }
+//            }
+//            for (int i = 0; i < 2; ++i) {
+//                for (int j = 0; j < 2; ++j) {
+//                    if (!found[i][j]) {
+//                        if (j == 0) {
+//                            System.out.println("Elite missing: "+i+" "+j);
+//                        } else {
+//                            System.out.println("Collab missing: "+i+" "+j);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+
+
         // for each subpopulation
-        for(int j = 0; j < state.population.subpops.length; j++)
+        for (int j = 0; j < state.population.subpops.length; j++)
             {
             // now do elites and randoms
                 
             if (!shouldEvaluateSubpop(state, j, 0)) continue;  // don't evaluate this subpopulation
 
             // for each individual
-            for(int i = 0; i < state.population.subpops[j].individuals.length; i++)
+            for (int i = 0; i < state.population.subpops[j].individuals.length; i++)
                 {
                 Individual individual = state.population.subpops[j].individuals[i];
                                 
                 // Test against all the elites
-                for(int k = 0; k < eliteIndividuals[j].length; k++)
-                    {
-                    for(int ind = 0; ind < inds.length; ind++)
-                        {
-                        if (ind == j) { inds[ind] = individual; updates[ind] = true; }
-                        else  { inds[ind] = eliteIndividuals[ind][k]; updates[ind] = false; }
+                for (int k = 0; k < eliteIndividuals[j].length; k++) {
+                    for (int ind = 0; ind < inds.length; ind++) {
+                        if (ind == j) {
+                            inds[ind] = individual;
+                            updates[ind] = true;
                         }
+                        else {
+                            inds[ind] = eliteIndividuals[ind][k];
+                            updates[ind] = false;
+                        }
+                    }
+
                     prob.evaluate(state,inds,updates, false, subpops, 0);
                     evaluations++;
-                    }
+                }
                                         
                 // test against random selected individuals of the current population
                 for(int k = 0; k < numCurrent; k++)
@@ -464,19 +504,24 @@ public class MultiPopCoevolutionaryEvaluator extends Evaluator
         }
 
 
-    void loadElites( final EvolutionState state, int whichSubpop )
-        {
+    void loadElites(final EvolutionState state, int whichSubpop) {
         Subpopulation subpop = state.population.subpops[whichSubpop];
                 
-        if (numElite==1)
-            {
+        if (numElite == 1) {
             int best = 0;
             Individual[] oldinds = subpop.individuals;
-            for(int x=1;x<oldinds.length;x++)
-                if (oldinds[x].fitness.betterThan(oldinds[best].fitness))
+            for (int x = 1; x < oldinds.length; x++) {
+                if (oldinds[x].fitness.betterThan(oldinds[best].fitness)) {
                     best = x;
-            eliteIndividuals[whichSubpop][0] = (Individual)(state.population.subpops[whichSubpop].individuals[best].clone());
+                    //only want to update eliteIndividual if it is better than current eliteIndividual
+                }
             }
+            if (state.population.subpops[whichSubpop].individuals[best].fitness.betterThan(
+                    eliteIndividuals[whichSubpop][0].fitness)) {
+                eliteIndividuals[whichSubpop][0] =
+                        (Individual)(state.population.subpops[whichSubpop].individuals[best].clone());
+            }
+        }
         else if (numElite > 0)  // we'll need to sort
             {
             int[] orderedPop = new int[subpop.individuals.length];

@@ -40,3 +40,12 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
+.idea/
+.metadata/
+GPJSS.iml
+out.stat
+data/FJSS
+data/JSS_Data
+outtabular.stat
+fjss_optimums/
+grid_results/

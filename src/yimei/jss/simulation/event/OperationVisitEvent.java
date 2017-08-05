@@ -1,8 +1,6 @@
 package yimei.jss.simulation.event;
 
-import yimei.jss.jobshop.Machine;
-import yimei.jss.jobshop.Operation;
-import yimei.jss.jobshop.WorkCenter;
+import yimei.jss.jobshop.*;
 import yimei.jss.jobshop.Process;
 import yimei.jss.simulation.DecisionSituation;
 import yimei.jss.simulation.DynamicSimulation;
@@ -15,29 +13,29 @@ import java.util.List;
  */
 public class OperationVisitEvent extends AbstractEvent {
 
-    private Operation operation;
+    private OperationOption operationOption;
 
-    public OperationVisitEvent(double time, Operation operation) {
+    public OperationVisitEvent(double time, OperationOption operationOption) {
         super(time);
-        this.operation = operation;
+        this.operationOption = operationOption;
     }
 
-    public OperationVisitEvent(Operation operation) {
+    public OperationVisitEvent(OperationOption operation) {
         this(operation.getReadyTime(), operation);
     }
 
     @Override
     public void trigger(Simulation simulation) {
-        operation.setReadyTime(time);
+        operationOption.setReadyTime(time);
 
-        WorkCenter workCenter = operation.getWorkCenter();
+        WorkCenter workCenter = operationOption.getWorkCenter();
         Machine earliestMachine = workCenter.earliestReadyMachine();
+        Process p = new Process(workCenter, earliestMachine.getId(), operationOption, time);
 
-        if (earliestMachine.getReadyTime() > time) {
-            workCenter.addToQueue(operation);
+        if (earliestMachine.getReadyTime() > time || !simulation.canAddToQueue(p)) {
+            workCenter.addToQueue(operationOption);
         }
         else {
-            Process p = new Process(workCenter, earliestMachine.getId(), operation, time);
             simulation.addEvent(new ProcessStartEvent(p));
         }
     }
@@ -52,7 +50,7 @@ public class OperationVisitEvent extends AbstractEvent {
     @Override
     public String toString() {
         return String.format("%.1f: job %d op %d visits.\n",
-                time, operation.getJob().getId(), operation.getId());
+                time, operationOption.getJob().getId(), operationOption.getOperation().getId());
     }
 
     @Override
@@ -71,4 +69,6 @@ public class OperationVisitEvent extends AbstractEvent {
 
         return -1;
     }
+
+    public OperationOption getOperationOption() {return operationOption; }
 }

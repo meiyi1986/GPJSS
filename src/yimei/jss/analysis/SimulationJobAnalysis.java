@@ -1,9 +1,11 @@
 package yimei.jss.analysis;
 
 import yimei.jss.jobshop.Job;
-import yimei.jss.rule.basic.FCFS;
-import yimei.jss.rule.evolved.GPRule;
-import yimei.jss.rule.weighted.WATC;
+import yimei.jss.rule.RuleType;
+import yimei.jss.rule.operation.basic.FCFS;
+import yimei.jss.rule.operation.evolved.GPRule;
+import yimei.jss.rule.operation.weighted.WATC;
+import yimei.jss.rule.workcenter.basic.SBT;
 import yimei.jss.simulation.DynamicSimulation;
 
 import java.io.BufferedWriter;
@@ -44,20 +46,20 @@ public class SimulationJobAnalysis {
 
     public static void main(String[] args) {
         DynamicSimulation simulation1 = DynamicSimulation.standardMissing(72334,
-                new WATC(), 10, 5000, 0, 0.9, 4.0);
+                new WATC(RuleType.SEQUENCING), new SBT(RuleType.ROUTING), 10, 5000, 0, 0.9, 4.0);
         simulation1.run();
         File csvFile1 = new File("jobs-missing-0.9-4-WATC.csv");
         writeJobsToCSV(simulation1, csvFile1);
 
         DynamicSimulation simulation2 = DynamicSimulation.standardMissing(72334,
-                new FCFS(), 10, 5000, 0, 0.9, 4.0);
+                new FCFS(RuleType.SEQUENCING), new SBT(RuleType.ROUTING),10, 5000, 0, 0.9, 4.0);
         simulation2.run();
         File csvFile2 = new File("jobs-missing-0.9-4-FCFS.csv");
         writeJobsToCSV(simulation2, csvFile2);
 
-        GPRule rule = GPRule.readFromLispExpression("(* (max (- (+ PT (min (+ (+ NOR PT) WINQ) (max NOR SL))) (/ WKR W)) (/ (+ PT (min (/ WINQ NOR) (min (max NPT W) (max NPT SL)))) W)) (/ (+ PT (min (/ WINQ (/ WIQ PT)) (max NPT W))) W))");
+        GPRule rule = GPRule.readFromLispExpression(RuleType.SEQUENCING, "(* (max (- (+ PT (min (+ (+ NOR PT) WINQ) (max NOR SL))) (/ WKR W)) (/ (+ PT (min (/ WINQ NOR) (min (max NPT W) (max NPT SL)))) W)) (/ (+ PT (min (/ WINQ (/ WIQ PT)) (max NPT W))) W))");
         DynamicSimulation simulation3 = DynamicSimulation.standardMissing(72334,
-                rule, 10, 5000, 0, 0.9, 4.0);
+                rule, new SBT(RuleType.ROUTING),10, 5000, 0, 0.9, 4.0);
         simulation3.run();
         File csvFile3 = new File("jobs-missing-0.9-4-GPRule.csv");
         writeJobsToCSV(simulation3, csvFile3);

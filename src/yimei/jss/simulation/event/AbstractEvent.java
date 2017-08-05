@@ -37,4 +37,20 @@ public abstract class AbstractEvent implements Comparable<AbstractEvent> {
 
         return 0;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractEvent that = (AbstractEvent) o;
+
+        return Double.compare(that.time, time) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        long temp = Double.doubleToLongBits(time);
+        return (int) (temp ^ (temp >>> 32));
+    }
 }

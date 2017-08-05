@@ -1,33 +1,48 @@
 package yimei.jss.jobshop;
 
+import yimei.jss.rule.AbstractRule;
+import yimei.jss.rule.RuleType;
+import yimei.jss.rule.workcenter.basic.SBT;
+import yimei.jss.simulation.state.SystemState;
+
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by yimei on 22/09/16.
  */
-public class Operation implements Comparable<Operation> {
-
+public class Operation {
     private final Job job;
     private final int id;
-    private double procTime;
-    private WorkCenter workCenter;
+    private List<OperationOption> operationOptions;
     private Operation next;
 
-    // Attributes for simulation.
-    private double readyTime;
-    private double workRemaining;
-    private int numOpsRemaining;
-    private double flowDueDate;
-    private double nextProcTime;
-    private double priority;
+    public Operation(Job job, int id) {
+        this.job = job;
+        this.id = id;
+        this.operationOptions = new ArrayList<>();
+    }
 
     public Operation(Job job, int id, double procTime, WorkCenter workCenter) {
         this.job = job;
         this.id = id;
-        this.procTime = procTime;
-        this.workCenter = workCenter;
+        this.operationOptions = new ArrayList<>();
+        this.next = null;
+        operationOptions.add(new OperationOption(this,
+                operationOptions.size()+1,procTime,workCenter));
+    }
+
+    public String toString() {
+        String msg = "";
+        for (OperationOption option: operationOptions) {
+            msg += String.format("[J%d O%d-%d, W%d, T%.1f], ",
+                    job.getId(), id, option.getOptionId(), option.getWorkCenter().getId(), option.getProcTime());
+        }
+        msg = msg.substring(0, msg.length()-2);
+        msg += "\n";
+        return msg;
     }
 
     public Job getJob() {
@@ -38,104 +53,80 @@ public class Operation implements Comparable<Operation> {
         return id;
     }
 
-    public double getProcTime() {
-        return procTime;
+    public void setNext(Operation next) {this.next = next; }
+
+    public void setOperationOptions (List<OperationOption> operationOptions) {this.operationOptions = operationOptions; }
+
+    public Operation getNext() { return next; }
+
+    public List<OperationOption> getOperationOptions() { return operationOptions; }
+
+    public void addOperationOption(OperationOption option) {
+        operationOptions.add(option);
     }
 
-    public WorkCenter getWorkCenter() {
-        return workCenter;
-    }
-
-    public Operation getNext() {
-        return next;
-    }
-
-    public double getReadyTime() {
-        return readyTime;
-    }
-
-    public double getWorkRemaining() {
-        return workRemaining;
-    }
-
-    public int getNumOpsRemaining() {
-        return numOpsRemaining;
-    }
-
-    public double getFlowDueDate() {
-        return flowDueDate;
-    }
-
-    public double getNextProcTime() {
-        return nextProcTime;
-    }
-
-    public double getPriority() {
-        return priority;
-    }
-
-    public void setNext(Operation next) {
-        this.next = next;
-
-    }
-
-    public void setWorkRemaining(double workRemaining) {
-        this.workRemaining = workRemaining;
-    }
-
-    public void setNextProcTime(double nextProcTime) {
-        this.nextProcTime = nextProcTime;
-    }
-
-    public void setNumOpsRemaining(int numOpsRemaining) {
-        this.numOpsRemaining = numOpsRemaining;
-    }
-
-    public void setReadyTime(double readyTime) {
-        this.readyTime = readyTime;
-    }
-
-    public void setFlowDueDate(double flowDueDate) {
-        this.flowDueDate = flowDueDate;
-    }
-
-    public void setPriority(double priority) {
-        this.priority = priority;
-    }
-
-    /**
-     * Compare with another process based on priority.
-     * @param other the other process.
-     * @return true if prior to other, and false otherwise.
+    /*
+    This method is to be called before a simulation has begun and additional information
+    has been made availble. It will simply return the OperationOption with the highest
+    procedure time, aka the most pessimistic procedure time guess.
      */
-    public boolean priorTo(Operation other) {
-        if (Double.compare(priority, other.priority) < 0)
-            return true;
+    public OperationOption getOperationOption() {
+        double highestProcTime = Double.NEGATIVE_INFINITY;
+        OperationOption best = null;
+        for (OperationOption option: operationOptions) {
+            if (option.getProcTime() > highestProcTime || highestProcTime == Double.NEGATIVE_INFINITY) {
+                highestProcTime = option.getProcTime();
+                best = option;
+            }
+        }
+        return best;
+    }
 
-        if (Double.compare(priority, other.priority) > 0)
+    /*
+    This method is to be called with the system state parameter. It allows for an
+    informed decision in choosing which operation option to use.
+     */
+    public OperationOption getOperationOption(SystemState systemState, AbstractRule routingRule) {
+        if (operationOptions.size() == 1) {
+            return operationOptions.iterator().next();
+        }
+
+        if (routingRule == null) {
+            routingRule = new SBT(RuleType.ROUTING);
+        }
+
+        double lowestPriority = Double.POSITIVE_INFINITY;
+        OperationOption best = null;
+        for (OperationOption option: operationOptions) {
+            double priority = routingRule.priority(option, option.getWorkCenter(), systemState);
+            if (priority < lowestPriority || lowestPriority == Double.POSITIVE_INFINITY) {
+                lowestPriority = priority;
+                best = option;
+            }
+        }
+        return best;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Operation operation = (Operation) o;
+
+        if (id != operation.id) return false;
+        if (job != null ? !job.equals(operation.job) : operation.job != null) return false;
+        if (operationOptions != null ? !operationOptions.equals(operation.operationOptions) : operation.operationOptions != null)
             return false;
-
-        return job.getId() < other.job.getId();
+        return next != null ? next.equals(operation.next) : operation.next == null;
     }
 
     @Override
-    public String toString() {
-        return String.format("[J%d, O%d, W%d, T%.1f]",
-                job.getId(), id, workCenter.getId(), procTime);
-    }
-
-    public boolean equals(Operation other) {
-        return id == other.id;
-    }
-
-    @Override
-    public int compareTo(Operation other) {
-        if (readyTime < other.readyTime)
-            return -1;
-
-        if (readyTime > other.readyTime)
-            return 1;
-
-        return 0;
+    public int hashCode() {
+        int result = job != null ? job.hashCode() : 0;
+        result = 31 * result + id;
+        result = 31 * result + (operationOptions != null ? operationOptions.hashCode() : 0);
+        result = 31 * result + (next != null ? next.hashCode() : 0);
+        return result;
     }
 }

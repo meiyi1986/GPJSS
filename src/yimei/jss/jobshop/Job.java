@@ -1,5 +1,7 @@
 package yimei.jss.jobshop;
 
+import yimei.jss.simulation.event.ProcessFinishEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +14,7 @@ public class Job implements Comparable<Job> {
 
     private final int id;
     private List<Operation> operations;
+    private List<ProcessFinishEvent> processFinishEvents;
     private final double arrivalTime;
     private final double releaseTime;
     private double dueDate;
@@ -34,10 +37,12 @@ public class Job implements Comparable<Job> {
         this.releaseTime = releaseTime;
         this.dueDate = dueDate;
         this.weight = weight;
+        this.processFinishEvents = new ArrayList<ProcessFinishEvent>();
     }
 
     public Job(int id, List<Operation> operations) {
-        this(id, operations, 0, 0, Double.POSITIVE_INFINITY, 1.0);
+        this(id, operations,
+                0, 0, Double.POSITIVE_INFINITY, 1.0);
     }
 
     public int getId() {
@@ -47,6 +52,18 @@ public class Job implements Comparable<Job> {
     public List<Operation> getOperations() {
         return operations;
     }
+
+//    public List<ProcessFinishEvent> getProcessFinishEvents() { return processFinishEvents; }
+//
+//    public void addProcessFinishEvent(ProcessFinishEvent processFinishEvent) {
+//        for (ProcessFinishEvent p: processFinishEvents) {
+//            if (p.getProcess().getOperationOption().getOperation().getId() ==
+//                    processFinishEvent.getProcess().getOperationOption().getOperation().getId()) {
+//                System.out.println("Shouldn't happen");
+//            }
+//        }
+//        processFinishEvents.add(processFinishEvent);
+//    }
 
     public Operation getOperation(int idx) {
         return operations.get(idx);
@@ -116,26 +133,39 @@ public class Job implements Comparable<Job> {
         Operation next = null;
         double nextProcTime = 0.0;
 
-        double fdd = releaseTime;
+        //double fdd = releaseTime;
 
-        for (int i = 0; i < operations.size(); i++) {
-            fdd += operations.get(i).getProcTime();
-            operations.get(i).setFlowDueDate(fdd);
-        }
+//        for (int i = 0; i < operations.size(); i++) {
+//            Operation operation = operations.get(i);
+//            for (OperationOption option: operation.getOperationOptions()) {
+//                option.setFlowDueDate(fdd + option.getProcTime());
+//            }
+//            fdd += operation.getOperationOption().getProcTime();
+//        }
 
+
+        //TODO: Ask Yi and Meng
         double workRemaining = 0.0;
         int numOpsRemaining = 0;
         for (int i = operations.size()-1; i > -1; i--) {
-            workRemaining += operations.get(i).getProcTime();
-            operations.get(i).setWorkRemaining(workRemaining);
+            Operation operation = operations.get(i);
+            for (OperationOption option: operation.getOperationOptions()) {
 
-            operations.get(i).setNumOpsRemaining(numOpsRemaining);
+                option.setWorkRemaining(workRemaining + option.getProcTime());
+
+                option.setNumOpsRemaining(numOpsRemaining);
+
+                option.setNextProcTime(nextProcTime);
+            }
+
             numOpsRemaining ++;
+            OperationOption worstOption = operation.getOperationOption();
+            workRemaining += worstOption.getProcTime(); //worst case scenario
 
-            operations.get(i).setNext(next);
-            operations.get(i).setNextProcTime(nextProcTime);
-            next = operations.get(i);
-            nextProcTime = next.getProcTime();
+            operation.setNext(next);
+
+            next = operation;
+            nextProcTime = worstOption.getProcTime(); //pessimistic guess
         }
         totalProcTime = workRemaining;
         avgProcTime = totalProcTime / operations.size();
@@ -145,8 +175,8 @@ public class Job implements Comparable<Job> {
     public String toString() {
         String string = String.format("Job %d, arrives at %.1f, due at %.1f, weight is %.1f. It has %d operations:\n",
                 id, arrivalTime, dueDate, weight, operations.size());
-        for (Operation op : operations) {
-            string += op.toString();
+        for (Operation operation: operations) {
+            string += operation.toString();
         }
 
         return string;
@@ -165,5 +195,48 @@ public class Job implements Comparable<Job> {
             return 1;
 
         return 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Job job = (Job) o;
+
+        if (id != job.id) return false;
+        if (Double.compare(job.arrivalTime, arrivalTime) != 0) return false;
+        if (Double.compare(job.releaseTime, releaseTime) != 0) return false;
+        if (Double.compare(job.dueDate, dueDate) != 0) return false;
+        if (Double.compare(job.weight, weight) != 0) return false;
+        if (Double.compare(job.totalProcTime, totalProcTime) != 0) return false;
+        if (Double.compare(job.avgProcTime, avgProcTime) != 0) return false;
+        if (Double.compare(job.completionTime, completionTime) != 0) return false;
+        if (operations != null ? !operations.equals(job.operations) : job.operations != null) return false;
+        return processFinishEvents != null ? processFinishEvents.equals(job.processFinishEvents) : job.processFinishEvents == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = id;
+        result = 31 * result + (operations != null ? operations.hashCode() : 0);
+        result = 31 * result + (processFinishEvents != null ? processFinishEvents.hashCode() : 0);
+        temp = Double.doubleToLongBits(arrivalTime);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(releaseTime);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(dueDate);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(weight);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(totalProcTime);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(avgProcTime);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(completionTime);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
     }
 }

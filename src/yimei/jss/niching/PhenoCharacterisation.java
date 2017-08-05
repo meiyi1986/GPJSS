@@ -1,8 +1,11 @@
 package yimei.jss.niching;
 
-import yimei.jss.jobshop.Operation;
+import yimei.jss.jobshop.OperationOption;
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.rule.weighted.WSPT;
+import yimei.jss.rule.RuleType;
+import yimei.jss.rule.operation.basic.FCFS;
+import yimei.jss.rule.operation.weighted.WSPT;
+import yimei.jss.rule.workcenter.basic.SBT;
 import yimei.jss.simulation.DecisionSituation;
 import yimei.jss.simulation.DynamicSimulation;
 
@@ -45,7 +48,7 @@ public class PhenoCharacterisation {
     private void calcReferenceIndexes() {
         for (int i = 0; i < decisionSituations.size(); i++) {
             DecisionSituation situation = decisionSituations.get(i);
-            Operation op = referenceRule.priorOperation(situation);
+            OperationOption op = referenceRule.priorOperation(situation);
             int index = situation.getQueue().indexOf(op);
             referenceIndexes[i] = index;
         }
@@ -62,12 +65,12 @@ public class PhenoCharacterisation {
 
         for (int i = 0; i < decisionSituations.size(); i++) {
             DecisionSituation situation = decisionSituations.get(i);
-            List<Operation> queue = situation.getQueue();
+            List<OperationOption> queue = situation.getQueue();
 
             int refIdx = referenceIndexes[i];
 
             // Calculate the priority for all the operations.
-            for (Operation op : queue) {
+            for (OperationOption op : queue) {
                 op.setPriority(rule.priority(
                         op, situation.getWorkCenter(), situation.getSystemState()));
             }
@@ -87,12 +90,13 @@ public class PhenoCharacterisation {
     }
 
     public static PhenoCharacterisation defaultPhenoCharacterisation() {
-        AbstractRule refRule = new WSPT();
+        AbstractRule refRule = new WSPT(RuleType.SEQUENCING);
+        AbstractRule defaultRoutingRule = new SBT(RuleType.ROUTING);
         int minQueueLength = 10;
         int numDecisionSituations = 20;
         long shuffleSeed = 8295342;
 
-        DynamicSimulation simulation = DynamicSimulation.standardFull(0, refRule,
+        DynamicSimulation simulation = DynamicSimulation.standardFull(0, refRule, defaultRoutingRule,
                 10, 500, 0, 0.95, 4.0);
 
         List<DecisionSituation> situations = simulation.decisionSituations(minQueueLength);

@@ -3,20 +3,15 @@ package yimei.jss;
 import ec.multiobjective.MultiObjectiveFitness;
 import yimei.jss.jobshop.Objective;
 import yimei.jss.jobshop.SchedulingSet;
-import yimei.jss.jobshop.Shop;
 import yimei.jss.jobshop.StaticInstance;
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.rule.basic.EDD;
-import yimei.jss.rule.basic.FCFS;
-import yimei.jss.rule.basic.FDD;
-import yimei.jss.rule.basic.SPT;
-import yimei.jss.rule.composite.TwoPTplusWINQplusNPT;
-import yimei.jss.rule.evolved.GPRule;
-import yimei.jss.rule.weighted.WATC;
-import yimei.jss.simulation.DynamicSimulation;
+import yimei.jss.rule.RuleType;
+import yimei.jss.rule.operation.basic.EDD;
+import yimei.jss.rule.operation.basic.FDD;
+import yimei.jss.rule.operation.basic.SPT;
+import yimei.jss.rule.operation.evolved.GPRule;
 import yimei.jss.simulation.Simulation;
 import yimei.jss.simulation.StaticSimulation;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,15 +40,16 @@ public class JSSMain {
 //        objectives.add(Objective.MEAN_FLOWTIME);
         objectives.add(Objective.MEAN_FLOWTIME);
 
-        GPRule rule1 = GPRule.readFromLispExpression("(* (max (- (* (* (/ SL WKR) (+ W WIQ)) NIQ) (+ TIS (- PT W))) (+ (- WKR NPT) PT)) (* PT (+ (+ (/ (min (+ OWT WINQ) (+ W WIQ)) W) (- PT W)) (- PT W))))");
-        AbstractRule rule2 = new FDD();
-        AbstractRule rule3 = new EDD();
+        GPRule rule1 = GPRule.readFromLispExpression(RuleType.SEQUENCING, "(* (max (- (* (* (/ SL WKR) (+ W WIQ)) NIQ) (+ TIS (- PT W))) (+ (- WKR NPT) PT)) (* PT (+ (+ (/ (min (+ OWT WINQ) (+ W WIQ)) W) (- PT W)) (- PT W))))");
+        AbstractRule rule2 = new FDD(RuleType.SEQUENCING);
+        AbstractRule rule3 = new EDD(RuleType.SEQUENCING);
+        AbstractRule routingRule = new SPT(RuleType.ROUTING);
 
 //        DynamicSimulation simulation =
 //                DynamicSimulation.standardMissing(seed,
 //                        rule1, 10, 5000, 1000, 0.85, 4.0);
 
-        StaticInstance instance = StaticInstance.readFromFile("complete-20_5_0.txt");
+        StaticInstance instance = StaticInstance.readFromFile("JSS_Data/complete-20_5_0.txt");
         List<Integer> permutation = new ArrayList<>();
         for (int i = 0; i < instance.numWorkCenters; i++) {
             permutation.add(i);
@@ -64,7 +60,7 @@ public class JSSMain {
 
         System.out.println(instance);
 
-        Simulation simulation = new StaticSimulation(rule1, instance);
+        Simulation simulation = new StaticSimulation(rule1, routingRule, instance);
         List<Simulation> simulations = new ArrayList<>();
         simulations.add(simulation);
 
@@ -84,7 +80,7 @@ public class JSSMain {
 //        RealMatrix matrix = rule1.objectiveValueMatrix(schedulingSet, objectives);
 //        System.out.println(matrix);
 
-        rule1.calcFitness(fitness, null, set, objectives);
+        rule1.calcFitness(fitness, null, set, routingRule, objectives);
         System.out.println("Fitness = " + fitness.fitnessToStringForHumans());
 
         finish = System.currentTimeMillis();
@@ -98,7 +94,7 @@ public class JSSMain {
 //        matrix = rule2.objectiveValueMatrix(schedulingSet, objectives);
 //        System.out.println(matrix);
 
-        rule2.calcFitness(fitness, null, set, objectives);
+        rule2.calcFitness(fitness, null, set, routingRule, objectives);
         System.out.println("Fitness = " + fitness.fitnessToStringForHumans());
 
         finish = System.currentTimeMillis();
@@ -112,7 +108,7 @@ public class JSSMain {
 //        matrix = rule3.objectiveValueMatrix(schedulingSet, objectives);
 //        System.out.println(matrix);
 
-        rule3.calcFitness(fitness, null, set, objectives);
+        rule3.calcFitness(fitness, null, set, routingRule, objectives);
         System.out.println("Fitness = " + fitness.fitnessToStringForHumans());
 
         finish = System.currentTimeMillis();

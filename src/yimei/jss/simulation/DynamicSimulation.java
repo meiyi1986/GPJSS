@@ -6,11 +6,9 @@ import yimei.util.random.*;
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.simulation.event.AbstractEvent;
 import yimei.jss.simulation.event.JobArrivalEvent;
-import yimei.jss.simulation.state.SystemState;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PriorityQueue;
 
 /**
  * The dynamic simulation -- discrete event simulation
@@ -36,7 +34,8 @@ public class DynamicSimulation extends Simulation {
     private AbstractRealSampler jobWeightSampler;
 
     private DynamicSimulation(long seed,
-                              AbstractRule rule,
+                              AbstractRule sequencingRule,
+                              AbstractRule routingRule,
                               int numWorkCenters,
                               int numJobsRecorded,
                               int warmupJobs,
@@ -49,7 +48,7 @@ public class DynamicSimulation extends Simulation {
                               AbstractRealSampler procTimeSampler,
                               AbstractRealSampler interArrivalTimeSampler,
                               AbstractRealSampler jobWeightSampler) {
-        super(rule, numWorkCenters, numJobsRecorded, warmupJobs);
+        super(sequencingRule, routingRule, numWorkCenters, numJobsRecorded, warmupJobs);
 
         this.seed = seed;
         this.randomDataGenerator = new RandomDataGenerator();
@@ -77,7 +76,8 @@ public class DynamicSimulation extends Simulation {
     }
 
     public DynamicSimulation(long seed,
-                             AbstractRule rule,
+                             AbstractRule sequencingRule,
+                             AbstractRule routingRule,
                              int numWorkCenters,
                              int numJobsRecorded,
                              int warmupJobs,
@@ -86,7 +86,7 @@ public class DynamicSimulation extends Simulation {
                              double utilLevel,
                              double dueDateFactor,
                              boolean revisit) {
-        this(seed, rule, numWorkCenters, numJobsRecorded, warmupJobs,
+        this(seed, sequencingRule, routingRule, numWorkCenters, numJobsRecorded, warmupJobs,
                 minNumOps, maxNumOps, utilLevel, dueDateFactor, revisit,
                 new UniformIntegerSampler(minNumOps, maxNumOps),
                 new UniformSampler(1, 99),
@@ -258,7 +258,7 @@ public class DynamicSimulation extends Simulation {
                     minNumOps, surrogateMaxNumOps, utilLevel));
         }
 
-        Simulation surrogate = new DynamicSimulation(seed, rule, numWorkCenters,
+        Simulation surrogate = new DynamicSimulation(seed, sequencingRule, routingRule, numWorkCenters,
                 numJobsRecorded, warmupJobs, minNumOps, surrogateMaxNumOps,
                 utilLevel, dueDateFactor, revisit, surrogateNumOpsSampler,
                 procTimeSampler, surrogateInterArrivalTimeSampler, jobWeightSampler);
@@ -281,7 +281,7 @@ public class DynamicSimulation extends Simulation {
                     minNumOps, surrogateMaxNumOps, utilLevel));
         }
 
-        Simulation surrogate = new DynamicSimulation(seed, rule, numWorkCenters,
+        Simulation surrogate = new DynamicSimulation(seed, sequencingRule, routingRule, numWorkCenters,
                 numJobsRecorded, warmupJobs, minNumOps, surrogateMaxNumOps,
                 utilLevel, dueDateFactor, revisit, surrogateNumOpsSampler,
                 procTimeSampler, surrogateInterArrivalTimeSampler, jobWeightSampler);
@@ -291,26 +291,28 @@ public class DynamicSimulation extends Simulation {
 
     public static DynamicSimulation standardFull(
             long seed,
-            AbstractRule rule,
+            AbstractRule sequencingRule,
+            AbstractRule routingRule,
             int numWorkCenters,
             int numJobsRecorded,
             int warmupJobs,
             double utilLevel,
             double dueDateFactor) {
-        return new DynamicSimulation(seed, rule, numWorkCenters, numJobsRecorded,
+        return new DynamicSimulation(seed, sequencingRule, routingRule, numWorkCenters, numJobsRecorded,
                 warmupJobs, numWorkCenters, numWorkCenters, utilLevel,
                 dueDateFactor, false);
     }
 
     public static DynamicSimulation standardMissing(
             long seed,
-            AbstractRule rule,
+            AbstractRule sequencingRule,
+            AbstractRule routingRule,
             int numWorkCenters,
             int numJobsRecorded,
             int warmupJobs,
             double utilLevel,
             double dueDateFactor) {
-        return new DynamicSimulation(seed, rule, numWorkCenters, numJobsRecorded,
+        return new DynamicSimulation(seed, sequencingRule, routingRule, numWorkCenters, numJobsRecorded,
                 warmupJobs, 2, numWorkCenters, utilLevel, dueDateFactor, false);
     }
 }

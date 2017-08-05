@@ -5,29 +5,27 @@ import ec.Fitness;
 import ec.multiobjective.MultiObjectiveFitness;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
-import yimei.jss.jobshop.Objective;
-import yimei.jss.jobshop.Operation;
-import yimei.jss.jobshop.WorkCenter;
-import yimei.jss.jobshop.SchedulingSet;
-import yimei.jss.simulation.DynamicSimulation;
+import yimei.jss.jobshop.*;
 import yimei.jss.simulation.DecisionSituation;
 import yimei.jss.simulation.Simulation;
+import yimei.jss.simulation.StaticSimulation;
 import yimei.jss.simulation.state.SystemState;
 
 import java.util.List;
 
 /**
  * The abstract dispatching rule for job shop scheduling.
- *
+ * <p>
  * Created by yimei on 22/09/16.
  */
 public abstract class AbstractRule {
 
     protected String name;
-
+    protected RuleType type;
     public String getName() {
         return name;
     }
+    public RuleType getType() { return type; }
 
     @Override
     public String toString() {
@@ -45,7 +43,7 @@ public abstract class AbstractRule {
 
         for (int j = 0; j < simulations.size(); j++) {
             Simulation simulation = simulations.get(j);
-            simulation.setRule(this);
+            simulation.setSequencingRule(this);
 
             simulation.run();
 //            System.out.println(simulation.workCenterUtilLevelsToString());
@@ -55,7 +53,7 @@ public abstract class AbstractRule {
                         simulation.objectiveValue(objectives.get(i)));
             }
 
-            col ++;
+            col++;
 
             for (int k = 1; k < schedulingSet.getReplications().get(j); k++) {
                 simulation.rerun();
@@ -66,7 +64,7 @@ public abstract class AbstractRule {
                             simulation.objectiveValue(objectives.get(i)));
                 }
 
-                col ++;
+                col++;
             }
 
             simulation.reset();
@@ -76,7 +74,23 @@ public abstract class AbstractRule {
     }
 
     public void calcFitness(Fitness fitness, EvolutionState state,
-                            SchedulingSet schedulingSet, List<Objective> objectives) {
+                            SchedulingSet schedulingSet, AbstractRule otherRule,
+                            List<Objective> objectives) {
+        //whenever fitness is calculated, need a routing rule and a sequencing rule
+        if (this.type == otherRule.type) {
+            System.out.println("We need one routing rule and one sequencing rule, not 2 "+otherRule.getType()+" rules.");
+            return;
+        }
+        AbstractRule routingRule;
+        AbstractRule sequencingRule;
+        if (this.type == RuleType.ROUTING) {
+            routingRule = this;
+            sequencingRule = otherRule;
+        } else {
+            routingRule = otherRule;
+            sequencingRule = this;
+        }
+
         double[] fitnesses = new double[objectives.size()];
 
         List<Simulation> simulations = schedulingSet.getSimulations();
@@ -84,34 +98,30 @@ public abstract class AbstractRule {
 
         for (int j = 0; j < simulations.size(); j++) {
             Simulation simulation = simulations.get(j);
-            simulation.setRule(this);
-
+            simulation.setSequencingRule(sequencingRule);
+            simulation.setRoutingRule(routingRule);
             simulation.run();
-//            System.out.println(simulation.workCenterUtilLevelsToString());
 
             for (int i = 0; i < objectives.size(); i++) {
-//                double obj = simulation.objectiveValue(objectives.get(i));
-//                double lb = schedulingSet.getObjectiveLowerBound(i, col);
+/*                System.out.println("Makespan: "+simulation.objectiveValue(objectives.get(i)));
+                System.out.println("Benchmark makespan: "+schedulingSet.getObjectiveLowerBound(i, col));*/
                 double normObjValue = simulation.objectiveValue(objectives.get(i))
                         / schedulingSet.getObjectiveLowerBound(i, col);
                 fitnesses[i] += normObjValue;
             }
 
-            col ++;
+            col++;
 
             for (int k = 1; k < schedulingSet.getReplications().get(j); k++) {
                 simulation.rerun();
-//                System.out.println(simulation.workCenterUtilLevelsToString());
 
                 for (int i = 0; i < objectives.size(); i++) {
-//                    System.out.println("obj = " + simulation.objectiveValue(objectives.get(i)));
-//                    System.out.println("lb  = " + schedulingSet.getObjectiveLowerBound(i, col));
                     double normObjValue = simulation.objectiveValue(objectives.get(i))
                             / schedulingSet.getObjectiveLowerBound(i, col);
                     fitnesses[i] += normObjValue;
                 }
 
-                col ++;
+                col++;
             }
 
             simulation.reset();
@@ -120,28 +130,21 @@ public abstract class AbstractRule {
         for (int i = 0; i < fitnesses.length; i++) {
             fitnesses[i] /= col;
         }
-
-//        if (objectives.size() == 1) {
-//            KozaFitness f = (KozaFitness) fitness;
-//            f.setStandardizedFitness(state, fitnesses[0]);
-//        }
-//        else {
-            MultiObjectiveFitness f = (MultiObjectiveFitness)fitness;
-            f.setObjectives(state, fitnesses);
-//        }
+        MultiObjectiveFitness f = (MultiObjectiveFitness) fitness;
+        f.setObjectives(state, fitnesses);
     }
 
-    public Operation priorOperation(DecisionSituation decisionSituation) {
-        List<Operation> queue = decisionSituation.getQueue();
+    public OperationOption priorOperation(DecisionSituation decisionSituation) {
+        List<OperationOption> queue = decisionSituation.getQueue();
         WorkCenter workCenter = decisionSituation.getWorkCenter();
         SystemState systemState = decisionSituation.getSystemState();
 
-        Operation priorOp = queue.get(0);
+        OperationOption priorOp = queue.get(0);
         priorOp.setPriority(
                 priority(priorOp, workCenter, systemState));
 
         for (int i = 1; i < queue.size(); i++) {
-            Operation op = queue.get(i);
+            OperationOption op = queue.get(i);
             op.setPriority(priority(op, workCenter, systemState));
 
             if (op.priorTo(priorOp))
@@ -151,7 +154,7 @@ public abstract class AbstractRule {
         return priorOp;
     }
 
-    public abstract double priority(Operation op,
+    public abstract double priority(OperationOption op,
                                     WorkCenter workCenter,
                                     SystemState systemState);
 }

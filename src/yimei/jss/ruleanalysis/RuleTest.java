@@ -1,12 +1,10 @@
 package yimei.jss.ruleanalysis;
 
 import ec.gp.GPNode;
-import ec.gp.koza.KozaFitness;
 import ec.multiobjective.MultiObjectiveFitness;
 import yimei.jss.jobshop.Objective;
-import yimei.jss.jobshop.Scenario;
 import yimei.jss.jobshop.SchedulingSet;
-import yimei.jss.rule.evolved.GPRule;
+import yimei.jss.rule.operation.evolved.GPRule;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -104,8 +102,8 @@ public class RuleTest {
 //            result.validate(objectives);
 
             for (int j = 0; j < result.getGenerationalRules().size(); j++) {
-                result.getGenerationalRule(j).calcFitness(
-                        result.getGenerationalTestFitness(j), null, testSet, objectives);
+                //result.getGenerationalRule(j).calcFitness(
+                        //result.getGenerationalTestFitness(j), null, testSet, objectives);
 
                 System.out.println("Generation " + j + ": test fitness = " +
                         result.getGenerationalTestFitness(j).fitness());

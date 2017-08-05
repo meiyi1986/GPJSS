@@ -2,7 +2,6 @@ package yimei.jss.jobshop;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by yimei on 22/09/16.
@@ -34,9 +33,9 @@ public class Schedule {
 
     public void add(Process p) {
         processLists.get(p.getWorkCenter().getId()).add(p);
-        if (p.getOperation().getNext() == null) {
+        if (p.getOperationOption().getNext() == null) {
             // The last operation of the job is finished.
-            Job job = p.getOperation().getJob();
+            Job job = p.getOperationOption().getJob();
             job.setCompletionTime(p.getFinishTime());
             jobs.add(job);
         }

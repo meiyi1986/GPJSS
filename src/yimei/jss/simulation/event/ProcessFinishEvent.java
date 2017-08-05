@@ -27,25 +27,40 @@ public class ProcessFinishEvent extends AbstractEvent {
     @Override
     public void trigger(Simulation simulation) {
         WorkCenter workCenter = process.getWorkCenter();
+//        process.getOperationOption().getJob().addProcessFinishEvent(this);
+//        if (process.getOperationOption().getJob().getId() >= 0) {
+//            int[] jobStates = simulation.getJobStates();
+//            int jobState = jobStates[process.getOperationOption().getJob().getId()];
+//            if (process.getOperationOption().getOperation().getId() != (jobState+1)) {
+//                //shouldn't happen
+//                System.out.println("Hmmm");
+//            }
+//            jobStates[process.getOperationOption().getJob().getId()] = process.getOperationOption().getOperation().getId();
+//            simulation.setJobStates(jobStates);
+//        }
 
         if (!workCenter.getQueue().isEmpty()) {
             DecisionSituation decisionSituation =
                     new DecisionSituation(workCenter.getQueue(), workCenter,
                             simulation.getSystemState());
 
-            Operation dispatchedOp =
-                    simulation.getRule().priorOperation(decisionSituation);
+            OperationOption dispatchedOp =
+                    simulation.getSequencingRule().priorOperation(decisionSituation);
 
             workCenter.removeFromQueue(dispatchedOp);
+
+            //must wait for machine to be ready
+            double processStartTime = Math.max(workCenter.getReadyTime(), time);
+
             Process nextP = new Process(workCenter, process.getMachineId(),
-                    dispatchedOp, time);
+                    dispatchedOp, processStartTime);
             simulation.addEvent(new ProcessStartEvent(nextP));
         }
 
-        Operation nextOp = process.getOperation().getNext();
+        OperationOption nextOp = process.getOperationOption().getNext(simulation.getSystemState(),simulation.getRoutingRule());
 
         if (nextOp == null) {
-            Job job = process.getOperation().getJob();
+            Job job = process.getOperationOption().getJob();
             job.setCompletionTime(process.getFinishTime());
             simulation.completeJob(job);
         }
@@ -69,8 +84,8 @@ public class ProcessFinishEvent extends AbstractEvent {
                 situations.add(decisionSituation.clone());
             }
 
-            Operation dispatchedOp =
-                    simulation.getRule().priorOperation(decisionSituation);
+            OperationOption dispatchedOp =
+                    simulation.getSequencingRule().priorOperation(decisionSituation);
 
             workCenter.removeFromQueue(dispatchedOp);
             Process nextP = new Process(workCenter, process.getMachineId(),
@@ -78,9 +93,9 @@ public class ProcessFinishEvent extends AbstractEvent {
             simulation.addEvent(new ProcessStartEvent(nextP));
         }
 
-        Operation nextOp = process.getOperation().getNext();
+        OperationOption nextOp = process.getOperationOption().getNext(simulation.getSystemState(),simulation.getRoutingRule());
         if (nextOp == null) {
-            Job job = process.getOperation().getJob();
+            Job job = process.getOperationOption().getJob();
             job.setCompletionTime(process.getFinishTime());
             simulation.completeJob(job);
         }
@@ -93,8 +108,8 @@ public class ProcessFinishEvent extends AbstractEvent {
     public String toString() {
         return String.format("%.1f: job %d op %d finished on work center %d.\n",
                 time,
-                process.getOperation().getJob().getId(),
-                process.getOperation().getId(),
+                process.getOperationOption().getJob().getId(),
+                process.getOperationOption().getOperation().getId(),
                 process.getWorkCenter().getId());
     }
 
@@ -106,9 +121,36 @@ public class ProcessFinishEvent extends AbstractEvent {
         if (time > other.time)
             return 1;
 
-        if (other instanceof ProcessFinishEvent)
-            return 0;
+        if (other instanceof ProcessFinishEvent) {
+            ProcessFinishEvent otherPFE = (ProcessFinishEvent)other;
+
+            if (process.getWorkCenter().getId() < otherPFE.process.getWorkCenter().getId())
+                return -1;
+
+            if (process.getWorkCenter().getId() > otherPFE.process.getWorkCenter().getId())
+            return 1;
+        }
 
         return 1;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ProcessFinishEvent that = (ProcessFinishEvent) o;
+
+        return process != null ? process.equals(that.process) : that.process == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return process != null ? process.hashCode() : 0;
+    }
+
+
+    public Process getProcess() {
+        return process;
     }
 }

@@ -4,7 +4,8 @@ import ec.EvolutionState;
 import ec.Individual;
 import ec.Subpopulation;
 import ec.gp.GPIndividual;
-import yimei.jss.rule.evolved.GPRule;
+import yimei.jss.rule.RuleType;
+import yimei.jss.rule.operation.evolved.GPRule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,11 +26,11 @@ public class Clearing {
             Individual[] sortedPop = subpop.individuals;
             Arrays.sort(sortedPop);
 
-            pc.setReferenceRule(new GPRule(((GPIndividual)sortedPop[0]).trees[0]));
+            pc.setReferenceRule(new GPRule(RuleType.SEQUENCING,((GPIndividual)sortedPop[0]).trees[0]));
 
             List<int[]> sortedPopCharLists = new ArrayList<>();
             for (Individual indi : sortedPop) {
-                int[] charList = pc.characterise(new GPRule(((GPIndividual)indi).trees[0]));
+                int[] charList = pc.characterise(new GPRule(RuleType.SEQUENCING,((GPIndividual)indi).trees[0]));
 
                 sortedPopCharLists.add(charList);
             }

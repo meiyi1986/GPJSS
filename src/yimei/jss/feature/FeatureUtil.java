@@ -15,7 +15,8 @@ import yimei.jss.gp.terminal.BuildingBlock;
 import yimei.jss.gp.terminal.ConstantTerminal;
 import yimei.jss.niching.ClearingEvaluator;
 import yimei.jss.niching.PhenoCharacterisation;
-import yimei.jss.rule.evolved.GPRule;
+import yimei.jss.rule.RuleType;
+import yimei.jss.rule.operation.evolved.GPRule;
 import yimei.jss.ruleoptimisation.RuleOptimizationProblem;
 
 import java.io.BufferedWriter;
@@ -44,7 +45,7 @@ public class FeatureUtil {
 
         ClearingEvaluator clearingEvaluator = (ClearingEvaluator)state.evaluator;
         PhenoCharacterisation pc = clearingEvaluator.getPhenoCharacterisation();
-        pc.setReferenceRule(new GPRule(((GPIndividual)archive[0]).trees[0]));
+        pc.setReferenceRule(new GPRule(RuleType.SEQUENCING,((GPIndividual)archive[0]).trees[0]));
 
         List<GPIndividual> selIndis = new ArrayList<>();
         List<int[]> selIndiCharLists = new ArrayList<>();
@@ -54,7 +55,7 @@ public class FeatureUtil {
 
             GPIndividual gpIndi = (GPIndividual)indi;
 
-            int[] charList = pc.characterise(new GPRule(gpIndi.trees[0]));
+            int[] charList = pc.characterise(new GPRule(RuleType.SEQUENCING,gpIndi.trees[0]));
 
             for (int i = 0; i < selIndis.size(); i++) {
                 double distance = PhenoCharacterisation.distance(charList, selIndiCharLists.get(i));
@@ -122,10 +123,14 @@ public class FeatureUtil {
 
         KozaFitness fit1 = (KozaFitness)indi.fitness;
         KozaFitness fit2 = (KozaFitness)fit1.clone();
-        GPRule rule = new GPRule((GPTree)indi.trees[0].clone());
+        GPRule rule = new GPRule(RuleType.SEQUENCING,(GPTree)indi.trees[0].clone());
         rule.ignore(feature, ignorer);
+        List fitnesses = new ArrayList();
+        List rules = new ArrayList();
+        fitnesses.add(fit2);
+        rules.add(rule);
 
-        problem.getEvaluationModel().evaluate(fit2, rule, state);
+        problem.getEvaluationModel().evaluate(fitnesses, rules, state);
 
         return fit2.standardizedFitness() - fit1.standardizedFitness();
     }

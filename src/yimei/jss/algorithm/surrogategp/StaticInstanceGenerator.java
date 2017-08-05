@@ -1,6 +1,8 @@
 package yimei.jss.algorithm.surrogategp;
 
-import yimei.jss.rule.basic.FCFS;
+import yimei.jss.rule.RuleType;
+import yimei.jss.rule.operation.basic.FCFS;
+import yimei.jss.rule.workcenter.basic.SBT;
 import yimei.jss.simulation.DynamicSimulation;
 
 /**
@@ -12,7 +14,7 @@ import yimei.jss.simulation.DynamicSimulation;
 public class StaticInstanceGenerator {
 
     DynamicSimulation simulation = DynamicSimulation.standardMissing(72334,
-            new FCFS(), 10, 500000, 0, 0.95, 4.0);
+            new SBT(RuleType.SEQUENCING), new SBT(RuleType.ROUTING), 10, 500000, 0, 0.95, 4.0);
 
 
 }

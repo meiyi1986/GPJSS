@@ -1,11 +1,13 @@
 package yimei.jss.jobshop;
 
 import yimei.jss.rule.AbstractRule;
-import yimei.jss.rule.basic.EDD;
-import yimei.jss.rule.basic.FDD;
-import yimei.jss.rule.composite.ATC;
-import yimei.jss.rule.composite.TwoPTplusWINQplusNPT;
-import yimei.jss.rule.weighted.WATC;
+import yimei.jss.rule.RuleType;
+import yimei.jss.rule.operation.basic.EDD;
+import yimei.jss.rule.operation.basic.FCFS;
+import yimei.jss.rule.operation.composite.ATC;
+//import yimei.jss.rule.operation.composite.TwoPTplusWINQplusNPT;
+import yimei.jss.rule.operation.weighted.WATC;
+import yimei.jss.rule.workcenter.basic.SBT;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,20 +55,24 @@ public enum Objective {
         return lookup.get(name);
     }
 
-    public AbstractRule benchmarkRule() {
+    public AbstractRule benchmarkSequencingRule() {
         switch (this) {
             case MAKESPAN:
-                return new FDD();
-            case MEAN_FLOWTIME:
-                return new TwoPTplusWINQplusNPT();
+                return new FCFS(RuleType.SEQUENCING);
+//            case MEAN_FLOWTIME:
+//                return new TwoPTplusWINQplusNPT(RuleType.SEQUENCING);
             case MEAN_TARDINESS:
-                return new ATC();
+                return new ATC(RuleType.SEQUENCING);
             case MEAN_WEIGHTED_TARDINESS:
-                return new WATC();
+                return new WATC(RuleType.SEQUENCING);
             case MAX_TARDINESS:
-                return new EDD();
+                return new EDD(RuleType.SEQUENCING);
         }
 
         return null;
+    }
+
+    public AbstractRule benchmarkRoutingRule() {
+        return new SBT(RuleType.ROUTING);
     }
 }

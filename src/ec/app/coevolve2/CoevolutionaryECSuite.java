@@ -36,24 +36,23 @@ public class CoevolutionaryECSuite extends ECSuite implements GroupedProblemForm
                     ((SimpleFitness)(pop.subpops[i].individuals[j].fitness)).trials = new ArrayList();
         }
 
-    public void postprocessPopulation(final EvolutionState state, Population pop, boolean[] assessFitness, boolean countVictoriesOnly)
-        {
+    public void postprocessPopulation(final EvolutionState state, Population pop, boolean[] assessFitness, boolean countVictoriesOnly) {
         for( int i = 0 ; i < pop.subpops.length ; i++ )
-            if (assessFitness[i])
-                for( int j = 0 ; j < pop.subpops[i].individuals.length ; j++ )
-                    {
-                    SimpleFitness fit = ((SimpleFitness)(pop.subpops[i].individuals[j].fitness));
-                                                                        
+            if (assessFitness[i]) {
+                for (int j = 0; j < pop.subpops[i].individuals.length; j++) {
+                    SimpleFitness fit = ((SimpleFitness) (pop.subpops[i].individuals[j].fitness));
+
                     // we take the max over the trials
                     double max = Double.NEGATIVE_INFINITY;
                     int len = fit.trials.size();
-                    for(int l = 0; l < len; l++)
-                        max = Math.max(((Double)(fit.trials.get(l))).doubleValue(), max);  // it'll be the first one, but whatever
-                                        
+                    for (int l = 0; l < len; l++) {
+                        max = Math.max(((Double) (fit.trials.get(l))).doubleValue(), max);  // it'll be the first one, but whatever
+                    }
                     fit.setFitness(state, max, isOptimal(problemType, max));
                     pop.subpops[i].individuals[j].evaluated = true;
-                    }
-        }
+                }
+            }
+    }
 
 
     public void evaluate(final EvolutionState state,

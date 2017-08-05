@@ -1,0 +1,220 @@
+parent.0 = ecsuite.params
+
+# ==============================
+# The problem
+# ==============================
+
+state =                                 yimei.jss.gp.GPRuleEvolutionState
+eval =                                  ec.coevolve.MultiPopCoevolutionaryEvaluator
+eval.problem =                          yimei.jss.ruleoptimisation.RuleCoevolutionProblem
+eval.problem.data =                     yimei.jss.gp.data.DoubleData
+eval.problem.type =                     rosenbrock
+eval.problem.eval-model =               yimei.jss.ruleevaluation.MultipleRuleEvaluationModel
+eval.problem.eval-model.objectives =    1
+eval.problem.eval-model.objectives.0 =  makespan
+eval.problem.eval-model.sim-models =    1
+eval.problem.eval-model.sim-models.0.util-level = 0.85
+eval.num-shuffled=			            0
+eval.num-current=                       0
+eval.num-elites =                       1
+eval.num-prev =                         0
+eval.select-current =                   ec.select.RandomSelection
+eval.subpop.0.select-current =          ec.select.RandomSelection
+eval.subpop.1.select-current =          ec.select.RandomSelection
+eval.select-prev =                      ec.select.RandomSelection
+
+generations=                            100
+select.tournament.size =                2
+pop.subpops =                           2
+pop.default-subpop =			        0
+
+pop.subpop.0 =                          ec.Subpopulation
+pop.subpop.0.duplicate-retries =        2
+pop.subpop.0.size =                     500
+pop.subpop.0.species =                  ec.gp.GPSpecies
+pop.subpop.0.species.crossover-type =   one
+pop.subpop.0.species.genome-size =      10
+pop.subpop.0.species.fitness =          ec.multiobjective.MultiObjectiveFitness
+pop.subpop.0.species.fitness.num-objectives = 1
+pop.subpop.0.species.fitness.maximize = false
+pop.subpop.0.species.ind =              ec.gp.GPIndividual
+pop.subpop.0.species.ind.numtrees =     1
+pop.subpop.0.species.ind.tree.0 =       ec.gp.GPTree
+pop.subpop.0.species.ind.tree.0.tc =    tc0
+pop.subpop.0.species.min-gene =         -2.048
+pop.subpop.0.species.max-gene =         2.048
+pop.subpop.0.species.pipe =             ec.breed.MultiBreedingPipeline
+pop.subpop.0.species.pipe.source.0 =    ec.gp.koza.CrossoverPipeline
+pop.subpop.0.species.pipe.source.0.prob = 0.80
+pop.subpop.0.species.pipe.source.0.source.0 = ec.select.TournamentSelection
+pop.subpop.0.species.pipe.source.0.source.1 = same
+pop.subpop.0.species.pipe.num-sources = 3
+pop.subpop.0.species.mutation-type =    gauss
+pop.subpop.0.species.mutation-stdev =   0.23
+pop.subpop.0.species.mutation-type = 	polynomial
+pop.subpop.0.species.mutation-distribution-index = 21
+pop.subpop.0.species.alternative-polynomial-version = true
+pop.subpop.0.species.mutation-bounded = true
+
+# GP initializer
+init = ec.gp.GPInitializer
+
+# GP breeding pipeline
+#pop.subpop.0.species.pipe =            ec.breed.MultiBreedingPipeline
+pop.subpop.0.species.pipe.generate-max = false
+pop.subpop.0.species.pipe.num-sources = 3
+pop.subpop.0.species.pipe.source.0 =    ec.gp.koza.CrossoverPipeline
+pop.subpop.0.species.pipe.source.0.prob = 0.80
+pop.subpop.0.species.pipe.source.1 =    ec.gp.koza.MutationPipeline
+pop.subpop.0.species.pipe.source.1.prob = 0.15
+pop.subpop.0.species.pipe.source.2 =    ec.breed.ReproductionPipeline
+pop.subpop.0.species.pipe.source.2.prob = 0.05
+
+# Selection for reproduction
+breed.reproduce.source.0 =              ec.select.TournamentSelection
+breed.elite.0 =                         1
+breed.elite.1 =                         1
+
+# Koza crossover parameters
+gp.koza.xover.source.0 =                ec.select.TournamentSelection
+gp.koza.xover.source.1 =                same
+gp.koza.xover.ns.0 =                    ec.gp.koza.KozaNodeSelector
+gp.koza.xover.ns.1 =                    same
+gp.koza.xover.maxdepth =                8
+gp.koza.xover.tries =                   1
+
+# Koza mutation parameters
+gp.koza.mutate.source.0 =               ec.select.TournamentSelection
+gp.koza.mutate.ns.0 =                   ec.gp.koza.KozaNodeSelector
+gp.koza.mutate.build.0 =                ec.gp.koza.GrowBuilder
+gp.koza.mutate.maxdepth =               8
+gp.koza.mutate.tries =                  1
+
+# Tournament selection, for reproduction, crossover and mutation
+select.tournament.size =                7
+
+# Koza grow parameters, for mutation
+gp.koza.grow.min-depth =                4
+gp.koza.grow.max-depth =                4
+
+# Koza node selector, for crossover and mutation
+gp.koza.ns.terminals =                  0.1
+gp.koza.ns.nonterminals =               0.9
+gp.koza.ns.root =                       0.0
+
+# GP atomic (a) and set (s) type parameters
+gp.type.a.size =                        1
+gp.type.a.0.name =                      nil
+gp.type.s.size =                        0
+
+# GP tree constraints
+gp.tc.size =                            1
+gp.tc.0 =                               ec.gp.GPTreeConstraints
+gp.tc.0.name =                          tc0
+gp.tc.0.fset =                          f0
+gp.tc.0.returns =                       nil
+gp.tc.0.init =                          ec.gp.koza.HalfBuilder
+
+# Koza half-ramp-and-ramp parameters, for gp.tc.0.init
+gp.koza.half.min-depth =                2
+gp.koza.half.max-depth =                6
+gp.koza.half.growp =                    0.5
+
+# GP node constraints (nc[k] means the node takes k children), no other constraint
+gp.nc.size =                            7
+
+gp.nc.0 =                               ec.gp.GPNodeConstraints
+gp.nc.0.name =                          nc0
+gp.nc.0.returns =                       nil
+gp.nc.0.size =                          0
+
+gp.nc.1 =                               ec.gp.GPNodeConstraints
+gp.nc.1.name =                          nc1
+gp.nc.1.returns =                       nil
+gp.nc.1.size =                          1
+gp.nc.1.child.0 =                       nil
+
+gp.nc.2 =                               ec.gp.GPNodeConstraints
+gp.nc.2.name =                          nc2
+gp.nc.2.returns =                       nil
+gp.nc.2.size =                          2
+gp.nc.2.child.0 =                       nil
+gp.nc.2.child.1 =                       nil
+
+gp.nc.3 =                               ec.gp.GPNodeConstraints
+gp.nc.3.name =                          nc3
+gp.nc.3.returns =                       nil
+gp.nc.3.size =                          3
+gp.nc.3.child.0 =                       nil
+gp.nc.3.child.1 =                       nil
+gp.nc.3.child.2 =                       nil
+
+gp.nc.4 =                               ec.gp.GPNodeConstraints
+gp.nc.4.name =                          nc4
+gp.nc.4.returns =                       nil
+gp.nc.4.size =                          4
+gp.nc.4.child.0 =                       nil
+gp.nc.4.child.1 =                       nil
+gp.nc.4.child.2 =                       nil
+gp.nc.4.child.3 =                       nil
+
+gp.nc.5 =                               ec.gp.GPNodeConstraints
+gp.nc.5.name =                          nc5
+gp.nc.5.returns =                       nil
+gp.nc.5.size =                          5
+gp.nc.5.child.0 =                       nil
+gp.nc.5.child.1 =                       nil
+gp.nc.5.child.2 =                       nil
+gp.nc.5.child.3 =                       nil
+gp.nc.5.child.4 =                       nil
+
+gp.nc.6 =                               ec.gp.GPNodeConstraints
+gp.nc.6.name =                          nc6
+gp.nc.6.returns =                       nil
+gp.nc.6.size =                          6
+gp.nc.6.child.0 =                       nil
+gp.nc.6.child.1 =                       nil
+gp.nc.6.child.2 =                       nil
+gp.nc.6.child.3 =                       nil
+gp.nc.6.child.4 =                       nil
+gp.nc.6.child.5 =                       nil
+
+# GP ADF parameters
+gp.problem.stack =                      ec.gp.ADFStack
+gp.adf-stack.context =                  ec.gp.ADFContext
+
+# ==============================
+# GP problem specific parameters
+# ==============================
+
+# GP function set parameters
+gp.fs.size =                            1
+gp.fs.0.name =                          f0
+gp.fs.0.size =                          7
+gp.fs.0.func.0 =                        yimei.jss.gp.terminal.TerminalERCUniform
+gp.fs.0.func.0.nc =                     nc0
+gp.fs.0.func.1 =                        yimei.jss.gp.function.Add
+gp.fs.0.func.1.nc =                     nc2
+gp.fs.0.func.2 =                        yimei.jss.gp.function.Sub
+gp.fs.0.func.2.nc =                     nc2
+gp.fs.0.func.3 =                        yimei.jss.gp.function.Mul
+gp.fs.0.func.3.nc =                     nc2
+gp.fs.0.func.4 =                        yimei.jss.gp.function.Div
+gp.fs.0.func.4.nc =                     nc2
+gp.fs.0.func.5 =                        yimei.jss.gp.function.Max
+gp.fs.0.func.5.nc =                     nc2
+gp.fs.0.func.6 =                        yimei.jss.gp.function.Min
+gp.fs.0.func.6.nc =                     nc2
+#gp.fs.0.func.7 =                       yimei.jss.gp.function.If
+#gp.fs.0.func.7.nc = nc3
+
+
+# ==============================
+# The output format
+# ==============================
+#gp.tree.print-style =                  c
+#pop.subpop.0.species.ind.tree.0.c-operators = false
+#gp.tree.print-style =                  dot
+
+
+

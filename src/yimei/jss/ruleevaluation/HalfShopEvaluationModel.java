@@ -3,6 +3,7 @@ package yimei.jss.ruleevaluation;
 import ec.EvolutionState;
 import ec.Fitness;
 import ec.util.Parameter;
+import org.apache.commons.math3.analysis.function.Abs;
 import yimei.jss.jobshop.SchedulingSet;
 import yimei.jss.rule.AbstractRule;
 import yimei.jss.simulation.DynamicSimulation;
@@ -54,14 +55,26 @@ public class HalfShopEvaluationModel extends SimpleEvaluationModel implements Su
     }
 
     @Override
-    public void evaluate(Fitness fitness,
-                         AbstractRule rule,
+    public void evaluate(List<Fitness> fitnesses,
+                         List<AbstractRule> rules,
                          EvolutionState state) {
+        //only expecting one rule here
+        if (rules.size() > 1 || rules.size() == 0) {
+            try {
+                throw new Exception(rules.size()+" - unexpected number of rules.");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        AbstractRule rule = rules.get(0);
+        Fitness fitness = fitnesses.get(0);
+        AbstractRule routingRule = schedulingSet.getSimulations().get(0).getRoutingRule();
+
         if (useSurrogate) {
-            rule.calcFitness(fitness, state, surrogateSet, objectives);
+            rule.calcFitness(fitness, state, surrogateSet, routingRule, objectives);
         }
         else {
-            rule.calcFitness(fitness, state, schedulingSet, objectives);
+            rule.calcFitness(fitness, state, schedulingSet, routingRule, objectives);
         }
     }
 

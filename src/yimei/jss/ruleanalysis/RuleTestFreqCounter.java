@@ -5,7 +5,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import yimei.jss.gp.terminal.AttributeGPNode;
 import yimei.jss.gp.terminal.JobShopAttribute;
 import yimei.jss.jobshop.Objective;
-import yimei.jss.rule.evolved.GPRule;
+import yimei.jss.rule.operation.evolved.GPRule;
 
 import java.io.BufferedWriter;
 import java.io.File;

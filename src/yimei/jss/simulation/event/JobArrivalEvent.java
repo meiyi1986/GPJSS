@@ -25,10 +25,13 @@ public class JobArrivalEvent extends AbstractEvent {
 
     @Override
     public void trigger(Simulation simulation) {
-        job.getOperation(0).setReadyTime(job.getReleaseTime());
+        job.getOperation(0).getOperationOption(simulation.getSystemState(),
+                simulation.getRoutingRule()).setReadyTime(job.getReleaseTime());
 
         simulation.addEvent(
-                new OperationVisitEvent(job.getReleaseTime(), job.getOperation(0)));
+                new OperationVisitEvent(job.getReleaseTime(), job.getOperation(0).getOperationOption(
+                        simulation.getSystemState(),simulation.getRoutingRule()))
+        );
 
         simulation.generateJob();
     }
@@ -53,8 +56,15 @@ public class JobArrivalEvent extends AbstractEvent {
         if (time > other.time)
             return 1;
 
-        if (other instanceof JobArrivalEvent)
-            return 0;
+        if (other instanceof JobArrivalEvent) {
+            JobArrivalEvent otherJAE = (JobArrivalEvent)other;
+
+            if (job.getId() < otherJAE.job.getId())
+                return -1;
+
+            if (job.getId() > otherJAE.job.getId())
+                return 1;
+        }
 
         return -1;
     }
